@@ -45,3 +45,5 @@ O `UnicodeData.txt` da versão atual (9.0 em dez/2016) tem 30.592 linhas. A gran
 Os campos que nos interessam são o primeiro e o segundo: o código Unicode em hexadecimal e o nome oficial do caractere, na forma de uma string ASCII (o `UnicodeData.txt` é escrito em ASCII puro).
 
 Nosso programa `runefinder` vai usar o `UnicodeData.txt` para localizar os caracteres, combinado? Então, mãos à obra!
+
+Para continuar, mude para o _branch_ `passo-01` e veja o arquivo `passo-01.md`.
