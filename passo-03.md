@@ -65,6 +65,7 @@ func Listar(texto io.Reader, consulta string) { // <1>
 ```
 
 Passo a passo:
+
 <1> `Listar` recebe um `texto` do tipo `io.Reader` e uma `consulta` do tipo `string`.
 
 <2> Por enquanto vamos chumbar aqui os valores esperados por nosso teste.
