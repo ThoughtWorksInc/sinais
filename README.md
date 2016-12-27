@@ -27,10 +27,11 @@ Você passa uma um mais palavras como argumento, e o programa devolve uma lista 
 
 ## Contexto
 
-O projeto [Unicode](http://unicode.org) mantém um banco de dados chamado Unicode Character Database (UCD), com descrições e outros metadados sobre cada um dos mais de 100.000 caracteres que faze parte da versão atual do padrão. A principal tabela do UCD pode ser baixada em formato texto: `UnicodeData.txt`. Esta é a URL da versão atual do arquivo de 1.6MB: `ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData.txt
-`
+O projeto [Unicode](http://unicode.org) mantém um banco de dados chamado Unicode Character Database (UCD), com nomes descritivos e outros metadados sobre os mais de 128.000 caracteres que fazem parte da versão atual do padrão. A tabela mais interessante UCD é um arquivo ASCII de 1.6MB cuja versão mais atual pode ser obtida neste URL: `http://www.unicode.org/Public/UNIDATA/UnicodeData.txt`.
 
-O `UnicodeData.txt` da versão atual (9.0 em dez/2016) tem 30.592 linhas. A grande maioria dos caracteres CJK (Chinês/Japonês/Coreano) são descritos em outros arquivos da UCD. Eis uma pequena amostra do `UnicodeData.txt`:
+O `UnicodeData.txt` traz informações sobre os caracteres de praticamente todos os idiomas, incluindo também símbolos, ícones e emojis, somando 30.592 linhas na versão 9.0 do padrão Unicode. Isso corresponde a cerca de 24% do total de caracteres do UCD (a maior parte dos ideogramas CJK -- Chinês/Japonês/Coreano -- é documentada em outras tabelas).
+
+Eis uma pequena amostra do `UnicodeData.txt`:
 
 ```
 003D;EQUALS SIGN;Sm;0;ON;;;;;N;;;;;
@@ -42,8 +43,8 @@ O `UnicodeData.txt` da versão atual (9.0 em dez/2016) tem 30.592 linhas. A gran
 0043;LATIN CAPITAL LETTER C;Lu;0;L;;;;;N;;;;0063;
 ```
 
-Os campos que nos interessam são o primeiro e o segundo: o código Unicode em hexadecimal e o nome oficial do caractere, na forma de uma string ASCII (o `UnicodeData.txt` é escrito em ASCII puro).
+Os campos que nos interessam são o primeiro e o segundo: o código Unicode em hexadecimal e o nome oficial do caractere.
 
-Nosso programa `runefinder` vai usar o `UnicodeData.txt` para localizar os caracteres, combinado? Então, mãos à obra!
+Nosso programa `runefinder` vai usar o `UnicodeData.txt` para localizar caracteres pelo nome. Então, mãos à obra!
 
 Para continuar, mude para o _branch_ `passo-01` e veja o arquivo `passo-01.md`.
