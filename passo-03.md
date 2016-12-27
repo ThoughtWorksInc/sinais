@@ -23,7 +23,9 @@ func ExampleListar() { // <1>
 Observe:
 
 <1> O nome da função tem que começar com `Example`; em seguida obrigatoriamente vem o nome da função a ser testada, no caso `Listar`.
+
 <2> Nossa função listar receberá um argumento `io.Reader` (ao final, será o arquivo `UnicodeData.txt`). Para testar, construímos um buffer de leitura `strings.Reader` a partir da constante `linhas3Da43`, cujo conteúdo veremos abaixo.
+
 <3> Aqui invocamos a função a testar, passando o buffer e a consulta, `"MARK"`. O comentário na linha final da função `ExampleListar` define o resultado esperado. O sistema de testes vai comparar o texto gerado pela função `Listar` na saída padrão com o que vier após a string `"Output: "` no comentário.
 
 Neste exemplo, a função `Listar` produz uma listagem delimitada por tabs, portanto o comentário `// Output:` precisa ser escrito com tabs entre os campos `U+003F`, `?` e `QUESTION MARK`. Se você colocar espaços em vez de tabs entre esses campos, o teste não passará.
@@ -64,7 +66,9 @@ func Listar(texto io.Reader, consulta string) { // <1>
 
 Passo a passo:
 <1> `Listar` recebe um `texto` do tipo `io.Reader` e uma `consulta` do tipo `string`.
+
 <2> Por enquanto vamos chumbar aqui os valores esperados por nosso teste.
+
 <3> Aqui usamos `fmt.Printf` com três _verbos de formatação_ indicados por `%`, explicados a seguir. Note os tabs `\t` e a quebra de linha `\n` para formatar a saída.
 
 Verbos de formatação que usamos:
@@ -159,11 +163,17 @@ func Listar(texto io.Reader, consulta string) {
 O que temos de novo:
 
 <1> Por convenção, funções exportadas (públicas) devem ser documentadas com um comentário logo acima. Mais detalhes sobre essa convenção na seção __Documentando funções__, no final deste passo.
+
 <2> Para percorrer um `io.Reader` linha-a-linha, usamos a função `bufio.NewScanner`, que devolve um objeto `Scanner` ([documentação]https://golang.org/pkg/bufio/#NewScanner).
+
 <3> Um dos métodos do tipo `Scanner` é `Scan`: ele avança o `Scanner` até a próxima quebra de linha, e devolve `true` enquanto não encontrar o final do texto, e enquanto não ocorrer um erro. Aqui usamos o resultado de `Scan` como condição para um laço `for` (não existe `while` na linguagem Go; o comando `for` pode ser usado como um `while` dessa forma).
+
 <4> Cada vez que invocamos `Scan` podemos usar o método `Text()` para obter a linha que acabou de ser lida.
+
 <5> Aqui retiramos os caracteres brancos (_whitespace_) à esquerda e à direita da `linha`; se o resultado for uma string vazia, usamos `continue` para iniciar a próxima volta do laço porque não há o que fazer.
+
 <6> Passamos a linha para a função `AnalisarLinha`, que devolve a `runa` e seu `nome`.
+
 <7> Se o `nome` contém a string `consulta`, então geramos uma linha na saída, no formato que já vimos anteriormente.
 
 Para que essa função funcione, precisamos importar o pacote `bufio`. A declaração `import` ficará assim:
