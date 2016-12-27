@@ -8,7 +8,7 @@ U+0042→ B→  LATIN CAPITAL LETTER B
 U+0043→ C→  LATIN CAPITAL LETTER C
 ```
 
-(acrescentei setas `→` para indicar as tabulações, que serão feitas com `"\t"`)
+(acrescentei setas `→` para indicar as tabulações, que aparecerão no código como `\t`)
 
 A maneira mais simples de conferir a saída padrão de um programa em Go é usar um exemplo: um tipo especial de teste, feito com uma função nomeada com o prefixo `Example`. Vamos criá-la no arquivo de testes `runefinder_test.go` assim:
 
@@ -44,7 +44,7 @@ const linhas3Da43 = `
 `
 ```
 
-Note que usamos o sinal de crase (_grave accent_, Unicode U+0060) para delimitar uma string que tem múltiplas linhas. As quebras de linha farão parte do valor da constante.  
+Note que usamos o sinal de crase (_grave accent_, Unicode U+0060) para delimitar uma string que tem múltiplas linhas. As quebras de linha farão parte do valor da constante.
 
 Seguindo a filosofia do TDD, vamos rodar os testes:
 
@@ -74,13 +74,13 @@ Passo a passo:
 
 Verbos de formatação que usamos:
 
-* `%04X` para exibir um inteiro (o valor de `runa`) em formato hexadeximal com 4 casas, preenchendo com zeros à esquerda.
-* `%[1]c` para exibir a runa como caractere; o modificador `[1]` é para indicar que queremos usar o argumento 1 (`runa`) novamente nesta posição. Assim geramos três campos na saída usando apenas dois argumentos (`runa`, `nome`), porque usamos `runa` duas vezes.
+* `%04X` para exibir um inteiro (o valor de `runa`) em formato hexadeximal com 4 casas, preenchendo com zeros à esquerda, mostrando os dígitos de `A` a `F` em maiúsculas.
+* `%c` é para exibir uma runa como caractere; o modificador `[1]` é para indicar que queremos usar o argumento 1 (`runa`) novamente nesta posição, e não o argumento seguinte (`nome`). Assim geramos três campos na saída usando apenas dois argumentos, porque usamos `runa` duas vezes.
 * `%s` para exibir um valor `string`.
 
-Na realidade, `io.Reader` é uma _interface_, o que significa que nossa função `Listar` aceita como primeiro argumento qualquer objeto que implemente o método `Read` conforme a [documentação](https://golang.org/pkg/io/#Reader). Isso facilita os testes.
+Na realidade, `io.Reader` é uma _interface_, o que significa que nossa função `Listar` aceita como primeiro argumento qualquer objeto que implemente o método `Read` conforme a [documentação](https://golang.org/pkg/io/#Reader). Isso agiliza os testes: podemos passar um buffer em vez de um arquivo para testar a função `Listar`. Em geral, é uma boa ideia escrever funções que aceitam interfaces como argumento, porque isso dá mais flexibilidae para quem vai usar nossa API.
 
-Para podermos usar `fmt.Printf` e `io.Reader` na função `Listar`, temos que acrescentar esses dois pacotes à declaração `import` no arquivo `ucdlib.go`, mantendo a ordem alfabética como pede a boa educação na comunidade Go:
+Para usar `fmt.Printf` e `io.Reader` na função `Listar`, temos que acrescentar esses os pacotes `fmt` e `io` à declaração `import` no arquivo `ucdlib.go`, mantendo a ordem alfabética como pede a boa educação na comunidade Go:
 
 ```go
 import (
@@ -108,7 +108,7 @@ Agora vamos codar a lógica da função `Listar`.
 
 ## Implementando `Listar` de verdade
 
-Antes de mais nada, criar outro teste para expor o problema da nossa função `Listar`, que simplesmente ignora os argumentos passados. Usaremos outra função exemplo:
+Antes de mais nada, criamos outro teste para expor o problema da nossa função `Listar`, que simplesmente ignora os argumentos passados. Usaremos outra função exemplo:
 
 ```go
 func ExampleListar_doisResultados() { // <1>
@@ -165,9 +165,9 @@ O que temos de novo:
 
 <1> Por convenção, funções exportadas (públicas) devem ser documentadas com um comentário logo acima. Mais detalhes sobre essa convenção na seção __Documentando funções__, no final deste passo.
 
-<2> Para percorrer um `io.Reader` linha-a-linha, usamos a função `bufio.NewScanner`, que devolve um objeto `Scanner` ([documentação]https://golang.org/pkg/bufio/#NewScanner).
+<2> Para percorrer um `io.Reader` linha-a-linha, usamos a função `bufio.NewScanner`, que devolve um objeto que implementa a interface `Scanner` ([documentação](https://golang.org/pkg/bufio/#NewScanner)).
 
-<3> Um dos métodos do tipo `Scanner` é `Scan`: ele avança o `Scanner` até a próxima quebra de linha, e devolve `true` enquanto não encontrar o final do texto, e enquanto não ocorrer um erro. Aqui usamos o resultado de `Scan` como condição para um laço `for` (não existe `while` na linguagem Go; o comando `for` pode ser usado como um `while` dessa forma).
+<3> Um dos métodos do tipo `Scanner` é `Scan`: ele avança o `Scanner` até a próxima quebra de linha, e devolve `true` enquanto existir texto para ler, e enquanto não ocorrer um erro. Aqui usamos o resultado de `Scan` como condição para um laço `for`.
 
 <4> Cada vez que invocamos `Scan` podemos usar o método `Text()` para obter a linha que acabou de ser lida.
 
@@ -177,7 +177,13 @@ O que temos de novo:
 
 <7> Se o `nome` contém a string `consulta`, então geramos uma linha na saída, no formato que já vimos anteriormente.
 
-Para que essa função funcione, precisamos importar o pacote `bufio`. A declaração `import` ficará assim:
+Duas observações sobre a linha <3>:
+
+*  Não existe `while` na linguagem Go; o comando `for` pode ser usado como um `while` dessa forma: `for «condição» {...}`.
+* Um `Scanner` pode ser configurado para iterar pelo `Reader` de outras formas, além de linha-a-linha. Veja a documentação do [método](https://golang.org/pkg/bufio/#Scanner.Split) `Scanner.Split` e das [funções](https://golang.org/pkg/bufio/#ScanLines) `ScanLines`, `ScanRunes`, `ScanWords` e `ScanBytes`.
+
+
+Para que a função `Listar` funcione, precisamos importar o pacote `bufio`. A declaração `import` ficará assim:
 
 ```go
 import (
@@ -189,7 +195,7 @@ import (
 )
 ```
 
-Note que, por convenção, os pacotes importados devem aparecer em ordem alfabética. O utilitário `go fmt` ordena os pacotes automaticamente, e o `goimports` insere/remove pacotes da declaração `import` automaticamente para satisfazer o compilador.
+Note a ordem alfabética dos pacotes. O utilitário `go fmt` ordena os pacotes automaticamente, e o `goimports` insere/remove pacotes da declaração `import` automaticamente para satisfazer o compilador. No editor Atom, o pacote [go-plus](https://atom.io/packages/go-plus) executa estes e outros utilitários de verificação de código toda vez que eu salvo o arquivo, além de rodar os testes.
 
 Com isso, todos os testes passam novamente:
 
