@@ -1,6 +1,7 @@
-package runefinder
+package main
 
 import (
+	"os"
 	"strings"
 	"testing"
 )
@@ -28,6 +29,22 @@ func TestAnalisarLinha(t *testing.T) {
 	}
 }
 
+func TestListar(t *testing.T) {
+	oldStdOut := os.Stdout
+	_, os.Stdout, _ = os.Pipe()
+	defer func() {
+		os.Stdout.Close()
+		os.Stdout = oldStdOut
+	}()
+
+	texto := strings.NewReader(linhas3Da43)
+	count := Listar(texto, "MARK")
+	expectedCount := 1
+	if count != expectedCount {
+		t.Errorf("Esperava %d, veio %d", expectedCount, count)
+	}
+}
+
 func ExampleListar() {
 	texto := strings.NewReader(linhas3Da43)
 	Listar(texto, "MARK")
@@ -40,4 +57,26 @@ func ExampleListar_doisResultados() { // <1>
 	// Output:
 	// U+003D	=	EQUALS SIGN
 	// U+003E	>	GREATER-THAN SIGN
+}
+
+func Example() {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"cmd", "cruzeiro"}
+	main()
+	// Output:
+	// U+20A2	₢	CRUZEIRO SIGN
+	// 1 character found
+}
+
+func Example_tresResultados() {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"cmd", "pound"}
+	main()
+	// Output:
+	// U+00A3	£	POUND SIGN
+	// U+FFE1	￡	FULLWIDTH POUND SIGN
+	// U+1F4B7	💷	BANKNOTE WITH POUND SIGN
+	// 3 characters found
 }
