@@ -24,7 +24,9 @@ func TestAnalisarLinha(t *testing.T) {
 ```
 
 <1> Para ser consistente com o próximo teste, mudei o código de formatação aqui de `%c` para `%q`, assim a runa vai aparecer entre aspas simples se o teste falhar.
+
 <2> Criamos uma constante só para esse teste.
+
 <3> O código de formatação `%q` também serve para exibir uma string entre aspas duplas.
 
 Rodamos o teste para ver o que acontece:
@@ -60,7 +62,9 @@ func AnalisarLinha(ucdLine string) (rune, string) {
 Explicando:
 
 <1> Para importar dois ou mais pacotes, essa é a sintaxe utilizada.
+
 <2> Todo identificaor de outro pacote é usado assim: `pacote.Identificador` (na verdade, é possível importar identificadores de outra forma, mas essa é a forma mais comum e mais recomendada). A função `strings.Split` recebe uma `string` para quebrar e outra `string` com o separador, e devolve uma fatia (_slice_) de strings, que é como um `array` de tamanho variável.
+
 <3> A função `strconv.ParseInt` converte de `string` para `int64`. Ela recebe uma `string` (no caso, o item 0 da fatia `campos`), uma base (16) e o número de bits que se espera encontrar no inteiro resultante (32). O resultado é um `int64` e um objeto do tipo `error`, que nós vamos ignorar neste caso porque vamos assumir que as pessoas do Unicode sabem escrever números hexadecimais.
 
 Assim completamos o passo 2. Hora de mudar para o _branch_ `passo-03` e ler o arquivo `passo-03.md`.
