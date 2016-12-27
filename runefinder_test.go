@@ -1,12 +1,12 @@
-package runefinder // <1>
+package main // ➊
 
-import "testing" // <2>
+import "testing" // ➋
 
-const linhaLetraA = `0041;LATIN CAPITAL LETTER A;Lu;0;L;;;;;N;;;;0061;` // <3>
+const linhaLetraA = `0041;LATIN CAPITAL LETTER A;Lu;0;L;;;;;N;;;;0061;` // ➌
 
-func TestAnalisarLinha(t *testing.T) { // <4>
-	runa, _ := AnalisarLinha(linhaLetraA) // <5>
-	if runa != 'A' {                      // <6>
-		t.Errorf("Esperava 'A', veio %c", runa) // <7>
+func TestAnalisarLinha(t *testing.T) { // ➍
+	runa, _ := AnalisarLinha(linhaLetraA) // ➎
+	if runa != 'A' {                      // ➏
+		t.Errorf("Esperava 'A', veio %c", runa) // ➐
 	}
 }

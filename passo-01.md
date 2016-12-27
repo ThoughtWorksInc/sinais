@@ -3,37 +3,43 @@
 Vamos usar TDD para desenvolver esse projeto. A primeira coisa então é escrever um teste. Eis o estado inicial do arquivo-fonte `runefinder_test.go`:
 
 ```go
-package runefinder // <1>
+package main // ➊
 
-import "testing" // <2>
+import "testing" // ➋
 
-const linhaLetraA = "0041;LATIN CAPITAL LETTER A;Lu;0;L;;;;;N;;;;0061;" // <3>
+const linhaLetraA = `0041;LATIN CAPITAL LETTER A;Lu;0;L;;;;;N;;;;0061;` // ➌
 
-func TestAnalisarLinha(t *testing.T) { // <4>
-	runa, _ := AnalisarLinha(linhaLetraA) // <5>
-	if runa != 'A' {                      // <6>
-		t.Errorf("Esperava 'A', veio %c", runa) // <7>
+func TestAnalisarLinha(t *testing.T) { // ➍
+	runa, _ := AnalisarLinha(linhaLetraA) // ➎
+	if runa != 'A' {                      // ➏
+		t.Errorf("Esperava 'A', veio %c", runa) // ➐
 	}
 }
 ```
 
 Vejamos o que temos aqui:
 
-<1> Todo arquivo-fonte em Go precisa declarar o pacote ao qual ele pertence.
-<2> Importamos o pacote `testing` da biblioteca padrão.
-<3> Definimos uma constante do tipo `string` (não é preciso declarar o tipo, explicitamente, o compilador sabe que o que tem à direita do `=` é uma `string`).
-<4> Todas as funções de teste precisam começar com o prefixo `Test`, e recebem como argumento um ponteiro para o objeto `testing.T`, através do qual acessamos os métodos, como por exemplo `t.Errorf`. As declarações em Go tem a forma `x tipo`, onde `x` é o identificador sendo declarado, seguido de seu `tipo` (como em Pascal!)
-<5> Nossa primeira função devolverá dois valores: um caractere e uma string - que por enquanto vamos ignorar (mais detalhes sobre essa linha a seguir).
-<6> Note a ausência de parentesis ao redor da condição, e o uso de aspas simples para indicar que `'A'` é um caractere e não uma `string`.
-<7> Um dos métodos para reportar erros em testes é `t.Errorf`.
+➊ Todo arquivo-fonte em Go precisa declarar o pacote ao qual ele pertence.
 
-A linha <5> traz algumas novidades peculiares da linguagem Go:
+➋ Importamos o pacote `testing` da biblioteca padrão.
 
-* Os caracteres Unicode em Go são chamados de "runas", e o tipo de dado usado para representar um caractere é `rune` (na verdade, o mesmo que `int32`). Assim como em C, um caractere é na verdade um número, que pode ser exibido como um caractere na saída se usarmos o código de formatação `"%c"`, como fizemos na linha <7>.
+➌ Definimos uma constante do tipo `string` (não é preciso declarar o tipo, explicitamente, o compilador sabe que o que tem à direita do `=` é uma `string`).
 
-* Assim como Python, Go permite que uma função devolva mais de um valor, e esses valores são atribuídos de uma vez só a suas respectivas variáveis. O compilador recusa variáveis que não serão usadas, então se você precisa ignorar um valor devolvido por uma função, use o nome especial `_`, o chamado _identificador vazio_ ([blank identifier](https://golang.org/doc/effective_go.html#blank)).
+➍ Todas as funções de teste precisam começar com o prefixo `Test`, e recebem como argumento um ponteiro para o objeto `testing.T`, através do qual acessamos os métodos, como por exemplo `t.Errorf`. As declarações em Go tem a forma `x tipo`, onde `x` é o identificador sendo declarado, seguido de seu `tipo` (como em Pascal!)
 
-* Em vez de declarar variáveis, em Go você pode usar uma _atribuição curta_ ([short assignment](https://tour.golang.org/basics/10)), com o sinal `:=`. Isso funciona somente na primeira vez que uma variável aparece dentro de um escopo. O compilador cria cada variável com o tipo compatível com a expressão à direita do `:=`. No caso, os tipos `rune` e `string` dos resultados que `AnalisarLinha` vai devolver.
+➎ Nossa primeira função devolverá dois valores: um caractere e uma string - que por enquanto vamos ignorar (mais detalhes sobre essa linha a seguir).
+
+➏ Note a ausência de parentesis ao redor da condição, e o uso de aspas simples para indicar que `'A'` é um caractere e não uma `string`.
+
+➐ Um dos métodos para reportar erros em testes é `t.Errorf`.
+
+A linha ➎ traz algumas novidades peculiares da linguagem Go:
+
+* Os caracteres Unicode em Go são chamados de "runas", e o tipo de dado usado para representar um caractere é `rune` (na verdade, o mesmo que `int32`). Assim como em C, um caractere é na verdade um número, que pode ser exibido como um caractere na saída se usarmos o código de formatação `"%c"`, como fizemos na linha ➐.
+
+* Go permite que uma função devolva mais de um valor, e esses valores são atribuídos de uma vez só a suas respectivas variáveis. O compilador recusa variáveis que não serão usadas, então se você precisa ignorar um valor devolvido por uma função, use o nome especial `_`, o chamado _identificador vazio_ ([blank identifier](https://golang.org/doc/effective_go.html#blank)).
+
+* Em Go nem sempre é necessário declarar o tipo das variáveis porque em muitas situações podemos usar o sinal `:=` para fazer uma _atribuição curta_ ([short assignment](https://tour.golang.org/basics/10)). Isso funciona somente na primeira vez que uma variável aparece dentro de um escopo. O compilador cria cada variável com o tipo compatível com a expressão à direita do `:=`. No caso, os tipos `rune` e `string` dos resultados que `AnalisarLinha` vai devolver.
 
 ## Rodando o teste
 
@@ -54,18 +60,20 @@ Obviamente, falta definir a função `AnalisarLinha` em algum lugar. Vamos lá.
 Vamos criar outro arquivo-fonte, com nome `ucdlib.go` -- nossa biblioteca para lidar com a UCD (Unicode Character Database). O mínimo que precisamos para fazer passar o teste é isso:
 
 ```go
-package runefinder // <1>
+package main // ➊
 
-func AnalisarLinha(ucdLine string) (rune, string) { // <2>
-	return 'A', "LETRA A" // <3>
+func AnalisarLinha(ucdLine string) (rune, string) { // ➋
+	return 'A', "LETRA A" // ➌
 }
 ```
 
 Vejamos o que temos em `ucdlib.go`:
 
-<1> Novamente declaramos o mesmo pacote, assim os identificadores públicos deste arquivo ficam acessíveis para outros arquivos do mesmo pacote.
-<2> Esta função é pública porque seu nome começa com uma letra maiúscula. Isso não é apenas uma convenção, é algo que o compilador verifica. Esta linha também declara que a função recebe um argumento do tipo `string` e devolve um par de resultados, respectivamente `rune` e `string`.
-<3> Apenas para fazer passar o teste, devolvemos uma `rune` e uma `string`.
+➊ Novamente declaramos o mesmo pacote, assim os identificadores públicos deste arquivo ficam acessíveis para outros arquivos do mesmo pacote.
+
+➋ Esta função é pública porque seu nome começa com uma letra maiúscula. Isso não é apenas uma convenção, é algo que o compilador verifica. Esta linha também declara que a função recebe um argumento do tipo `string` e devolve um par de resultados, respectivamente `rune` e `string`.
+
+➌ Apenas para fazer passar o teste, devolvemos uma `rune` e uma `string`.
 
 Feito isso, rodamos o teste:
 
