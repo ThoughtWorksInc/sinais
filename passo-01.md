@@ -1,4 +1,4 @@
-# Runas: passo 1
+# Runas, passo 1: primeiro teste
 
 Vamos usar TDD para desenvolver esse projeto. A primeira coisa então é escrever um teste. Eis o estado inicial do arquivo-fonte `runefinder_test.go`:
 
