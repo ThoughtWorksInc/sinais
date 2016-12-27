@@ -1,4 +1,4 @@
-# Runas: passo 2
+# Runas, passo 2: primeira função completa
 
 Agora vamos terminar de implementar a função `AnalisarLinha`, guiados por testes.
 
