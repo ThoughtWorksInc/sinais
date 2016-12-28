@@ -78,9 +78,9 @@ Verbos de formatação que usamos:
 * `%c` é para exibir uma runa como caractere; o modificador `[1]` é para indicar que queremos usar o argumento 1 (`runa`) novamente nesta posição, e não o argumento seguinte (`nome`). Assim geramos três campos na saída usando apenas dois argumentos, porque usamos `runa` duas vezes.
 * `%s` para exibir um valor `string`.
 
-Na realidade, `io.Reader` é uma _interface_, o que significa que nossa função `Listar` aceita como primeiro argumento qualquer objeto que implemente o método `Read` conforme a [documentação](https://golang.org/pkg/io/#Reader). Isso agiliza os testes: podemos passar um buffer em vez de um arquivo para testar a função `Listar`. Em geral, é uma boa ideia escrever funções que aceitam interfaces como argumento, porque isso dá mais flexibilidae para quem vai usar nossa API.
+Na realidade, `io.Reader` é uma _interface_, o que significa que nossa função `Listar` aceita como primeiro argumento qualquer objeto que implemente o método `Read` conforme a [documentação](https://golang.org/pkg/io/#Reader). Isso facilita os testes: podemos passar um buffer em vez de um arquivo para testar a função `Listar`. Em geral, é uma boa ideia escrever funções que aceitam interfaces como argumento, porque isso dá mais flexibilidae para quem vai usar nossa API.
 
-Para usar `fmt.Printf` e `io.Reader` na função `Listar`, temos que acrescentar esses os pacotes `fmt` e `io` à declaração `import` no arquivo `runefinder.go`, mantendo a ordem alfabética como pede a boa educação na comunidade Go:
+Para usar `fmt.Printf` e `io.Reader` na função `Listar`, temos que acrescentar  os pacotes `fmt` e `io` à declaração `import` no arquivo `runefinder.go`, mantendo a ordem alfabética como pede a boa educação na comunidade Go:
 
 ```go
 import (
@@ -111,18 +111,18 @@ Agora vamos codar a lógica da função `Listar`.
 Antes de mais nada, criamos outro teste para expor o problema da nossa função `Listar`, que simplesmente ignora os argumentos passados. Usaremos outra função exemplo:
 
 ```go
-func ExampleListar_doisResultados() { // <1>
+func ExampleListar_doisResultados() { // ➊
 	texto := strings.NewReader(linhas3Da43)
-	Listar(texto, "SIGN") // <2>
+	Listar(texto, "SIGN") // ➋
 	// Output:
 	// U+003D	=	EQUALS SIGN
 	// U+003E	>	GREATER-THAN SIGN
 }
 ```
 
-<1> Como já vimos, a função exemplo sempre tem o prefixo `Example` seguido do nome da função a ser testada. Para fazer mais de um exemplo testando a mesma função `Listar`, coloque um `_` seguido de uma descrição iniciando com caixa baixa (obrigatoriamente). Por isso temos: `ExampleListar_doisResultados`.
+➊ Como já vimos, a função exemplo sempre tem o prefixo `Example` seguido do nome da função a ser testada. Para fazer mais de um exemplo testando a mesma função `Listar`, coloque um `_` seguido de uma descrição iniciando com caixa baixa (obrigatoriamente). Por isso temos: `ExampleListar_doisResultados`.
 
-<2> Agora vamos testar a palavra `"SIGN"`, que ocorre duas vezes em nosso texto de testes. Para verificar saídas de várias linhas, escreva `Output:` na primeira linha do comentário, e coloque as linhas esperadas nos comentários seguintes, sempre colocando um espaço após o sinal `//`. Esse espaço será ignorado no teste.
+➋ Agora vamos testar a palavra `"SIGN"`, que ocorre duas vezes em nosso texto de testes. Para verificar saídas de várias linhas, escreva `Output:` na primeira linha do comentário, e coloque as linhas esperadas nos comentários seguintes, sempre colocando um espaço após o sinal `//`. Esse espaço será ignorado no teste.
 
 Note que a saída esperada neste teste é formatada em três colunas separadas por tab.
 
@@ -145,16 +145,16 @@ A palavra `got:` (recebido) indica a saída que foi produzida, e `want:` (deseja
 
 ```go
 // Listar exibe na saída padrão o código, a runa e o nome dos caracteres Unicode
-// cujo nome contem o texto da consulta // <1>
+// cujo nome contem o texto da consulta // ➊
 func Listar(texto io.Reader, consulta string) {
-	varredor := bufio.NewScanner(texto) // <2>
-	for varredor.Scan() {               // <3>
-		linha := varredor.Text()            // <4>
-		if strings.TrimSpace(linha) == "" { // <5>
+	varredor := bufio.NewScanner(texto) // ➋
+	for varredor.Scan() {               // ➌
+		linha := varredor.Text()            // ➍
+		if strings.TrimSpace(linha) == "" { // ➎
 			continue
 		}
-		runa, nome := AnalisarLinha(linha)    // <6>
-		if strings.Contains(nome, consulta) { // <7>
+		runa, nome := AnalisarLinha(linha)    // ➏
+		if strings.Contains(nome, consulta) { // ➐
 			fmt.Printf("U+%04X\t%[1]c\t%s\n", runa, nome)
 		}
 	}
@@ -163,21 +163,21 @@ func Listar(texto io.Reader, consulta string) {
 
 O que temos de novo:
 
-<1> Por convenção, funções exportadas (públicas) devem ser documentadas com um comentário logo acima. Mais detalhes sobre essa convenção na seção __Documentando funções__, no final deste passo.
+➊ Por convenção, funções exportadas (públicas) devem ser documentadas com um comentário logo acima. Mais detalhes sobre essa convenção na seção __Documentando funções__, no final deste passo.
 
-<2> Para percorrer um `io.Reader` linha-a-linha, usamos a função `bufio.NewScanner`, que devolve um objeto que implementa a interface `Scanner` ([documentação](https://golang.org/pkg/bufio/#NewScanner)).
+➋ Para percorrer um `io.Reader` linha-a-linha, usamos a função `bufio.NewScanner`, que devolve um objeto que implementa a interface `Scanner` ([documentação](https://golang.org/pkg/bufio/#NewScanner)).
 
-<3> Um dos métodos do tipo `Scanner` é `Scan`: ele avança o `Scanner` até a próxima quebra de linha, e devolve `true` enquanto existir texto para ler, e enquanto não ocorrer um erro. Aqui usamos o resultado de `Scan` como condição para um laço `for`.
+➌ Um dos métodos do tipo `Scanner` é `Scan`: ele avança o `Scanner` até a próxima quebra de linha, e devolve `true` enquanto existir texto para ler, e enquanto não ocorrer um erro. Aqui usamos o resultado de `Scan` como condição para um laço `for`.
 
-<4> Cada vez que invocamos `Scan` podemos usar o método `Text()` para obter a linha que acabou de ser lida.
+➍ Cada vez que invocamos `Scan` podemos usar o método `Text()` para obter a linha que acabou de ser lida.
 
-<5> Aqui retiramos os caracteres brancos (_whitespace_) à esquerda e à direita da `linha`; se o resultado for uma string vazia, usamos `continue` para iniciar a próxima volta do laço porque não há o que fazer.
+➎ Aqui retiramos os caracteres brancos (_whitespace_) à esquerda e à direita da `linha`; se o resultado for uma string vazia, usamos `continue` para iniciar a próxima volta do laço porque não há o que fazer.
 
-<6> Passamos a linha para a função `AnalisarLinha`, que devolve a `runa` e seu `nome`.
+➏ Passamos a linha para a função `AnalisarLinha`, que devolve a `runa` e seu `nome`.
 
-<7> Se o `nome` contém a string `consulta`, então geramos uma linha na saída, no formato que já vimos anteriormente.
+➐ Se o `nome` contém a string `consulta`, então geramos uma linha na saída, no formato que já vimos anteriormente.
 
-Duas observações sobre a linha <3>:
+Duas observações sobre a linha ➌:
 
 *  Não existe `while` na linguagem Go; o comando `for` pode ser usado como um `while` dessa forma: `for «condição» {...}`.
 * Um `Scanner` pode ser configurado para iterar pelo `Reader` de outras formas, além de linha-a-linha. Veja a documentação do [método](https://golang.org/pkg/bufio/#Scanner.Split) `Scanner.Split` e das [funções](https://golang.org/pkg/bufio/#ScanLines) `ScanLines`, `ScanRunes`, `ScanWords` e `ScanBytes`.
