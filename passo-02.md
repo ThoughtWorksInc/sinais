@@ -42,7 +42,7 @@ FAIL	github.com/labgo/runas-passo-a-passo	0.011s
 
 Note a mensagem indicando que na linha 14 um teste falhou. O texto da mensagem é o que passamos para o métido `t.Errorf`.
 
-Agora vamos codar a função `AnalisarLinha` de verdade, assim:
+Agora vamos codar a função `AnalisarLinha` de verdade no arquivoo `runefinder.go`, assim:
 
 ```go
 package main
@@ -63,10 +63,20 @@ Explicando:
 
 ➊ Para importar dois ou mais pacotes, essa é a sintaxe utilizada.
 
-➋ Todo identificaor de outro pacote é usado assim: `pacote.Identificador` (na verdade, é possível importar identificadores de outra forma, mas essa é a forma mais comum e mais recomendada). A função `strings.Split` recebe uma `string` para quebrar e outra `string` com o separador, e devolve uma fatia (_slice_) de strings, que é como um `array` de tamanho variável.
+➋ Todo identificaor importado de outro pacote é usado assim: `pacote.Identificador` (na verdade, é possível importar pacotes de outra forma, mas essa é a forma mais comum e mais recomendada). A função `strings.Split` recebe uma `string` para quebrar e outra `string` com o separador, e devolve uma fatia (_slice_) de strings, que é como um `array` de tamanho variável.
 
 ➌ A função `strconv.ParseInt` converte de `string` para `int64`. Ela recebe uma `string` (no caso, o item 0 da fatia `campos`), uma base (16) e o número de bits que se espera encontrar no inteiro resultante (32). O resultado é um `int64` e um objeto do tipo `error`, que nós vamos ignorar neste caso porque vamos assumir que as pessoas do Unicode sabem escrever números hexadecimais.
 
 ➍ Os valores devolvidos são o `código` convertido de `int64` para `rune`, e o segundo campo, que contém o nome do caractere.
+
+Podemos rodar o teste para conferir o trabalho até aqui (com a opção `-v` para ver mais detalhes):
+
+```bash
+$ go test -v
+=== RUN TestAnalisarLinha
+--- PASS: TestAnalisarLinha (0.00s)
+PASS
+ok  	github.com/labgo/runas-passo-a-passo	0.012s
+```
 
 Assim completamos o passo 2. Hora de mudar para o _branch_ `passo-03` e ler o arquivo `passo-03.md`.
