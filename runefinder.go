@@ -9,14 +9,6 @@ import (
 	"strings"
 )
 
-const UCDFileName = "UnicodeData.txt" // ➊
-
-func check(e error) { // ➊
-	if e != nil {
-		panic(e)
-	}
-}
-
 // AnalisarLinha devolve a runa e o nome de uma linha do UnicodeData.txt
 func AnalisarLinha(linha string) (rune, string) {
 	campos := strings.Split(linha, ";")
@@ -25,8 +17,8 @@ func AnalisarLinha(linha string) (rune, string) {
 }
 
 // Listar exibe na saída padrão o código, a runa e o nome dos caracteres Unicode
-// cujo nome contem o texto da consulta. Devolve o número de ocorrências.
-func Listar(texto io.Reader, consulta string) int { // ➊
+// cujo nome contem o texto da consulta.
+func Listar(texto io.Reader, consulta string) {
 	varredor := bufio.NewScanner(texto)
 	ocorrências := 0 // ➋
 	for varredor.Scan() {
@@ -40,17 +32,15 @@ func Listar(texto io.Reader, consulta string) int { // ➊
 			ocorrências++ // ➌
 		}
 	}
-	return ocorrências
 }
 
 func main() { // ➊
-	ucd, err := os.Open(UCDFileName) // ➋
-	check(err) // ➌
-	consulta := strings.ToUpper(strings.Join(os.Args[1:], " ")) // ➍
-	ocorrências := Listar(ucd, consulta) // ➎
-	var plural string // ➏
-	if ocorrências != 1 { // ➐
-		plural = "s"
+	ucd, err := os.Open("UnicodeData.txt") // ➋
+	if err != nil {                        // ➌
+		fmt.Println(err.Error())
+		os.Exit(1)
 	}
-	fmt.Println(ocorrências, "character"+plural, "found")
+	defer func() { ucd.Close() }()             // ➍
+	consulta := strings.Join(os.Args[1:], " ") // ➎
+	Listar(ucd, strings.ToUpper(consulta))     // ➏
 }
