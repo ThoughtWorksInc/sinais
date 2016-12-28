@@ -163,4 +163,4 @@ $ ./runas | wc
    30593  182344 1181756
 ```
 
-Então vamos resolver a parte do download da UCD no próximo passo. Isso nos dará uma desculpa para mexer com concorrência, o ponto forte de Go. Veja o branch `passo-05`, texto em `passo-05.md`.
+Vamos deixar a questão do download do UCD para o final deste tutorial, porque não é simples de fazer com TDD. Primeiro vamos melhorar a busca no branch `passo-05`, texto em `passo-05.md`.
