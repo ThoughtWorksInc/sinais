@@ -1,4 +1,4 @@
-package runefinder
+package main
 
 import (
 	"bufio"
@@ -16,17 +16,17 @@ func AnalisarLinha(linha string) (rune, string) {
 }
 
 // Listar exibe na saída padrão o código, a runa e o nome dos caracteres Unicode
-// cujo nome contem o texto da consulta // <1>
+// cujo nome contem o texto da consulta // ➊
 func Listar(texto io.Reader, consulta string) {
-	varredor := bufio.NewScanner(texto) // <2>
-	for varredor.Scan() {               // <3>
-		linha := varredor.Text()            // <4>
-		if strings.TrimSpace(linha) == "" { // <5>
+	varredor := bufio.NewScanner(texto) // ➋
+	for varredor.Scan() {               // ➌
+		linha := varredor.Text()            // ➍
+		if strings.TrimSpace(linha) == "" { // ➎
 			continue
 		}
-		runa, nome := AnalisarLinha(linha)    // <6>
-		if strings.Contains(nome, consulta) { // <7>
-			fmt.Printf("U+%04X\t%[1]c\t%s\n", runa, nome) // <8>
+		runa, nome := AnalisarLinha(linha)    // ➏
+		if strings.Contains(nome, consulta) { // ➐
+			fmt.Printf("U+%04X\t%[1]c\t%s\n", runa, nome)
 		}
 	}
 }

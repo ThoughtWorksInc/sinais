@@ -1,4 +1,4 @@
-package runefinder
+package main
 
 import (
 	"strings"
@@ -34,9 +34,9 @@ func ExampleListar() {
 	// Output: U+003F	?	QUESTION MARK
 }
 
-func ExampleListar_doisResultados() { // <1>
+func ExampleListar_doisResultados() { // ➊
 	texto := strings.NewReader(linhas3Da43)
-	Listar(texto, "SIGN") // <2>
+	Listar(texto, "SIGN") // ➋
 	// Output:
 	// U+003D	=	EQUALS SIGN
 	// U+003E	>	GREATER-THAN SIGN
