@@ -25,11 +25,11 @@ Esse teste traz várias novidades:
 
 ➍ Mudamos os valor de `os.Args` para fazer o teste. Observe a sintaxe de uma fatia literal: primeiro o tipo `[]string`, depois os itens entre `{}`. O primeiro item de `os.Args` é o nome do programa (irrelevante para o nosso teste). O segundo item é a palavra que vamos buscar, `"cruzeiro"`, cuidadosamente escolhida porque só existe um caractere Unicode que contém essa palavra em seu nome.
 
-➎ Invocamos a função `main`, a mesma que será chamada quando nosso programa for acionado na linha de comando.
+➎ Invocamos a função `main`, a mesma que será chamada quando nosso programa for acionado na linha de comando. A saída que aparece aqui é o que nosso programa vai gerar quando alguém buscar um caractere com a palavra "cruzeiro".
 
-O comando `defer` é uma inovação simples porém genial da linguagem Go. Ele serve para invocar uma função no final da função atual (`Example`). `defer` é útil para fechar arquivos, encerrar conexões, liberar travas, etc. É como se o corpo da função `Example` estivesse dentro de um `try/finally`, e as funções chamadas em `defer` seriam executadas no bloco `finally`, ou seja, após o `return` e mesmo que ocorram exceções. No exemplo, o uso de `defer` garante que o valor de `os.Args` será restaurado ao valor original, independente do sucesso ou fracasso do teste.
+O comando `defer` é uma inovação simples porém genial da linguagem Go. Ele serve para invocar uma função no final da função atual (`Example`). `defer` é útil para fechar arquivos, encerrar conexões, liberar mutexes, etc. É como se o corpo da função `Example` estivesse dentro de um `try/finally` de Java ou Python, e as funções chamadas em `defer` seriam executadas no bloco `finally`, ou seja, após o `return` e mesmo que ocorram exceções. No exemplo, o uso de `defer` garante que o valor de `os.Args` será restaurado ao valor original, independente do sucesso ou fracasso do teste.
 
-> _Nota_: Alterar uma variável global como `os.Args` pode ser perigoso em um
+> __Nota__: Alterar uma variável global como `os.Args` pode ser perigoso em um
 > sistema concorrente, mas Go só executa testes em paralelo se usamos o método
 > [`T.Parallel`](https://golang.org/pkg/testing/#T.Parallel).
 
@@ -52,17 +52,17 @@ func main() { // ➊
 
 ➊ Em Go, a função `main` não recebe argumentos.
 
-➋ Abrimos o arquivo "UnicodeData.txt", assumindo que ele está no diretório atual. A maioria das funções de E/S em go devolve dois resultados, e o segundo é do tipo `error`, uma interface usada para reportar erros. No caso de `os.Open`, o primeiro resultado é um `*File`, ponteiro para um objeto arquivo.
+➋ Abrimos o arquivo "UnicodeData.txt", assumindo que ele está no diretório atual. A maioria das funções de E/S em Go devolve dois resultados, e o segundo é do tipo `error`, uma interface usada para reportar erros. No caso de `os.Open`, o primeiro resultado é um `*File`, ponteiro para um objeto arquivo.
 
 ➌ Se `err` é diferente `nil`, houve erro em `os.Open`. Nesse caso vamos exibir a mensagem de erro e terminar o programa. Chamando `os.Exit`, as funções em `defer` não são executadas.
 
 ➍ Usamos `defer` para fechar o arquivo que abrimos em ➋.
 
-➎ Montamos a string de consulta concatenando os argumentos. A notação `os.Args[1:]` devolve uma nova fatia formada pelos itens de índice 1 em diante, assim omitimos o nome do programa invocado, que fica em `os.Args[0]`. A função `strings.Join` monta uma string intercalando os itens da fatia com o segundo argumento, `" "` neste caso.
+➎ Montamos a string de consulta concatenando os argumentos. A notação `os.Args[1:]` lembra Python ou Ruby: ela devolve uma nova fatia formada pelos itens de índice 1 em diante. Assim omitimos o nome do programa invocado, que fica em `os.Args[0]`. A função `strings.Join` monta uma string intercalando os itens da fatia com o segundo argumento, `" "` neste caso.
 
-➏ Invocamos a função `Listar` com o arquivo `ucd` e a `consulta` convertida em caixa alta (porque os nomes na UCD aparecem assim).
+➏ Invocamos a função `Listar` com o arquivo `ucd` e a `consulta` convertida em caixa alta (porque na UCD os nomes aparecem em maiúsculas).
 
-Agora precisamos do arquivo `"UnicodeData.txt"` ([URL oficial](http://www.unicode.org/Public/UNIDATA/UnicodeData.txt)). Depois faremos o `runefinder` baixar este arquivo, se necessário, mas agora você precisa buscar e colocá-lo no diretório atual (onde está o `runefinder.go`). Feito isso, você pode rodar os testes:
+Agora precisamos do arquivo `UnicodeData.txt` ([URL oficial](http://www.unicode.org/Public/UNIDATA/UnicodeData.txt)). Depois faremos o `runefinder` baixar este arquivo, se necessário, mas agora você precisa buscar e colocá-lo no diretório atual (onde está o `runefinder.go`). Feito isso, você pode rodar os testes:
 
 ```bash
 $ go test -v
@@ -103,9 +103,61 @@ $ go run runefinder.go chess
 ...
 $ go run runefinder.go runic
 ...
-$ go run runefinder.go hexagram  # I Ching!
-...
 $ go run runefinder.go roman
 ...
 $ go run runefinder.go clock face
+...
+$ go run runefinder.go alchemical
+...
+$ go run runefinder.go hexagram  # I Ching!
 ```
+
+Outra forma de usar o programa é gerar um executável, com o comando `go build`, assim:
+
+```bash
+$ go build
+$ ls -lah runas
+-rwxr-xr-x  1 lramalho  staff   1.9M Dec 28 20:10 runas
+```
+
+Se der tudo certo, o comando `go build` não exibe nenhuma mensagem. Mas ele produz um binário executável com o nome do projeto, no caso `runas` (que é o nome do diretório onde está o projeto, e por convenção também o nome do repositório). Note o executável de 1.9MB no `ls` acima.
+
+Para rodar o binário, é só rodar!
+
+```bash
+$ ./runas flag
+U+2690	⚐	WHITE FLAG
+U+2691	⚑	BLACK FLAG
+U+26F3	⛳	FLAG IN HOLE
+U+26FF	⛿	WHITE FLAG WITH HORIZONTAL MIDDLE BLACK STRIPE
+U+1D16E	𝅮	MUSICAL SYMBOL COMBINING FLAG-1
+U+1D16F	𝅯	MUSICAL SYMBOL COMBINING FLAG-2
+U+1D170	𝅰	MUSICAL SYMBOL COMBINING FLAG-3
+U+1D171	𝅱	MUSICAL SYMBOL COMBINING FLAG-4
+U+1D172	𝅲	MUSICAL SYMBOL COMBINING FLAG-5
+U+1F38C	🎌	CROSSED FLAGS
+U+1F3C1	🏁	CHEQUERED FLAG
+U+1F3F3	🏳	WAVING WHITE FLAG
+U+1F3F4	🏴	WAVING BLACK FLAG
+U+1F4EA	📪	CLOSED MAILBOX WITH LOWERED FLAG
+U+1F4EB	📫	CLOSED MAILBOX WITH RAISED FLAG
+U+1F4EC	📬	OPEN MAILBOX WITH RAISED FLAG
+U+1F4ED	📭	OPEN MAILBOX WITH LOWERED FLAG
+U+1F6A9	🚩	TRIANGULAR FLAG ON POST
+```
+
+## Próximos passos
+
+Esse foi o nosso MVP1, a primeira versão usável do programa. Ele tem algumas limitações que resolveremos nos próximos passos:
+
+* Só funciona na presença do arquivo `UnicodeData.txt`. O ideal é que, se o arquivo não está presente, o programa baixe-o direto do site `unicode.org`.
+* Nossa busca por substring é bem tosca. Se você busca "cat", todas os caracters que tem essa sequência de letras no nome serão exibidos, e a maioria deles não tem nada a ver com gatinhos. Seria mais legal fazer a busca por palavras inteiras.
+* Também seria bom ignorar a ordem das palavras, assim as pesquisas "chess black" e "black chess" devolveriam os mesmos resultados.
+* Se você não passar nenhum argumento, todos os caracteres do UCD serão exibidos, veja só:
+
+```bash
+$ ./runas | wc
+   30593  182344 1181756
+```
+
+Então vamos resolver a parte do download da UCD no próximo passo. Isso nos dará uma desculpa para mexer com concorrência, o ponto forte de Go. Veja o branch `passo-05`, texto em `passo-05.md`.
