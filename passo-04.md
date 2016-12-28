@@ -148,10 +148,12 @@ U+1F6A9	🚩	TRIANGULAR FLAG ON POST
 
 ## Próximos passos
 
-Esse foi o nosso MVP1, a primeira versão usável do programa. Ele tem algumas limitações que resolveremos nos próximos passos:
+Esse foi o nosso MVP1, a primeira versão usável do programa.
+
+Ele tem algumas limitações que resolveremos nos próximos passos:
 
 * Só funciona na presença do arquivo `UnicodeData.txt`. O ideal é que, se o arquivo não está presente, o programa baixe-o direto do site `unicode.org`.
-* Nossa busca por substring é bem tosca. Se você busca "cat", todas os caracters que tem essa sequência de letras no nome serão exibidos, e a maioria deles não tem nada a ver com gatinhos. Seria mais legal fazer a busca por palavras inteiras.
+* Nossa busca por substring é bem tosca. Por exemplo, você busca "cat", todas os caracteres que têm essa sequência de letras no nome serão exibidos, e a maioria deles não tem nada a ver com gatinhos. Seria mais legal fazer a busca por palavras inteiras.
 * Também seria bom ignorar a ordem das palavras, assim as pesquisas "chess black" e "black chess" devolveriam os mesmos resultados.
 * Seria legal exibir no final o número de caracteres encontrados. Isso é útil principalmente quando não vem nenhum ou quando vem centenas.
 * Se você não passar nenhum argumento, todos os caracteres do UCD serão exibidos, veja só:
