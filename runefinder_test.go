@@ -51,28 +51,28 @@ func ExampleListar() {
 	// Output: U+003F	?	QUESTION MARK
 }
 
-func ExampleListar_doisResultados() { // <1>
+func ExampleListar_doisResultados() {
 	texto := strings.NewReader(linhas3Da43)
-	Listar(texto, "SIGN") // <2>
+	Listar(texto, "SIGN")
 	// Output:
 	// U+003D	=	EQUALS SIGN
 	// U+003E	>	GREATER-THAN SIGN
 }
 
-func Example() {
-	oldArgs := os.Args
-	defer func() { os.Args = oldArgs }()
-	os.Args = []string{"cmd", "cruzeiro"}
-	main()
+func Example() { // ➊
+	oldArgs := os.Args  // ➋
+	defer func() { os.Args = oldArgs }()  // ➌
+	os.Args = []string{"", "cruzeiro"}  // ➍
+	main() // ➎
 	// Output:
 	// U+20A2	₢	CRUZEIRO SIGN
 	// 1 character found
 }
 
-func Example_tresResultados() {
+func Example_tresResultados() { // ➊
 	oldArgs := os.Args
 	defer func() { os.Args = oldArgs }()
-	os.Args = []string{"cmd", "pound"}
+	os.Args = []string{"", "pound", "sign"}
 	main()
 	// Output:
 	// U+00A3	£	POUND SIGN
