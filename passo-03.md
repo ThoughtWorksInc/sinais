@@ -13,24 +13,24 @@ U+0043→ C→  LATIN CAPITAL LETTER C
 A maneira mais simples de conferir a saída padrão de um programa em Go é usar um exemplo: um tipo especial de teste, feito com uma função nomeada com o prefixo `Example`. Vamos criá-la no arquivo de testes `runefinder_test.go` assim:
 
 ```go
-func ExampleListar() { // <1>
-	texto := strings.NewReader(linhas3Da43) // <2>
-	Listar(texto, "MARK")                   // <3>
+func ExampleListar() { // ➊
+	texto := strings.NewReader(linhas3Da43) // ➋
+	Listar(texto, "MARK")                   // ➌
 	// Output: U+003F	?	QUESTION MARK
 }
 ```
 
 Observe:
 
-<1> O nome da função tem que começar com `Example`; em seguida obrigatoriamente vem o nome da função a ser testada, no caso `Listar`.
+➊ O nome da função tem que começar com `Example`; em seguida obrigatoriamente vem o nome da função a ser testada, no caso `Listar`.
 
-<2> Nossa função listar receberá um argumento `io.Reader` (ao final, será o arquivo `UnicodeData.txt`). Para testar, construímos um buffer de leitura `strings.Reader` a partir da constante `linhas3Da43`, cujo conteúdo veremos abaixo.
+➋ Nossa função `Listar` receberá um argumento `io.Reader` (ao final, será o arquivo `UnicodeData.txt`). Para testar, construímos um buffer de leitura `strings.Reader` a partir da constante `linhas3Da43`, cujo conteúdo veremos abaixo.
 
-<3> Aqui invocamos a função a testar, passando o buffer e a consulta, `"MARK"`. O comentário na linha final da função `ExampleListar` define o resultado esperado. O sistema de testes vai comparar o texto gerado pela função `Listar` na saída padrão com o que vier após a string `"Output: "` no comentário.
+➌ Aqui invocamos a função a testar, passando o buffer e a consulta, `"MARK"`. O comentário na linha final da função `ExampleListar` define o resultado esperado. O sistema de testes vai comparar o texto gerado pela função `Listar` na saída padrão com o que vier após a string `"Output: "` no comentário.
 
 Neste exemplo, a função `Listar` produz uma listagem delimitada por tabs, portanto o comentário `// Output:` precisa ser escrito com tabs entre os campos `U+003F`, `?` e `QUESTION MARK`. Se você colocar espaços em vez de tabs entre esses campos, o teste não passará.
 
-A constante `linhas3Da43` que usamos nesse teste é definida assim, no topo do arquivo de testes:
+A constante `linhas3Da43` que usamos nesse teste é definida assim, no topo do arquivo `runefinder_test.go`:
 
 ```go
 const linhas3Da43 = `
@@ -58,19 +58,19 @@ FAIL	github.com/labgo/runas-passo-a-passo [build failed]
 Claro que falhou porque ainda não escrevemos a função `Listar`. Vamos começar implementando essa função da forma mais simples possível, apenas para fazer o teste passar:
 
 ```go
-func Listar(texto io.Reader, consulta string) { // <1>
-	runa, nome := '?', "QUESTION MARK"            // <2>
-	fmt.Printf("U+%04X\t%[1]c\t%s\n", runa, nome) // <3>
+func Listar(texto io.Reader, consulta string) { // ➊
+	runa, nome := '?', "QUESTION MARK"            // ➋
+	fmt.Printf("U+%04X\t%[1]c\t%s\n", runa, nome) // ➌
 }
 ```
 
 Passo a passo:
 
-<1> `Listar` recebe um `texto` do tipo `io.Reader` e uma `consulta` do tipo `string`.
+➊ `Listar` recebe um `texto` do tipo `io.Reader` e uma `consulta` do tipo `string`.
 
-<2> Por enquanto vamos chumbar aqui os valores esperados por nosso teste.
+➋ Por enquanto vamos chumbar aqui os valores esperados por nosso teste.
 
-<3> Aqui usamos `fmt.Printf` com três _verbos de formatação_ indicados por `%`, explicados a seguir. Note os tabs `\t` e a quebra de linha `\n` para formatar a saída.
+➌ Aqui usamos `fmt.Printf` com três _verbos de formatação_ indicados por `%`, explicados a seguir. Note os tabs `\t` e a quebra de linha `\n` para formatar a saída.
 
 Verbos de formatação que usamos:
 
@@ -80,7 +80,7 @@ Verbos de formatação que usamos:
 
 Na realidade, `io.Reader` é uma _interface_, o que significa que nossa função `Listar` aceita como primeiro argumento qualquer objeto que implemente o método `Read` conforme a [documentação](https://golang.org/pkg/io/#Reader). Isso agiliza os testes: podemos passar um buffer em vez de um arquivo para testar a função `Listar`. Em geral, é uma boa ideia escrever funções que aceitam interfaces como argumento, porque isso dá mais flexibilidae para quem vai usar nossa API.
 
-Para usar `fmt.Printf` e `io.Reader` na função `Listar`, temos que acrescentar esses os pacotes `fmt` e `io` à declaração `import` no arquivo `ucdlib.go`, mantendo a ordem alfabética como pede a boa educação na comunidade Go:
+Para usar `fmt.Printf` e `io.Reader` na função `Listar`, temos que acrescentar esses os pacotes `fmt` e `io` à declaração `import` no arquivo `runefinder.go`, mantendo a ordem alfabética como pede a boa educação na comunidade Go:
 
 ```go
 import (
