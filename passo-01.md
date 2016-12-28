@@ -1,6 +1,6 @@
 # Runas, passo 1: primeiro teste
 
-Vamos usar TDD para desenvolver esse projeto. A primeira coisa então é escrever um teste. Eis o estado inicial do arquivo-fonte `runefinder_test.go`:
+Vamos usar [TDD](http://tdd.caelum.com.br/) para desenvolver esse projeto. A primeira coisa então é escrever um teste, no arquivo-fonte `runefinder_test.go`:
 
 ```go
 package main // ➊
@@ -19,11 +19,11 @@ func TestAnalisarLinha(t *testing.T) { // ➍
 
 Vejamos o que temos aqui:
 
-➊ Todo arquivo-fonte em Go precisa declarar o pacote ao qual ele pertence.
+➊ Todo arquivo-fonte em Go precisa declarar o pacote ao qual ele pertence. Para programas executáveis, o pacote dever ser `main`. Bibliotecas devem usar um nome igual à última parte do caminho até seu código-fonte, ex. `runefinder`.
 
 ➋ Importamos o pacote `testing` da biblioteca padrão.
 
-➌ Definimos uma constante do tipo `string` (não é preciso declarar o tipo, explicitamente, o compilador sabe que o que tem à direita do `=` é uma `string`).
+➌ Definimos uma constante do tipo `string` (não é preciso declarar o tipo, porque o compilador identifica que o que tem à direita do `=` é uma `string`).
 
 ➍ Todas as funções de teste precisam começar com o prefixo `Test`, e recebem como argumento um ponteiro para o objeto `testing.T`, através do qual acessamos os métodos, como por exemplo `t.Errorf`. As declarações em Go tem a forma `x tipo`, onde `x` é o identificador sendo declarado, seguido de seu `tipo` (como em Pascal!)
 
@@ -35,7 +35,7 @@ Vejamos o que temos aqui:
 
 A linha ➎ traz algumas novidades peculiares da linguagem Go:
 
-* Os caracteres Unicode em Go são chamados de "runas", e o tipo de dado usado para representar um caractere é `rune` (na verdade, o mesmo que `int32`). Assim como em C, um caractere é na verdade um número, que pode ser exibido como um caractere na saída se usarmos o código de formatação `"%c"`, como fizemos na linha ➐.
+* Os caracteres Unicode em Go são chamados de "runas", e o tipo de dado usado para representar um caractere é `rune`. Assim como em C, um caractere é na verdade um número, que pode ser exibido como um caractere na saída se usarmos o código de formatação `"%c"`, como fizemos na linha ➐. Em Go, o tipo `rune` é o mesmo que `int32`, mas deixa claro quando estamos lidando com o código de um caractere, e não um número qualquer.
 
 * Go permite que uma função devolva mais de um valor, e esses valores são atribuídos de uma vez só a suas respectivas variáveis. O compilador recusa variáveis que não serão usadas, então se você precisa ignorar um valor devolvido por uma função, use o nome especial `_`, o chamado _identificador vazio_ ([blank identifier](https://golang.org/doc/effective_go.html#blank)).
 
@@ -57,7 +57,7 @@ Obviamente, falta definir a função `AnalisarLinha` em algum lugar. Vamos lá.
 
 ## Primeira função: `AnalisarLinha`
 
-Vamos criar outro arquivo-fonte, com nome `ucdlib.go` -- nossa biblioteca para lidar com a UCD (Unicode Character Database). O mínimo que precisamos para fazer passar o teste é isso:
+Vamos criar outro arquivo-fonte, com nome `runefinder.go`. O mínimo que precisamos para fazer passar o teste é isso:
 
 ```go
 package main // ➊
@@ -67,7 +67,7 @@ func AnalisarLinha(ucdLine string) (rune, string) { // ➋
 }
 ```
 
-Vejamos o que temos em `ucdlib.go`:
+Vejamos o que temos em `runefinder.go`:
 
 ➊ Novamente declaramos o mesmo pacote, assim os identificadores públicos deste arquivo ficam acessíveis para outros arquivos do mesmo pacote.
 
