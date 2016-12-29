@@ -20,7 +20,6 @@ func AnalisarLinha(linha string) (rune, string) {
 // cujo nome contem o texto da consulta.
 func Listar(texto io.Reader, consulta string) {
 	varredor := bufio.NewScanner(texto)
-	ocorrências := 0 // ➋
 	for varredor.Scan() {
 		linha := varredor.Text()
 		if strings.TrimSpace(linha) == "" {
@@ -29,7 +28,6 @@ func Listar(texto io.Reader, consulta string) {
 		runa, nome := AnalisarLinha(linha)
 		if strings.Contains(nome, consulta) {
 			fmt.Printf("U+%04X\t%[1]c\t%s\n", runa, nome)
-			ocorrências++ // ➌
 		}
 	}
 }
