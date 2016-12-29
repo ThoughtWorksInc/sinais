@@ -20,7 +20,7 @@ const linhas3Da43 = `
 `
 
 func TestAnalisarLinha(t *testing.T) {
-	runa, nome, palavras := AnalisarLinha(linhaLetraA)
+	runa, nome, palavras := AnalisarLinha(linhaLetraA) // ➊
 	if runa != 'A' {
 		t.Errorf("Esperava 'A', veio %q", runa)
 	}
@@ -28,9 +28,9 @@ func TestAnalisarLinha(t *testing.T) {
 	if nome != nomeA {
 		t.Errorf("Esperava %q, veio %q", nomeA, nome)
 	}
-  palavrasA := []string{"LATIN", "CAPITAL", "LETTER", "A"} // ➊
-	if ! reflect.DeepEqual(palavras, palavrasA) { // ➋
-		t.Errorf("\n\tEsperado: %q\n\trecebido: %q", palavrasA, palavras) // ➌
+  palavrasA := []string{"LATIN", "CAPITAL", "LETTER", "A"} // ➋
+	if ! reflect.DeepEqual(palavras, palavrasA) { // ➌
+		t.Errorf("\n\tEsperado: %q\n\trecebido: %q", palavrasA, palavras) // ➍
 	}
 }
 

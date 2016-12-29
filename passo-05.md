@@ -23,7 +23,7 @@ Para começar, mudamos o teste `TestAnalisarLinha`:
 
 ```go
 func TestAnalisarLinha(t *testing.T) {
-	runa, nome, palavras := AnalisarLinha(linhaLetraA)
+	runa, nome, palavras := AnalisarLinha(linhaLetraA) // ➊
 	if runa != 'A' {
 		t.Errorf("Esperava 'A', veio %q", runa)
 	}
@@ -31,9 +31,19 @@ func TestAnalisarLinha(t *testing.T) {
 	if nome != nomeA {
 		t.Errorf("Esperava %q, veio %q", nomeA, nome)
 	}
-  palavrasA := []string{"LATIN", "CAPITAL", "LETTER", "A"} // ➊
-	if ! reflect.DeepEqual(palavras, palavrasA) { // ➋
-		t.Errorf("\n\tEsperado: %q\n\trecebido: %q", palavrasA, palavras) // ➌
+  palavrasA := []string{"LATIN", "CAPITAL", "LETTER", "A"} // ➋
+	if ! reflect.DeepEqual(palavras, palavrasA) { // ➌
+		t.Errorf("\n\tEsperado: %q\n\trecebido: %q", palavrasA, palavras) // ➍
 	}
+}
+```
+
+```go
+// AnalisarLinha devolve a runa e o nome de uma linha do UnicodeData.txt
+func AnalisarLinha(linha string) (rune, string, []string) { // ➊
+	campos := strings.Split(linha, ";")
+	código, _ := strconv.ParseInt(campos[0], 16, 32)
+	palavras := strings.Split(campos[1], " ") // ➋
+	return rune(código), campos[1], palavras // ➌
 }
 ```
