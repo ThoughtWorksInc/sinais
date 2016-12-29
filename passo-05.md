@@ -15,7 +15,7 @@ U+1F63B 😻 	SMILING CAT FACE WITH HEART-SHAPED EYES
 
 Vamos melhorar a precisão e a revocação pesquisando sempre por palavras inteiras. Poderíamos resolver o problea todo mexendo apenas na função `Listar`, mas isso deixaria ela muito grande e difícil de testar. Então vamos colocar um pouco das novas funcionalidades na função `AnalisarLinha` e em outras funções que criaremos aos poucos.
 
-## Melhoria em `AnalisarLinha`
+## Melhorias em `AnalisarLinha`
 
 Em vez de devolver apenas o código e o nome do caractere, vamos fazer a função `AnalisarLinha` devolver também as palavras do nome, na forma de uma fatia de strings, ou seja, uma `[]string`.
 
@@ -23,7 +23,7 @@ Para começar, mudamos o teste `TestAnalisarLinha`:
 
 ```go
 func TestAnalisarLinha(t *testing.T) {
-	runa, nome := AnalisarLinha(linhaLetraA)
+	runa, nome, palavras := AnalisarLinha(linhaLetraA)
 	if runa != 'A' {
 		t.Errorf("Esperava 'A', veio %q", runa)
 	}
@@ -31,6 +31,9 @@ func TestAnalisarLinha(t *testing.T) {
 	if nome != nomeA {
 		t.Errorf("Esperava %q, veio %q", nomeA, nome)
 	}
+  palavrasA := []string{"LATIN", "CAPITAL", "LETTER", "A"} // ➊
+	if ! reflect.DeepEqual(palavras, palavrasA) { // ➋
+		t.Errorf("\n\tEsperado: %q\n\trecebido: %q", palavrasA, palavras) // ➌
+	}
 }
-
 ```

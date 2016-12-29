@@ -28,11 +28,12 @@ func TestAnalisarLinha(t *testing.T) {
 	if nome != nomeA {
 		t.Errorf("Esperava %q, veio %q", nomeA, nome)
 	}
-  palavrasA := []string{"LATIN", "CAPITAL", "LETTER", "A"}
-	if ! reflect.DeepEqual(palavras, palavrasA) {
-		t.Errorf("Esperava %q, veio %q", palavrasA, palavras)
+  palavrasA := []string{"LATIN", "CAPITAL", "LETTER", "A"} // ➊
+	if ! reflect.DeepEqual(palavras, palavrasA) { // ➋
+		t.Errorf("\n\tEsperado: %q\n\trecebido: %q", palavrasA, palavras) // ➌
 	}
 }
+
 func ExampleListar() {
 	texto := strings.NewReader(linhas3Da43)
 	Listar(texto, "MARK")
