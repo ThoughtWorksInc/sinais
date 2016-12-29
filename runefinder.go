@@ -10,10 +10,11 @@ import (
 )
 
 // AnalisarLinha devolve a runa e o nome de uma linha do UnicodeData.txt
-func AnalisarLinha(linha string) (rune, string) {
+func AnalisarLinha(linha string) (rune, string, []string) {
 	campos := strings.Split(linha, ";")
 	código, _ := strconv.ParseInt(campos[0], 16, 32)
-	return rune(código), campos[1]
+	palavras := strings.Split(campos[1], " ")
+	return rune(código), campos[1], palavras
 }
 
 // Listar exibe na saída padrão o código, a runa e o nome dos caracteres Unicode
@@ -26,7 +27,7 @@ func Listar(texto io.Reader, consulta string) {
 		if strings.TrimSpace(linha) == "" {
 			continue
 		}
-		runa, nome := AnalisarLinha(linha)
+		runa, nome, _ := AnalisarLinha(linha)
 		if strings.Contains(nome, consulta) {
 			fmt.Printf("U+%04X\t%[1]c\t%s\n", runa, nome)
 			ocorrências++ // ➌

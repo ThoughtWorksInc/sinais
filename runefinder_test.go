@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -19,7 +20,7 @@ const linhas3Da43 = `
 `
 
 func TestAnalisarLinha(t *testing.T) {
-	runa, nome := AnalisarLinha(linhaLetraA)
+	runa, nome, palavras := AnalisarLinha(linhaLetraA)
 	if runa != 'A' {
 		t.Errorf("Esperava 'A', veio %q", runa)
 	}
@@ -27,8 +28,11 @@ func TestAnalisarLinha(t *testing.T) {
 	if nome != nomeA {
 		t.Errorf("Esperava %q, veio %q", nomeA, nome)
 	}
+  palavrasA := []string{"LATIN", "CAPITAL", "LETTER", "A"}
+	if ! reflect.DeepEqual(palavras, palavrasA) {
+		t.Errorf("Esperava %q, veio %q", palavrasA, palavras)
+	}
 }
-
 func ExampleListar() {
 	texto := strings.NewReader(linhas3Da43)
 	Listar(texto, "MARK")
