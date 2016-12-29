@@ -17,7 +17,7 @@ Vamos melhorar a precisão e a revocação pesquisando sempre por palavras intei
 
 ## Melhorias em `AnalisarLinha`
 
-Em vez de devolver apenas o código e o nome do caractere, vamos fazer a função `AnalisarLinha` devolver também as palavras do nome, na forma de uma fatia de strings, ou seja, uma `[]string`.
+Em vez de devolver apenas o código e o nome do caractere, vamos fazer a função `AnalisarLinha` devolver também as palavras do nome, na forma de uma lista de strings. Em Go, uma lista de strings é representada pela notação `[]string`, que lê-se como uma fatia de strings (_slice of strings_).
 
 Para começar, mudamos o teste `TestAnalisarLinha`:
 
@@ -25,11 +25,11 @@ Para começar, mudamos o teste `TestAnalisarLinha`:
 func TestAnalisarLinha(t *testing.T) {
 	runa, nome, palavras := AnalisarLinha(linhaLetraA) // ➊
 	if runa != 'A' {
-		t.Errorf("Esperava 'A', veio %q", runa)
+		t.Errorf("Esperado: 'A'; recebido: %q", runa)
 	}
 	const nomeA = "LATIN CAPITAL LETTER A"
 	if nome != nomeA {
-		t.Errorf("Esperava %q, veio %q", nomeA, nome)
+		t.Errorf("Esperado: %q; recebido: %q", nomeA, nome)
 	}
   palavrasA := []string{"LATIN", "CAPITAL", "LETTER", "A"} // ➋
 	if ! reflect.DeepEqual(palavras, palavrasA) { // ➌
@@ -37,6 +37,15 @@ func TestAnalisarLinha(t *testing.T) {
 	}
 }
 ```
+
+➊ Incluímos a variável `palavras`, que vai receber a `[]string`.
+
+➋ Criamos a variável `palavrasA`, com o valor esperado.
+
+➌ Em Go, fatias não são comparáveis diretamente, ou seja, os operadores `==` e `!=` não funcionam com fatias. Porém o pacote `reflect` oferece a função `DeepEqual`, que compara estruturas de dados em profundidade.
+
+➍ XXX
+
 
 ```go
 // AnalisarLinha devolve a runa e o nome de uma linha do UnicodeData.txt
@@ -47,3 +56,9 @@ func AnalisarLinha(linha string) (rune, string, []string) { // ➊
 	return rune(código), campos[1], palavras // ➌
 }
 ```
+
+➊
+
+➋
+
+➌
