@@ -9,7 +9,8 @@ import (
 	"strings"
 )
 
-// AnalisarLinha devolve a runa e o nome de uma linha do UnicodeData.txt
+// AnalisarLinha devolve a runa, o nome e uma fatia de palavras que
+// ocorrem no campo nome de uma linha do UnicodeData.txt
 func AnalisarLinha(linha string) (rune, string, []string) { // ➊
 	campos := strings.Split(linha, ";")
 	código, _ := strconv.ParseInt(campos[0], 16, 32)

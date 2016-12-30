@@ -20,17 +20,26 @@ const linhas3Da43 = `
 `
 
 func TestAnalisarLinha(t *testing.T) {
-	runa, nome, palavras := AnalisarLinha(linhaLetraA) // ➊
-	if runa != 'A' {
-		t.Errorf("Esperava 'A', veio %q", runa)
+	var casos = []struct { // ➊
+		linha    string
+		runa     rune
+		nome     string
+		palavras []string
+	}{ // ➋
+		{"0021;EXCLAMATION MARK;Po;0;ON;;;;;N;;;;;",
+			'!', "EXCLAMATION MARK", []string{"EXCLAMATION", "MARK"}},
+		{"002E;FULL STOP;Po;0;CS;;;;;N;PERIOD;;;;",
+			'.', "FULL STOP (PERIOD)", []string{"FULL", "STOP", "PERIOD"}},
+		{"0027;APOSTROPHE;Po;0;ON;;;;;N;APOSTROPHE-QUOTE;;;",
+			'\'', "APOSTROPHE (APOSTROPHE-QUOTE)", []string{"APOSTROPHE", "QUOTE"}},
 	}
-	const nomeA = "LATIN CAPITAL LETTER A"
-	if nome != nomeA {
-		t.Errorf("Esperava %q, veio %q", nomeA, nome)
-	}
-  palavrasA := []string{"LATIN", "CAPITAL", "LETTER", "A"} // ➋
-	if ! reflect.DeepEqual(palavras, palavrasA) { // ➌
-		t.Errorf("\n\tEsperado: %q\n\trecebido: %q", palavrasA, palavras) // ➍
+	for _, caso := range casos { // ➌
+		runa, nome, palavras := AnalisarLinha(caso.linha)
+		if runa != caso.runa || nome != caso.nome ||
+			!reflect.DeepEqual(palavras, caso.palavras) {
+			t.Errorf("\nAnalisarLinha(%q)\n-> (%q, %q, %q)", // ➍
+				caso.linha, runa, nome, palavras)
+		}
 	}
 }
 
