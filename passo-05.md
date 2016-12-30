@@ -42,9 +42,15 @@ func TestAnalisarLinha(t *testing.T) {
 
 ➋ Criamos a variável `palavrasA`, com o valor esperado.
 
-➌ Em Go, fatias não são comparáveis diretamente, ou seja, os operadores `==` e `!=` não funcionam com fatias. Porém o pacote `reflect` oferece a função `DeepEqual`, que compara estruturas de dados em profundidade.
+➌ Em Go, fatias não são comparáveis diretamente, ou seja, os operadores `==` e `!=` não funcionam com elas. Porém o pacote `reflect` oferece a função `DeepEqual`, que compara estruturas de dados em profundidade. `reflect.DeepEqual` é particularmente útil em testes, mas em geral deve ser evitada no código do programa em si, por razões apresentadas logo abaixo.
 
-➍ XXX
+➍ Usamos `"\n\t"` para exibir este erro em linhas separadas e indentadas no mesmo nível, para facilitar a comparação visual do esperado com o recebido. Coloque `"X"` no lugar de `"A"` na variável `palavrasA` para forçar o erro e ver o formato da mensagem. Também algeramos as outras mensagens de erro para usar as palavras "esperado/recebido", por consistência.
+
+> __NOTA__: O pacote `reflect` traz para a Go recursos poderosos e convenientes de linguagens dinâmicas, como por exemplo comparar ou copiar facilmente estruturas de dados complexas. Para quem tem experiência com linguagens de nível mais alto como Python, Ruby, JavaScript e PHP, é tentador sair usando `reflect` em seus programas Go. No entanto, a comunidade Go recomenda evitar abusar de `reflect`, por dois motivos principais: desempenho e salvaguardas de tipo (_type safety_).
+
+> O desempenho de uma função como `DeepEqual` pode ser uma ordem de grandeza inferior ao código equivalente otimizado para os tipos de dados envolvidos. E a natureza dinâmica das funções de `reflect` possibilita a ocorrência de erros em tempo de execução que seriam capturados pelo compilador, se o seu código fosse escrito declarando os tipos específicos.
+
+> No entanto, para escrever testes vale a pena usar o `reflect.DeepEqual`. Desempenho não é uma prioridade nos testes, e as salvaguardas de tipo continuam valendo em nosso código principal (onde não usamos `reflect`), então podemos relaxá-las no código de teste.
 
 
 ```go
