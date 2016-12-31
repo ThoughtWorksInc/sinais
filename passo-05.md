@@ -61,14 +61,14 @@ As mudanças necessárias para satisfazer este teste são simples:
 func AnalisarLinha(linha string) (rune, string, []string) { // ➊
 	campos := strings.Split(linha, ";")
 	código, _ := strconv.ParseInt(campos[0], 16, 32)
-	palavras := strings.Split(campos[1], " ") // ➋
+	palavras := strings.Fields(campos[1]) // ➋
 	return rune(código), campos[1], palavras // ➌
 }
 ```
 
 ➊ Na declaração de `AnalisarLinha`, acrescentamos o tipo de mais um valor a ser devolvido: `[]string`.
 
-➋ Produzimos a fatia de palavras do nome, usando `strings.Split`.
+➋ Produzimos a fatia de palavras do nome, usando `strings.Fields` que é como `strings.Split`, mas usa como separador qualquer caractere Unicode considerado _whitespace_.
 
 ➌ Devolvemos a fatia de palavras, além da runa e seu nome.
 
@@ -159,7 +159,7 @@ FAIL	github.com/labgo/runas	0.026s
 
 Nossa tabela contém três casos de teste, e duas falhas foram reportadas. Isso demonstra que a chamada para `t.Errorf` não aborta o teste, mas apenas reporta o erro, e o teste continua rodando.
 
-Para fazer o caso do hífen passar, criaremos a função auxiliar `separar`, para usar no lugar de `strings.Split` ao extrair as palavras dos campos 1 e 10.
+Para fazer o caso do hífen passar, criaremos a função auxiliar `separar`, para usar no lugar de `strings.Fields` ao extrair as palavras dos campos 1 e 10.
 
 ```go
 func separar(s string) []string { // ➊
@@ -183,9 +183,9 @@ func AnalisarLinha(linha string) (rune, string, []string) {
 
 ➋ Definimos uma função `separador` para identificar os separadores que nos interessam: dada uma runa, `separador` devolve `true` se a runa é um espaço em branco ou um hífen.
 
-➌ Passamos o texto `s` e a função `separador` para `strings.FieldsFunc`, uma variante mais flexível de `strings.Split`.
+➌ Passamos o texto `s` e a função `separador` para `strings.FieldsFunc`, uma variante mais flexível de `strings.Fields`.
 
-➍ Usamos a nova função `separar` em `AnalisarLinha`, onde antes usávamos `strings.Split`.
+➍ Usamos a nova função `separar` em `AnalisarLinha`, onde antes usávamos `strings.Fiels`.
 
 Essa alteração resolve o segundo caso em `TestAnalisarLinha`. O último caso traz conteúdo no campo 10. Essa é a linha do teste:
 
