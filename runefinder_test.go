@@ -28,16 +28,16 @@ func TestAnalisarLinha(t *testing.T) {
 	}{ // ➋
 		{"0021;EXCLAMATION MARK;Po;0;ON;;;;;N;;;;;",
 			'!', "EXCLAMATION MARK", []string{"EXCLAMATION", "MARK"}},
-		{"002E;FULL STOP;Po;0;CS;;;;;N;PERIOD;;;;",
-			'.', "FULL STOP (PERIOD)", []string{"FULL", "STOP", "PERIOD"}},
+		{"002D;HYPHEN-MINUS;Pd;0;ES;;;;;N;;;;;",
+			'-', "HYPHEN-MINUS", []string{"HYPHEN", "MINUS"}},
 		{"0027;APOSTROPHE;Po;0;ON;;;;;N;APOSTROPHE-QUOTE;;;",
 			'\'', "APOSTROPHE (APOSTROPHE-QUOTE)", []string{"APOSTROPHE", "QUOTE"}},
 	}
 	for _, caso := range casos { // ➌
-		runa, nome, palavras := AnalisarLinha(caso.linha)
+		runa, nome, palavras := AnalisarLinha(caso.linha) // ➍
 		if runa != caso.runa || nome != caso.nome ||
 			!reflect.DeepEqual(palavras, caso.palavras) {
-			t.Errorf("\nAnalisarLinha(%q)\n-> (%q, %q, %q)", // ➍
+			t.Errorf("\nAnalisarLinha(%q)\n-> (%q, %q, %q)", // ➎
 				caso.linha, runa, nome, palavras)
 		}
 	}

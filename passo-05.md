@@ -1,6 +1,6 @@
 # Runas, passo 5: busca por palavras inteiras
 
-A versão MVP1 do programa `runas` busca caracteres comparando uma substring do nome. Isso gera dois problemas: baixa precisão e baixa re
+A versão MVP1 do programa `runas` busca caracteres comparando uma substring do nome. Isso gera dois problemas:
 
 * Resultados demais: pesquisando "cat" vêm 82 caracteres, sendo que a maioria não tem nada a ver com gatos, por exemplo "MULTIPLICATION SIGN".
 * Resultados de menos: a ordem das palavras na consulta deveria ser ignorada: "chess black" e "black chess" deveriam devolver os mesmos resultados, e "cat smiling" deveria encontrar todos estes caracteres:
@@ -13,7 +13,7 @@ U+1F63B 😻 	SMILING CAT FACE WITH HEART-SHAPED EYES
 
 > __TEORIA__: na área de recuperação de informação (_information retrieval_) esses problemas são caracterizados por duas métricas: [precisão e revocação](https://pt.wikipedia.org/wiki/Precis%C3%A3o_e_revoca%C3%A7%C3%A3o) (_precision_, _recall_). Resultados demais é falta de precisão: o sistema está recuperando resultados irrelevantes, ou encontrando falsos positivos. Resultados de menos é falta de revocação: o sistema está deixando de recuperar resultados relevantes, ou seja, falsos negativos.
 
-Vamos melhorar a precisão e a revocação pesquisando sempre por palavras inteiras. Poderíamos resolver o problea todo mexendo apenas na função `Listar`, mas isso deixaria ela muito grande e difícil de testar. Então vamos colocar um pouco das novas funcionalidades na função `AnalisarLinha` e em outras funções que criaremos aos poucos.
+Vamos melhorar a precisão e a revocação pesquisando por palavras inteiras. Poderíamos resolver o problema todo mexendo apenas na função `Listar`, mas isso deixaria ela muito grande e difícil de testar. Então vamos colocar um pouco das novas funcionalidades na função `AnalisarLinha` e em outras funções que criaremos aos poucos.
 
 ## Melhorias em `AnalisarLinha`
 
@@ -92,14 +92,14 @@ Veja esta parte da tabela `UnicodeData.txt`:
 
 Duas coisas me chamaram atenção aqui:
 
-* Alguns nomes têm palavras hifenadas, como "HYPHEN-MINUS" (por coincidência)! Seria interessante que o usuário pudesse encontrar esses caracteres digitando apenas uma das palavras, "HYPHEN" ou "MINUS".
+* Alguns nomes têm palavras hifenadas, como "HYPHEN-MINUS" (por coincidência)! É desejábel que o usuário encontre esses caracteres digitando apenas uma das palavras, "HYPHEN" ou "MINUS".
 * Algumas linhas tem no campo índice 10 um nome diferente, que era o nome adotado no Unicode 1.0 (veja documentação do [UCD 9.0](http://www.unicode.org/reports/tr44/tr44-18.html#UnicodeData.txt)). Por exemplo o caractere U+002E, "FULL STOP", era "PERIOD". Incluir esses nomes também pode facilitar a vida dos usuários.
 
 Então para atender esses requisitos a função `AnalisarLinha` precisa devolver uma fatia de palavras que inclua as partes de cada termo com hífen, e também as palavras do campo índice 10. Em vez de um simples caso de teste, agora teremos pelo menos três:
 
-* Caso mais simples: campo 10 vazio e nenhum hífen.
-* Caso simples: campo 10 utilizado e nenhum hífen.
-* Caso mais complexo: campo 10 utilizado e hífens presentes.
+* Campo 10 vazio e nenhum hífen.
+* Campo 10 vazio e hífen no campo 1.
+* Campo 10 utilizado e hífens presentes.
 
 Para testar isso sem duplicar muito código em `TestAnalisarLinha`, vamos usar um [teste em tabela](https://golang.org/doc/code.html#Testing). A nova versão dessa função de teste vai ficar assim:
 
@@ -113,8 +113,8 @@ func TestAnalisarLinha(t *testing.T) {
 	}{ // ➋
 		{"0021;EXCLAMATION MARK;Po;0;ON;;;;;N;;;;;",
 			'!', "EXCLAMATION MARK", []string{"EXCLAMATION", "MARK"}},
-		{"002E;FULL STOP;Po;0;CS;;;;;N;PERIOD;;;;",
-			'.', "FULL STOP (PERIOD)", []string{"FULL", "STOP", "PERIOD"}},
+		{"002D;HYPHEN-MINUS;Pd;0;ES;;;;;N;;;;;",
+			'-', "HYPHEN-MINUS", []string{"HYPHEN", "MINUS"}},
 		{"0027;APOSTROPHE;Po;0;ON;;;;;N;APOSTROPHE-QUOTE;;;",
 			'\'', "APOSTROPHE (APOSTROPHE-QUOTE)", []string{"APOSTROPHE", "QUOTE"}},
 	}
@@ -147,14 +147,60 @@ Veja o resultado de executar o teste agora:
 $ go test
 --- FAIL: TestAnalisarLinha (0.00s)
 	runefinder_test.go:41:
-		AnalisarLinha("002E;FULL STOP;Po;0;CS;;;;;N;PERIOD;;;;")
-		-> ('.', "FULL STOP", ["FULL" "STOP"])
+		AnalisarLinha("002D;HYPHEN-MINUS;Pd;0;ES;;;;;N;;;;;")
+		-> ('-', "HYPHEN-MINUS", ["HYPHEN-MINUS"])
 	runefinder_test.go:41:
 		AnalisarLinha("0027;APOSTROPHE;Po;0;ON;;;;;N;APOSTROPHE-QUOTE;;;")
 		-> ('\'', "APOSTROPHE", ["APOSTROPHE"])
 FAIL
 exit status 1
-FAIL	github.com/labgo/runas	0.064s
+FAIL	github.com/labgo/runas	0.026s
 ```
 
-Repare que duas falhas foram reportadas, porque o primeiro caso de teste (o mais simples), passou. Isso demonstra que a chamada para `t.Errorf` não aborta o teste, mas apenas reporta o erro, e o teste continua rodando.
+Nossa tabela contém três casos de teste, e duas falhas foram reportadas. Isso demonstra que a chamada para `t.Errorf` não aborta o teste, mas apenas reporta o erro, e o teste continua rodando.
+
+Para fazer o caso do hífen passar, criaremos a função auxiliar `separar`, para usar no lugar de `strings.Split` ao extrair as palavras dos campos 1 e 10.
+
+```go
+func separar(s string) []string { // ➊
+	separador := func(c rune) bool { // ➋
+		return c == ' ' || c == '-'
+	}
+	return strings.FieldsFunc(s, separador) // ➌
+}
+
+// AnalisarLinha devolve a runa, o nome e uma fatia de palavras que
+// ocorrem no campo nome de uma linha do UnicodeData.txt
+func AnalisarLinha(linha string) (rune, string, []string) {
+	campos := strings.Split(linha, ";")
+	código, _ := strconv.ParseInt(campos[0], 16, 32)
+	palavras := separar(campos[1]) // ➍
+	return rune(código), campos[1], palavras
+}
+```
+
+➊ `separar` recebe o texto a separar e devolve uma fatia de strings.
+
+➋ Definimos uma função `separador` para identificar os separadores que nos interessam: dada uma runa, `separador` devolve `true` se a runa é um espaço em branco ou um hífen.
+
+➌ Passamos o texto `s` e a função `separador` para `strings.FieldsFunc`, uma variante mais flexível de `strings.Split`.
+
+➍ Usamos a nova função `separar` em `AnalisarLinha`, onde antes usávamos `strings.Split`.
+
+Essa alteração resolve o segundo caso em `TestAnalisarLinha`. O último caso traz conteúdo no campo 10. Essa é a linha do teste:
+
+```
+0027;APOSTROPHE;Po;0;ON;;;;;N;APOSTROPHE-QUOTE;;;
+```
+
+Como resultado, queremos que o `nome` fique assim, incluindo o nome antigo entre parêntesis:
+
+```go
+"APOSTROPHE (APOSTROPHE-QUOTE)"
+```
+
+E a lista de palavras, nesse caso, ficaria assim (sem duplicar a palavra "APOSTROPHE"):
+
+```go
+[]string{"APOSTROPHE", "QUOTE"}},
+```

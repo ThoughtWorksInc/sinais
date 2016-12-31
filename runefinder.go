@@ -9,13 +9,39 @@ import (
 	"strings"
 )
 
+func contem(fatia []string, s string) bool { // ➊
+	for _, item := range fatia {
+		if s == item {
+			return true
+		}
+	}
+	return false
+}
+
+func separar(s string) []string { // ➊
+	separador := func(c rune) bool { // ➋
+		return c == ' ' || c == '-'
+	}
+	return strings.FieldsFunc(s, separador)
+}
+
 // AnalisarLinha devolve a runa, o nome e uma fatia de palavras que
 // ocorrem no campo nome de uma linha do UnicodeData.txt
-func AnalisarLinha(linha string) (rune, string, []string) { // ➊
+func AnalisarLinha(linha string) (rune, string, []string) {
 	campos := strings.Split(linha, ";")
 	código, _ := strconv.ParseInt(campos[0], 16, 32)
-	palavras := strings.Split(campos[1], " ") // ➋
-	return rune(código), campos[1], palavras // ➌
+	nome := campos[1] // ➊
+	palavras := separar(campos[1])
+	if campos[10] != "" { // ➋
+		nome += fmt.Sprintf(" (%s)", campos[10])
+		for _, palavra := range separar(campos[10]) { // ➌
+			if !contem(palavras, palavra) { // ➍
+				palavras = append(palavras, palavra) // ➎
+			}
+		}
+
+	}
+	return rune(código), nome, palavras
 }
 
 // Listar exibe na saída padrão o código, a runa e o nome dos caracteres Unicode
