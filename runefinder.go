@@ -81,16 +81,6 @@ func check(e error) {
 	}
 }
 
-func obterCaminhoUCD() string {
-	UCDPath := os.Getenv("UCD_PATH")
-	if UCDPath == "" {
-		usuário, err := user.Current()
-		check(err)
-		UCDPath = usuário.HomeDir + "/UnicodeData.txt"
-	}
-	return UCDPath
-}
-
 func progresso(feito <-chan bool) {
 	for {
 		select {
@@ -119,6 +109,16 @@ func baixarUCD(ucdPath string) {
 	defer file.Close()
 	_, err = io.Copy(file, response.Body)
 	check(err)
+}
+
+func obterCaminhoUCD() string {
+	UCDPath := os.Getenv("UCD_PATH")
+	if UCDPath == "" {
+		usuário, err := user.Current()
+		check(err)
+		UCDPath = usuário.HomeDir + "/UnicodeData.txt"
+	}
+	return UCDPath
 }
 
 func abrirUCD(caminhoUCD string) (*os.File, error) {
