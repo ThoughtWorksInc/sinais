@@ -201,9 +201,9 @@ func TestAbrirUCD_remoto(t *testing.T) {
 		t.Skip("teste ignorado [opção -test.short]")
 	}
 	UCDPath := fmt.Sprintf("./TEST%d-UnicodeData.txt", time.Now().UnixNano())
-	ucd, remoto, err := abrirUCD(UCDPath)
+	ucd, err := abrirUCD(UCDPath)
 	if err != nil {
-		t.Errorf("AbrirUCD(%q) [remoto: %v]:\n%v", UCDPath, remoto, err)
+		t.Errorf("AbrirUCD(%q):\n%v", UCDPath, err)
 	}
 	ucd.Close()
 	os.Remove(UCDPath)
@@ -211,9 +211,9 @@ func TestAbrirUCD_remoto(t *testing.T) {
 
 func TestAbrirUCD_local(t *testing.T) {
 	UCDPath := "./UnicodeData.txt"
-	ucd, remoto, err := abrirUCD(UCDPath)
+	ucd, err := abrirUCD(UCDPath)
 	if err != nil {
-		t.Errorf("AbrirUCD(%q) [remoto: %v]:\n%v", UCDPath, remoto, err)
+		t.Errorf("AbrirUCD(%q):\n%v", UCDPath, err)
 	}
 	ucd.Close()
 }

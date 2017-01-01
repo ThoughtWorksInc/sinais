@@ -34,7 +34,7 @@ func main() {
 }
 ```
 
-Vamos trocar a chamada `os.Open` por uma função nossa, `AbrirUCD`, que vai tentar abrir o arquivo em um caminho local configurado e, caso não encontre, vai baixar o arquivo do site `unicode.org`.
+Vamos trocar a chamada `os.Open` por uma função nossa, `abrirUCD`, que vai tentar abrir o arquivo em um caminho local configurado e, caso não encontre, vai baixar o arquivo do site `unicode.org`.
 
 A configuração do caminho local será feita com uma variável de ambiente, `UCD_PATH`. Se esta variável não estiver presente, o programa usará o caminho do diretório "home" do usuário, por exemplo, `/home/luciano` em um GNU/Linux.
 

@@ -12,8 +12,8 @@ import (
 	"time"
 )
 
-// UCDURL is the canonical URL of the current UnicodeData.txt file
-const UCDURL = "http://www.unicode.org/Public/UNIDATA/UnicodeData.txt"
+// URLUCD is the canonical URL of the current UnicodeData.txt file
+const URLUCD = "http://www.unicode.org/Public/UNIDATA/UnicodeData.txt"
 
 // AnalisarLinha devolve a runa, o nome e uma fatia de palavras que
 // ocorrem no campo nome de uma linha do UnicodeData.txt
@@ -96,20 +96,22 @@ func progresso(feito <-chan bool) {
 		select {
 		case <-feito:
 			fmt.Println("concluído!")
-		case <-time.After(200 * time.Millisecond):
+			return
+		default:
 			fmt.Print(".")
+			time.Sleep(150 * time.Millisecond)
 		}
 	}
 }
 
-func downloadUCD(ucdPath string) {
-	fmt.Printf("%s not found\ndownloading %s\n", ucdPath, UCDURL)
+func baixarUCD(ucdPath string) {
+	fmt.Printf("%s not found\ndownloading %s\n", ucdPath, URLUCD)
 	feito := make(chan bool)
 	go progresso(feito)
 	defer func() {
-		feito <- false
+		feito <- true
 	}()
-	response, err := http.Get(UCDURL)
+	response, err := http.Get(URLUCD)
 	check(err)
 	defer response.Body.Close()
 	file, err := os.Create(ucdPath)
@@ -119,19 +121,17 @@ func downloadUCD(ucdPath string) {
 	check(err)
 }
 
-func abrirUCD(ucdPath string) (*os.File, bool, error) {
-	var remoto bool // acesso remoto ao arquivo?
-	ucd, err := os.Open(ucdPath)
+func abrirUCD(caminhoUCD string) (*os.File, error) {
+	ucd, err := os.Open(caminhoUCD)
 	if os.IsNotExist(err) {
-		remoto = true
-		downloadUCD(ucdPath)
-		ucd, err = os.Open(ucdPath)
+		baixarUCD(caminhoUCD)
+		ucd, err = os.Open(caminhoUCD)
 	}
-	return ucd, remoto, err
+	return ucd, err
 }
 
 func main() {
-	ucd, _, err := abrirUCD(obterCaminhoUCD())
+	ucd, err := abrirUCD(obterCaminhoUCD())
 	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)
