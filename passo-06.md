@@ -107,4 +107,6 @@ Queremos que `AnalisarLinha` devolva como lista de palavras apenas isto: `[]stri
 
 Quando tiver terminado, anote o tempo que levou para fazer o exercício e conte para o instrutor. Isso ajuda a melhorar o tutorial.
 
-O `passo-07` é uma seção bônus, onde faremos o download automático do arquivo `UnicodeData.txt`. Siga em frente se tiver feito o exercício. 
+O próximo passo é uma seção bônus, onde faremos o download automático do arquivo `UnicodeData.txt`. Siga em frente se tiver feito o exercício.
+
+O bônus e a solução deste exercício estão no branch `passo-07`.
