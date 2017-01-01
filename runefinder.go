@@ -26,7 +26,7 @@ func separar(s string) []string { // ➊
 }
 
 // AnalisarLinha devolve a runa, o nome e uma fatia de palavras que
-// ocorrem no campo nome de uma linha do UnicodeData.txt
+// ocorrem nos campo 1 e 10 de uma linha do UnicodeData.txt
 func AnalisarLinha(linha string) (rune, string, []string) {
 	campos := strings.Split(linha, ";")
 	código, _ := strconv.ParseInt(campos[0], 16, 32)
@@ -39,7 +39,6 @@ func AnalisarLinha(linha string) (rune, string, []string) {
 				palavras = append(palavras, palavra) // ➎
 			}
 		}
-
 	}
 	return rune(código), nome, palavras
 }

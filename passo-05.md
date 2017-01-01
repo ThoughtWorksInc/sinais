@@ -193,7 +193,7 @@ Essa alteração resolve o segundo caso em `TestAnalisarLinha`. O último caso t
 0027;APOSTROPHE;Po;0;ON;;;;;N;APOSTROPHE-QUOTE;;;
 ```
 
-Como resultado, queremos que o `nome` fique assim, incluindo o nome antigo entre parêntesis:
+Como resultado, queremos que o `nome` fique assim, incluindo entre parêntesis o nome antigo do caractere:
 
 ```go
 "APOSTROPHE (APOSTROPHE-QUOTE)"
@@ -204,3 +204,33 @@ E a lista de palavras, nesse caso, ficaria assim (sem duplicar a palavra "APOSTR
 ```go
 []string{"APOSTROPHE", "QUOTE"}},
 ```
+
+Para satisfazer esses requsitos, incluímos um bloco `if` em `AnalisarLinha`:
+
+```go
+// AnalisarLinha devolve a runa, o nome e uma fatia de palavras que
+// ocorrem nos campo 1 e 10 de uma linha do UnicodeData.txt
+func AnalisarLinha(linha string) (rune, string, []string) {
+	campos := strings.Split(linha, ";")
+	código, _ := strconv.ParseInt(campos[0], 16, 32)
+	nome := campos[1]
+	palavras := separar(campos[1])
+	if campos[10] != "" { // ➊
+		nome += fmt.Sprintf(" (%s)", campos[10])
+		for _, palavra := range separar(campos[10]) { // ➋
+			if !contem(palavras, palavra) { // ➌
+				palavras = append(palavras, palavra) // ➍
+			}
+		}
+	}
+	return rune(código), nome, palavras
+}
+```
+
+➊ Se o campo índice 10 não é uma string vazia...
+
+➋ Percorremos o resultado de `separar(campos[10])`, palavra por palavra.
+
+➌ Se a fatia de palavras do nome não inclui esta nova palavra...
+
+➍ Criamos uma nova fatia `palavras`, colando a nova `palavra` a fatia `palavras` que já temos.
