@@ -198,7 +198,7 @@ func TestObterCaminhoUCD_default(t *testing.T) {
 
 func TestAbrirUCD_remoto(t *testing.T) {
 	if testing.Short() {
-		t.Skip("omitindo teste, opção -test.short informada.")
+		t.Skip("teste ignorado [opção -test.short]")
 	}
 	UCDPath := fmt.Sprintf("./TEST%d-UnicodeData.txt", time.Now().UnixNano())
 	ucd, remoto, err := abrirUCD(UCDPath)

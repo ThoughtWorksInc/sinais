@@ -91,19 +91,20 @@ func obterCaminhoUCD() string {
 	return UCDPath
 }
 
+func progresso(feito <-chan bool) {
+	for {
+		select {
+		case <-feito:
+			fmt.Println("concluído!")
+		case <-time.After(200 * time.Millisecond):
+			fmt.Print(".")
+		}
+	}
+}
+
 func downloadUCD(ucdPath string) {
 	fmt.Printf("%s not found\ndownloading %s\n", ucdPath, UCDURL)
 	feito := make(chan bool)
-	progresso := func(feito <-chan bool) {
-		for {
-			select {
-			case <-feito:
-				fmt.Println("concluído!")
-			case <-time.After(200 * time.Millisecond):
-				fmt.Print(".")
-			}
-		}
-	}
 	go progresso(feito)
 	defer func() {
 		feito <- false
