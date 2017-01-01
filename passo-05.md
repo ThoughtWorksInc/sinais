@@ -205,7 +205,7 @@ Veja a diferença na formatação. Aqui a mensagem usando apenas `%v`:
 ```
 --- FAIL: TestContémTodos (0.00s)
 	runefinder_test.go:73: contémTodos([A B C], [A B])
-		esperado: false; recebido: true
+		esperado: true; recebido: false
 ```
 
 E aqui, usando `%#v` para formatar os argumentos de `contémTodos`
@@ -214,10 +214,10 @@ E aqui, usando `%#v` para formatar os argumentos de `contémTodos`
 $ go test
 --- FAIL: TestContémTodos (0.00s)
 	runefinder_test.go:73: contémTodos([]string{"A", "B", "C"}, []string{"A", "B"})
-		esperado: false; recebido: true
+		esperado: true; recebido: false
 ```
 
-Novamente, a implementação de `contémTodos` é mais curta do que sua a função de teste:
+Eisa a implementação de `contémTodos`, bem simples porque já temos `contém`:
 
 ```go
 func contémTodos(fatia []string, procurados []string) bool {
@@ -272,7 +272,7 @@ func Listar(texto io.Reader, consulta string) {
 
 ➌ Usamos `contémTodos` para checar se `palavrasNome` contém cada um dos `termos`.
 
-Podemos criar um teste funcional do pacote para demonstrar o funcionamento de uma consulta com duas palavras, exibindo resultados onde essas palavras não aparecem em sequência no nome do caractere:
+Podemos criar um teste funcional do pacote para demonstrar o funcionamento de uma consulta com duas palavras, exibindo resultados onde tais palavras não aparecem em sequência no nome do caractere:
 
 ```go
 func Example_consultaDuasPalavras() { // ➊
@@ -290,6 +290,7 @@ func Example_consultaDuasPalavras() { // ➊
 Agora você pode experimentar o programa com `go run` ou criar outro executável com `go build` para ver a nova funcionalidade em ação. Por exemplo, pesquisar peças pretas do Xadrez:
 
 ```bash
+$ go build
 $ ./runas chess black
 U+265A	♚	BLACK CHESS KING
 U+265B	♛	BLACK CHESS QUEEN
