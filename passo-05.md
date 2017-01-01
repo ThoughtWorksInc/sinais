@@ -129,10 +129,10 @@ func TestContém(t *testing.T) {
 		{[]string{"A", "B"}, "Z", false}, // ➌
 	} // ➍
 	for _, caso := range casos { // ➎
-		obtido := contém(caso.fatia, caso.procurado) // ➏
-		if obtido != caso.esperado {
+		recebido := contém(caso.fatia, caso.procurado) // ➏
+		if obtido != caso.esperado {                 // ➐
 			t.Errorf("contém(%#v, %#v) esperado: %v; recebido: %v",
-				caso.fatia, caso.procurado, caso.esperado, obtido) // ➐
+				caso.fatia, caso.procurado, caso.esperado, recebido) // ➑
 		}
 	}
 }
@@ -142,7 +142,7 @@ func TestContém(t *testing.T) {
 
 ➋ Completando a declaração `var`, o segundo par de `{}` contém o valor literal da `[]struct`, que são três itens delimitados por `{}`, sendo que cada item é formado por uma fatia de strings, uma string e um booleano.
 
-➌ É obrigatório incluir essa vírgula ao final do último item de um literal composto de várias linhas.
+➌ É obrigatório incluir essa vírgula ao final do último item de um literal composto de várias linhas, se você quiser fechar a chave do literal na próxima linha como fizemos aqui.
 
 ➍ Aqui termina a declaração `var` que começou em ➊.
 
@@ -150,7 +150,9 @@ func TestContém(t *testing.T) {
 
 ➏ Invocamos `contém`, passando os valores de `caso.fatia` e `caso.procurado`. A função tem que devolver `true` se `caso.fatia` contém o item `caso.procurado`.
 
-➐ Em caso de falha, mostramos os argumentos passados e os valores que recebemos de volta.
+➐ Comparamos o resultado `recebido` com `caso.esperado`. Se forem diferentes...
+
+➑ ...mostramos os argumentos passados e os valor obtido.
 
 
 

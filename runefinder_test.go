@@ -43,12 +43,12 @@ func TestContém(t *testing.T) {
 		{[]string{"A", "B"}, "B", true},
 		{[]string{}, "A", false},
 		{[]string{"A", "B"}, "Z", false}, // ➌
-	}
-	for _, caso := range casos { // ➍
-		obtido := contém(caso.fatia, caso.procurado) // ➎
-		if obtido != caso.esperado {
+	} // ➍
+	for _, caso := range casos { // ➎
+		recebido := contém(caso.fatia, caso.procurado) // ➏
+		if recebido != caso.esperado {                 // ➐
 			t.Errorf("contém(%#v, %#v) esperado: %v; recebido: %v",
-				caso.fatia, caso.procurado, caso.esperado, obtido) // ➏
+				caso.fatia, caso.procurado, caso.esperado, recebido) // ➑
 		}
 	}
 }
