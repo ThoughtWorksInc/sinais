@@ -20,25 +20,57 @@ const linhas3Da43 = `
 `
 
 func TestAnalisarLinha(t *testing.T) {
-	var casos = []struct { // ➊
-		linha    string
-		runa     rune
-		nome     string
-		palavras []string
-	}{ // ➋
-		{"0021;EXCLAMATION MARK;Po;0;ON;;;;;N;;;;;",
-			'!', "EXCLAMATION MARK", []string{"EXCLAMATION", "MARK"}},
-		{"002D;HYPHEN-MINUS;Pd;0;ES;;;;;N;;;;;",
-			'-', "HYPHEN-MINUS", []string{"HYPHEN", "MINUS"}},
-		{"0027;APOSTROPHE;Po;0;ON;;;;;N;APOSTROPHE-QUOTE;;;",
-			'\'', "APOSTROPHE (APOSTROPHE-QUOTE)", []string{"APOSTROPHE", "QUOTE"}},
+	runa, nome, palavras := AnalisarLinha(linhaLetraA) // ➊
+	if runa != 'A' {
+		t.Errorf("Esperado: 'A'; recebido: %q", runa)
 	}
-	for _, caso := range casos { // ➌
-		runa, nome, palavras := AnalisarLinha(caso.linha) // ➍
-		if runa != caso.runa || nome != caso.nome ||
-			!reflect.DeepEqual(palavras, caso.palavras) {
-			t.Errorf("\nAnalisarLinha(%q)\n-> (%q, %q, %q)", // ➎
-				caso.linha, runa, nome, palavras)
+	const nomeA = "LATIN CAPITAL LETTER A"
+	if nome != nomeA {
+		t.Errorf("Esperado: %q; recebido: %q", nomeA, nome)
+	}
+	palavrasA := []string{"LATIN", "CAPITAL", "LETTER", "A"} // ➋
+	if !reflect.DeepEqual(palavras, palavrasA) {             // ➌
+		t.Errorf("\n\tEsperado: %q\n\trecebido: %q", palavrasA, palavras) // ➍
+	}
+}
+
+func TestContém(t *testing.T) {
+	var casos = []struct { // ➊
+		fatia     []string
+		procurado string
+		esperado  bool
+	}{ // ➋
+		{[]string{"A", "B"}, "B", true},
+		{[]string{}, "A", false},
+		{[]string{"A", "B"}, "Z", false}, // ➌
+	}
+	for _, caso := range casos { // ➍
+		obtido := contém(caso.fatia, caso.procurado) // ➎
+		if obtido != caso.esperado {
+			t.Errorf("contém(%#v, %#v) esperado: %v; recebido: %v",
+				caso.fatia, caso.procurado, caso.esperado, obtido) // ➏
+		}
+	}
+}
+
+func TestContémTodos(t *testing.T) {
+	var casos = []struct { // ➊
+		fatia    []string
+		itens    []string
+		esperado bool
+	}{ // ➋
+		{[]string{"A", "B"}, []string{"B"}, true},
+		{[]string{}, []string{"A"}, false},
+		{[]string{"A", "B"}, []string{"Z"}, false},
+		{[]string{"A", "B", "C"}, []string{"A", "B"}, true},
+		{[]string{"A", "B", "C"}, []string{"A", "Z"}, false},
+		{[]string{"A", "B"}, []string{"A", "B", "C"}, false},
+	}
+	for _, caso := range casos {
+		obtido := contémTodos(caso.fatia, caso.itens) // ➎
+		if obtido != caso.esperado {
+			t.Errorf("contémTodas(%#v, %#v) esperado: %v; recebido: %v",
+				caso.fatia, caso.itens, caso.esperado, obtido) // ➏
 		}
 	}
 }
@@ -57,11 +89,31 @@ func ExampleListar_doisResultados() {
 	// U+003E	>	GREATER-THAN SIGN
 }
 
-func Example() { // ➊
-	oldArgs := os.Args                   // ➋
-	defer func() { os.Args = oldArgs }() // ➌
-	os.Args = []string{"", "cruzeiro"}   // ➍
-	main()                               // ➎
+func ExampleListar_duasPalavras() {
+	texto := strings.NewReader(linhas3Da43)
+	Listar(texto, "CAPITAL LATIN")
+	// Output:
+	// U+0041	A	LATIN CAPITAL LETTER A
+	// U+0042	B	LATIN CAPITAL LETTER B
+	// U+0043	C	LATIN CAPITAL LETTER C
+}
+
+func Example() {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"", "cruzeiro"}
+	main()
 	// Output:
 	// U+20A2	₢	CRUZEIRO SIGN
+}
+
+func Example_consultaDuasPalavras() { // ➊
+	oldArgs := os.Args // ➋
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"", "cat", "smiling"}
+	main() // ➌
+	// Output:
+	// U+1F638	😸	GRINNING CAT FACE WITH SMILING EYES
+	// U+1F63A	😺	SMILING CAT FACE WITH OPEN MOUTH
+	// U+1F63B	😻	SMILING CAT FACE WITH HEART-SHAPED EYES
 }

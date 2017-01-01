@@ -54,7 +54,6 @@ func TestAnalisarLinha(t *testing.T) {
 
 As mudanças necessárias para satisfazer este teste são simples:
 
-
 ```go
 // AnalisarLinha devolve a runa, o nome e uma fatia de palavras que
 // ocorrem no campo nome de uma linha do UnicodeData.txt
@@ -72,165 +71,90 @@ func AnalisarLinha(linha string) (rune, string, []string) { // ➊
 
 ➌ Devolvemos a fatia de palavras, além da runa e seu nome.
 
-Isso faz passar o teste, mas analisando o `UnicodeData.txt` dá para ver dois requisitos adicionais que vamos implementar em seguida.
-
-
-## Tratando nomes com hífen e nomes antigos
-
-Veja esta parte da tabela `UnicodeData.txt`:
-
-```
-0027;APOSTROPHE;Po;0;ON;;;;;N;APOSTROPHE-QUOTE;;;;
-0028;LEFT PARENTHESIS;Ps;0;ON;;;;;Y;OPENING PARENTHESIS;;;;
-0029;RIGHT PARENTHESIS;Pe;0;ON;;;;;Y;CLOSING PARENTHESIS;;;;
-002A;ASTERISK;Po;0;ON;;;;;N;;;;;
-002B;PLUS SIGN;Sm;0;ES;;;;;N;;;;;
-002C;COMMA;Po;0;CS;;;;;N;;;;;
-002D;HYPHEN-MINUS;Pd;0;ES;;;;;N;;;;;
-002E;FULL STOP;Po;0;CS;;;;;N;PERIOD;;;;
-```
-
-Duas coisas me chamaram atenção aqui:
-
-* Alguns nomes têm palavras hifenadas, como "HYPHEN-MINUS" (por coincidência)! É desejábel que o usuário encontre esses caracteres digitando apenas uma das palavras, "HYPHEN" ou "MINUS".
-* Algumas linhas tem no campo índice 10 um nome diferente, que era o nome adotado no Unicode 1.0 (veja documentação do [UCD 9.0](http://www.unicode.org/reports/tr44/tr44-18.html#UnicodeData.txt)). Por exemplo o caractere U+002E, "FULL STOP", era "PERIOD". Incluir esses nomes também pode facilitar a vida dos usuários.
-
-Então para atender esses requisitos a função `AnalisarLinha` precisa devolver uma fatia de palavras que inclua as partes de cada termo com hífen, e também as palavras do campo índice 10. Em vez de um simples caso de teste, agora teremos pelo menos três:
-
-* Campo 10 vazio e nenhum hífen.
-* Campo 10 vazio e hífen no campo 1.
-* Campo 10 utilizado e hífens presentes.
-
-Para testar isso sem duplicar muito código em `TestAnalisarLinha`, vamos usar um [teste em tabela](https://golang.org/doc/code.html#Testing). A nova versão dessa função de teste vai ficar assim:
+Além disso, para poder compilar o programa e rodar o teste, precisamos mexer na função `Listar` onde invocamos `AnalisarLinha`, para aceitar a fatia de palavras devolvida como terceiro resultado, mesmo ignorando esse valor por enquanto:
 
 ```go
-func TestAnalisarLinha(t *testing.T) {
+    runa, nome, _ := AnalisarLinha(linha)
+```
+
+Isso satisfaz o teste de `AnalisarLinha`. Mas para fazer `Listar` trabalhar com a fatia de palavras, várias mudanças serão necessárias.
+
+## Consultas com várias palavras em `Listar`
+
+Vamos incluir outra função exemplo nos testes de `Listar` para cobrir uma consulta com mais de uma palavra:
+
+```go
+func ExampleListar_duasPalavras() {
+	texto := strings.NewReader(linhas3Da43)
+	Listar(texto, "CAPITAL LATIN")
+	// Output:
+	// U+0041	A	LATIN CAPITAL LETTER A
+	// U+0042	B	LATIN CAPITAL LETTER B
+	// U+0043	C	LATIN CAPITAL LETTER C
+}
+```
+
+O trecho que precisa ser melhorado em `Listar` é este:
+
+```go
+		runa, nome, _ := AnalisarLinha(linha)
+		if strings.Contains(nome, consulta) {
+		 	fmt.Printf("U+%04X\t%[1]c\t%s\n", runa, nome)
+		}
+```
+
+Em vez de procurar a string `consulta` dentro do `nome`, agora temos que procurar cada palavra da consulta na lista de palavras devolvida por `AnalisarLinha`. Em Python isso poderia ser feito facilmente em uma linha usando dois conjuntos (tipo `set`). Infelizmente, Go por enquanto não tem um tipo `set`, e nem mesmo uma função na biblioteca padrão que diga se uma string está presente em uma fatia de strings. Então o jeito é arregaçar a manga e fazer, guiados por testes.
+
+Primeiro vamos implementar a função `contém`, que devolve `true` se uma fatia de strings contém uma determinada string. Para verificar três casos em uma função de teste, vamos usar um [teste em tabela](https://golang.org/doc/code.html#Testing).
+
+Para decifrar a sintaxe marcada com ➊ e ➋ em `TestContém` (mais abaixo), vale a pena ver um caso mais simples da mesma sintaxe. Suponha que você quer declarar e inicializar uma variável com uma fatia de bytes. Essa seria uma forma de fazê-lo:
+
+```go
+var l = []byte{10, 20, 30}
+```
+
+Repare que temos a declaração `var`, seguida do identificador da variável `l`, um sinal `=`, e um valor literal do tipo `[]byte`. Valores literais de tipos compostos em Go são escritos assim: o identificador do tipo, seguido de zero ou mais itens ou campos entre chaves: `[]byte{10, 20, 30}`.
+
+Agora vamos analisar `TestContém`, que usa uma declaração `var` semelhante, apenas mais extensa:
+
+```go
+func TestContém(t *testing.T) {
 	var casos = []struct { // ➊
-		linha    string
-		runa     rune
-		nome     string
-		palavras []string
+		fatia     []string
+		procurado string
+		esperado  bool
 	}{ // ➋
-		{"0021;EXCLAMATION MARK;Po;0;ON;;;;;N;;;;;",
-			'!', "EXCLAMATION MARK", []string{"EXCLAMATION", "MARK"}},
-		{"002D;HYPHEN-MINUS;Pd;0;ES;;;;;N;;;;;",
-			'-', "HYPHEN-MINUS", []string{"HYPHEN", "MINUS"}},
-		{"0027;APOSTROPHE;Po;0;ON;;;;;N;APOSTROPHE-QUOTE;;;",
-			'\'', "APOSTROPHE (APOSTROPHE-QUOTE)", []string{"APOSTROPHE", "QUOTE"}},
-	}
-	for _, caso := range casos { // ➌
-		runa, nome, palavras := AnalisarLinha(caso.linha) // ➍
-		if runa != caso.runa || nome != caso.nome ||
-			!reflect.DeepEqual(palavras, caso.palavras) {
-			t.Errorf("\nAnalisarLinha(%q)\n-> (%q, %q, %q)", // ➎
-				caso.linha, runa, nome, palavras)
+		{[]string{"A", "B"}, "B", true},
+		{[]string{}, "A", false},
+		{[]string{"A", "B"}, "Z", false}, // ➌
+	} // ➍
+	for _, caso := range casos { // ➎
+		obtido := contém(caso.fatia, caso.procurado) // ➏
+		if obtido != caso.esperado {
+			t.Errorf("contém(%#v, %#v) esperado: %v; recebido: %v",
+				caso.fatia, caso.procurado, caso.esperado, obtido) // ➐
 		}
 	}
 }
 ```
 
-Várias novidades neste teste. Vejamos:
+➊ Esta declaração `var` cria uma variável `casos` e atribui a ela uma fatia de `struct` anônima. A `struct` é declarada dentro do primeiro par de `{}` com três campos: uma fatia de strings, uma string e um booleano.
 
-➊ Aqui usamos a declaração `var` para definir o tipo e inicializar a variável `casos`, tipo `[]struct` -- uma fatia de `struct` (pense em uma lista de registros). A `struct` anônima é definida em seguida, com quatro campos: `linha`, `runa`, `nome` e `palavras`.
+➋ Completando a declaração `var`, o segundo par de `{}` contém o valor literal da `[]struct`, que são três itens delimitados por `{}`, sendo que cada item é formado por uma fatia de strings, uma string e um booleano.
 
-➋ Ainda continuando a declaração `var`, o segundo bloco contém os valores da fatia de structs com três itens, ou seja, os valores de cada um dos quatro campos, para cada um dos três itens. Resumindo: criamos uma série de registros na forma de uma fatia onde cada item é uma `struct`.
+➌ É obrigatório incluir essa vírgula ao final do último item de um literal composto de várias linhas.
 
-➌ Usamos a sintaxe de laço `for/range` para percorrer os três itens de `casos`. A cada iteração, o `for/range` produz dois valores: um índice a partir de zero (que ignoramos atribuindo a `_`) e o valor do item correspondente, que atribuímos a `caso`.
+➍ Aqui termina a declaração `var` que começou em ➊.
 
-➍ Invocamos `AnalisarLinha`, passando o valor do campo `caso.linha`.
+➎ Usamos a sintaxe de laço `for/range` para percorrer os três itens de `casos`. A cada iteração, o `for/range` produz dois valores: um índice a partir de zero (que ignoramos atribuindo a `_`) e o valor do item correspondente, que atribuímos a `caso`.
 
-➎ Em caso de falha, mostramos o argumento que foi passado e os valores que recebemos de volta.
+➏ Invocamos `contém`, passando os valores de `caso.fatia` e `caso.procurado`. A função tem que devolver `true` se `caso.fatia` contém o item `caso.procurado`.
 
-Veja o resultado de executar o teste agora:
+➐ Em caso de falha, mostramos os argumentos passados e os valores que recebemos de volta.
 
-```bash
-$ go test
---- FAIL: TestAnalisarLinha (0.00s)
-	runefinder_test.go:41:
-		AnalisarLinha("002D;HYPHEN-MINUS;Pd;0;ES;;;;;N;;;;;")
-		-> ('-', "HYPHEN-MINUS", ["HYPHEN-MINUS"])
-	runefinder_test.go:41:
-		AnalisarLinha("0027;APOSTROPHE;Po;0;ON;;;;;N;APOSTROPHE-QUOTE;;;")
-		-> ('\'', "APOSTROPHE", ["APOSTROPHE"])
-FAIL
-exit status 1
-FAIL	github.com/labgo/runas	0.026s
-```
 
-Nossa tabela contém três casos de teste, e duas falhas foram reportadas. Isso demonstra que a chamada para `t.Errorf` não aborta o teste, mas apenas reporta o erro, e o teste continua rodando.
 
-Para fazer o caso do hífen passar, criaremos a função auxiliar `separar`, para usar no lugar de `strings.Fields` ao extrair as palavras dos campos 1 e 10.
+Pois bem,
 
-```go
-func separar(s string) []string { // ➊
-	separador := func(c rune) bool { // ➋
-		return c == ' ' || c == '-'
-	}
-	return strings.FieldsFunc(s, separador) // ➌
-}
 
-// AnalisarLinha devolve a runa, o nome e uma fatia de palavras que
-// ocorrem no campo nome de uma linha do UnicodeData.txt
-func AnalisarLinha(linha string) (rune, string, []string) {
-	campos := strings.Split(linha, ";")
-	código, _ := strconv.ParseInt(campos[0], 16, 32)
-	palavras := separar(campos[1]) // ➍
-	return rune(código), campos[1], palavras
-}
-```
-
-➊ `separar` recebe o texto a separar e devolve uma fatia de strings.
-
-➋ Definimos uma função `separador` para identificar os separadores que nos interessam: dada uma runa, `separador` devolve `true` se a runa é um espaço em branco ou um hífen.
-
-➌ Passamos o texto `s` e a função `separador` para `strings.FieldsFunc`, uma variante mais flexível de `strings.Fields`.
-
-➍ Usamos a nova função `separar` em `AnalisarLinha`, onde antes usávamos `strings.Fiels`.
-
-Essa alteração resolve o segundo caso em `TestAnalisarLinha`. O último caso traz conteúdo no campo 10. Essa é a linha do teste:
-
-```
-0027;APOSTROPHE;Po;0;ON;;;;;N;APOSTROPHE-QUOTE;;;
-```
-
-Como resultado, queremos que o `nome` fique assim, incluindo entre parêntesis o nome antigo do caractere:
-
-```go
-"APOSTROPHE (APOSTROPHE-QUOTE)"
-```
-
-E a lista de palavras, nesse caso, ficaria assim (sem duplicar a palavra "APOSTROPHE"):
-
-```go
-[]string{"APOSTROPHE", "QUOTE"}},
-```
-
-Para satisfazer esses requsitos, incluímos um bloco `if` em `AnalisarLinha`:
-
-```go
-// AnalisarLinha devolve a runa, o nome e uma fatia de palavras que
-// ocorrem nos campo 1 e 10 de uma linha do UnicodeData.txt
-func AnalisarLinha(linha string) (rune, string, []string) {
-	campos := strings.Split(linha, ";")
-	código, _ := strconv.ParseInt(campos[0], 16, 32)
-	nome := campos[1]
-	palavras := separar(campos[1])
-	if campos[10] != "" { // ➊
-		nome += fmt.Sprintf(" (%s)", campos[10])
-		for _, palavra := range separar(campos[10]) { // ➋
-			if !contem(palavras, palavra) { // ➌
-				palavras = append(palavras, palavra) // ➍
-			}
-		}
-	}
-	return rune(código), nome, palavras
-}
-```
-
-➊ Se o campo índice 10 não é uma string vazia...
-
-➋ Percorremos o resultado de `separar(campos[10])`, palavra por palavra.
-
-➌ Se a fatia de palavras do nome não inclui esta nova palavra...
-
-➍ Criamos uma nova fatia `palavras`, colando a nova `palavra` a fatia `palavras` que já temos.
+mas analisando o `UnicodeData.txt` dá para ver dois requisitos adicionais que vamos implementar no _branch_ `passo-06`, texto em `passo-06.md`.
