@@ -81,19 +81,6 @@ Isso satisfaz o teste de `AnalisarLinha`. Mas para fazer `Listar` trabalhar com 
 
 ## Consultas com várias palavras em `Listar`
 
-Vamos incluir outra função exemplo nos testes de `Listar` para cobrir uma consulta com mais de uma palavra:
-
-```go
-func ExampleListar_duasPalavras() {
-	texto := strings.NewReader(linhas3Da43)
-	Listar(texto, "CAPITAL LATIN")
-	// Output:
-	// U+0041	A	LATIN CAPITAL LETTER A
-	// U+0042	B	LATIN CAPITAL LETTER B
-	// U+0043	C	LATIN CAPITAL LETTER C
-}
-```
-
 O trecho que precisa ser melhorado em `Listar` é este:
 
 ```go
@@ -103,17 +90,17 @@ O trecho que precisa ser melhorado em `Listar` é este:
 		}
 ```
 
-Em vez de procurar a string `consulta` dentro do `nome`, agora temos que procurar cada palavra da consulta na lista de palavras devolvida por `AnalisarLinha`. Em Python isso poderia ser feito facilmente em uma linha usando dois conjuntos (tipo `set`). Infelizmente, Go por enquanto não tem um tipo `set`, e nem mesmo uma função na biblioteca padrão que diga se uma string está presente em uma fatia de strings. Então o jeito é arregaçar a manga e fazer, guiados por testes.
+Em vez de procurar a string `consulta` dentro do `nome`, agora vamos procurar cada palavra da consulta na lista de palavras devolvida por `AnalisarLinha`. Em Python isso poderia ser feito facilmente em uma linha de código, pela subtração de conjuntos (tipo `set`). Infelizmente, Go por enquanto não tem um tipo `set`. Go não tem sequer uma função na biblioteca padrão que diga se uma string está presente em uma fatia de strings. Então o jeito é arregaçar a manga e codar, guiados por testes.
 
 Primeiro vamos implementar a função `contém`, que devolve `true` se uma fatia de strings contém uma determinada string. Para verificar três casos em uma função de teste, vamos usar um [teste em tabela](https://golang.org/doc/code.html#Testing).
 
-Para decifrar a sintaxe marcada com ➊ e ➋ em `TestContém` (mais abaixo), vale a pena ver um caso mais simples da mesma sintaxe. Suponha que você quer declarar e inicializar uma variável com uma fatia de bytes. Essa seria uma forma de fazê-lo:
+Para decifrar a elaborada sintaxe marcada com ➊, ➋, ➌ e ➍ em `TestContém` (mais abaixo), vale a pena ver um caso mais simples da mesma sintaxe. Suponha que você quer declarar e inicializar uma variável com uma fatia de bytes. Essa seria uma forma de fazê-lo:
 
 ```go
-var l = []byte{10, 20, 30}
+var octetos = []byte{10, 20, 30}
 ```
 
-Repare que temos a declaração `var`, seguida do identificador da variável `l`, um sinal `=`, e um valor literal do tipo `[]byte`. Valores literais de tipos compostos em Go são escritos assim: o identificador do tipo, seguido de zero ou mais itens ou campos entre chaves: `[]byte{10, 20, 30}`.
+Repare que temos a palavra reservada `var`, seguida do identificador da variável `octetos`, um sinal `=`, e um valor literal do tipo `[]byte`. Valores literais de tipos compostos em Go são escritos assim: o identificador do tipo, seguido de zero ou mais itens ou campos entre chaves: `[]byte{10, 20, 30}`.
 
 Agora vamos analisar `TestContém`, que usa uma declaração `var` semelhante, apenas mais extensa:
 
@@ -138,7 +125,7 @@ func TestContém(t *testing.T) {
 }
 ```
 
-➊ Esta declaração `var` cria uma variável `casos` e atribui a ela uma fatia de `struct` anônima. A `struct` é declarada dentro do primeiro par de `{}` com três campos: uma fatia de strings, uma string e um booleano.
+➊ Esta declaração `var` cria a variável `casos` e atribui a ela uma fatia de `struct` anônima. A `struct` é declarada dentro do primeiro par de `{}` com três campos: uma fatia de strings, uma string e um booleano.
 
 ➋ Completando a declaração `var`, o segundo par de `{}` contém o valor literal da `[]struct`, que são três itens delimitados por `{}`, sendo que cada item é formado por uma fatia de strings, uma string e um booleano.
 
@@ -146,7 +133,7 @@ func TestContém(t *testing.T) {
 
 ➍ Aqui termina a declaração `var` que começou em ➊.
 
-➎ Usamos a sintaxe de laço `for/range` para percorrer os três itens de `casos`. A cada iteração, o `for/range` produz dois valores: um índice a partir de zero (que ignoramos atribuindo a `_`) e o valor do item correspondente, que atribuímos a `caso`.
+➎ Usamos a sintaxe de laço `for/range` para percorrer os três itens de `casos`. A cada iteração, o `for/range` produz dois valores: um índice a partir de zero (que descartamos atribuindo a `_`) e o valor do item correspondente, que atribuímos a `caso`.
 
 ➏ Invocamos `contém`, passando os valores de `caso.fatia` e `caso.procurado`. A função tem que devolver `true` se `caso.fatia` contém o item `caso.procurado`.
 
@@ -154,9 +141,188 @@ func TestContém(t *testing.T) {
 
 ➑ ...mostramos os argumentos passados e os valor obtido.
 
+A implementação de `contém` é bem mais simples que o `TestContém`:
 
+```go
+func contém(fatia []string, procurado string) bool { // ➊
+	for _, item := range fatia {
+		if item == procurado {
+			return true // ➋
+		}
+	}
+	return false // ➌
+}
+```
 
-Pois bem,
+➊ `contém` aceita uma fatia de strings e uma string, devolvendo `true` se a string é igual a um dos itens da fatia.
 
+➋ Devolvemos `true` imediatamente assim que um `item` da fatia é igual ao texto `procurado`.
 
-mas analisando o `UnicodeData.txt` dá para ver dois requisitos adicionais que vamos implementar no _branch_ `passo-06`, texto em `passo-06.md`.
+➌ Se chegamos até aqui, é porque o `procurado` não foi encontrado; devolvemos `false`.
+
+A função `contém` é o primeiro tijolo da solução de busca por várias palavras. Agora precisamos de outra função auxiliar, `contémTodos` que devolve `true` se uma fatia contém todos os itens de uma segunda fatia. Ou seja, se a segunda fatia é um sub-conjunto da primeira (isso já estaria pronto se Go tivesse o conceito de conjuntos em sua biblioteca padrão).
+
+Usamos outro teste de tabela:
+
+```go
+func TestContémTodos(t *testing.T) {
+	casos := []struct { // ➊
+		fatia      []string
+		procurados []string
+		esperado   bool
+	}{ // ➋
+		{[]string{"A", "B"}, []string{"B"}, true},
+		{[]string{}, []string{"A"}, false},
+		{[]string{"A"}, []string{}, true}, // ➌
+		{[]string{}, []string{}, true},
+		{[]string{"A", "B"}, []string{"Z"}, false},
+		{[]string{"A", "B", "C"}, []string{"A", "C"}, true},
+		{[]string{"A", "B", "C"}, []string{"A", "Z"}, false},
+		{[]string{"A", "B"}, []string{"A", "B", "C"}, false},
+	}
+	for _, caso := range casos {
+		obtido := contémTodos(caso.fatia, caso.procurados) // ➍
+		if obtido != caso.esperado {
+			t.Errorf("contémTodos(%#v, %#v)\nesperado: %v; recebido: %v",
+				caso.fatia, caso.procurados, caso.esperado, obtido) // ➎
+		}
+	}
+}
+```
+
+➊ Agora usamos uma declaração curta (_short declaration_), com o sinal `:=` em vez de var. O efeito é o mesmo, assim como o resto da sintaxe.
+
+➋ Aqui temos 7 casos de teste.
+
+➌ Caso a fatia `caso.procurados` seja vazia, o resultado será sempre `true`.
+
+➍ Para cada `caso`, invocamos `contémTodos` com os campos `.fatia` e `.procurados`.
+
+➎ Caso o `obtido` não seja igual ao `caso.esperado`, mostramos os argumentos passados, o resultado obtido e o esperado. O verbo de formatação `%#v` mostra o valor usando a sintaxe literal de Go.
+
+Veja a diferença na formatação. Aqui a mensagem usando apenas `%v`:
+
+```
+--- FAIL: TestContémTodos (0.00s)
+	runefinder_test.go:73: contémTodos([A B C], [A B])
+		esperado: false; recebido: true
+```
+
+E aqui, usando `%#v` para formatar os argumentos de `contémTodos`
+
+```
+$ go test
+--- FAIL: TestContémTodos (0.00s)
+	runefinder_test.go:73: contémTodos([]string{"A", "B", "C"}, []string{"A", "B"})
+		esperado: false; recebido: true
+```
+
+Novamente, a implementação de `contémTodos` é mais curta do que sua a função de teste:
+
+```go
+func contémTodos(fatia []string, procurados []string) bool {
+	for _, procurado := range procurados {
+		if !contém(fatia, procurado) {
+			return false
+		}
+	}
+	return true
+}
+```
+
+Aqui não há nenhuma novidade de sintaxe.
+
+Vamos incluir outra função exemplo nos testes de `Listar` para cobrir uma consulta com mais de uma palavra:
+
+```go
+func ExampleListar_duasPalavras() {
+	texto := strings.NewReader(linhas3Da43)
+	Listar(texto, "CAPITAL LATIN")
+	// Output:
+	// U+0041	A	LATIN CAPITAL LETTER A
+	// U+0042	B	LATIN CAPITAL LETTER B
+	// U+0043	C	LATIN CAPITAL LETTER C
+}
+```
+
+Finalmente, faremos o ajuste em `Listar` para satisfazer o teste `ExampleListar_duasPalavras`. As mudanças são simples, porque toda a lógica interessante está em `contém` e `contémTodos`.
+
+```go
+// Listar exibe na saída padrão o código, a runa e o nome dos caracteres Unicode
+// cujo nome contem as palavras da consulta.
+func Listar(texto io.Reader, consulta string) {
+	termos := strings.Fields(consulta) // ➊
+	varredor := bufio.NewScanner(texto)
+	for varredor.Scan() {
+		linha := varredor.Text()
+		if strings.TrimSpace(linha) == "" {
+			continue
+		}
+		runa, nome, palavrasNome := AnalisarLinha(linha) // ➋
+		if contémTodos(palavrasNome, termos) {           // ➌
+			fmt.Printf("U+%04X\t%[1]c\t%s\n", runa, nome)
+		}
+	}
+}
+```
+
+➊ Criamos uma fatia `termos` com as palavras da string `consulta`.
+
+➋ O terceiro resultado de `AnalisarLinha` é a lista de palavras do nome.
+
+➌ Usamos `contémTodos` para checar se `palavrasNome` contém cada um dos `termos`.
+
+Podemos criar um teste funcional do pacote para demonstrar o funcionamento de uma consulta com duas palavras, exibindo resultados onde essas palavras não aparecem em sequência no nome do caractere:
+
+```go
+func Example_consultaDuasPalavras() { // ➊
+	oldArgs := os.Args // ➋
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"", "cat", "smiling"}
+	main() // ➌
+	// Output:
+	// U+1F638	😸	GRINNING CAT FACE WITH SMILING EYES
+	// U+1F63A	😺	SMILING CAT FACE WITH OPEN MOUTH
+	// U+1F63B	😻	SMILING CAT FACE WITH HEART-SHAPED EYES
+}
+```
+
+Agora você pode experimentar o programa com `go run` ou criar outro executável com `go build` para ver a nova funcionalidade em ação. Por exemplo, pesquisar peças pretas do Xadrez:
+
+```bash
+$ ./runas chess black
+U+265A	♚	BLACK CHESS KING
+U+265B	♛	BLACK CHESS QUEEN
+U+265C	♜	BLACK CHESS ROOK
+U+265D	♝	BLACK CHESS BISHOP
+U+265E	♞	BLACK CHESS KNIGHT
+U+265F	♟	BLACK CHESS PAWN
+```
+
+Ou ainda, o trem-bala japonês:
+
+```bash
+$ ./runas bullet train
+U+1F685	🚅	HIGH-SPEED TRAIN WITH BULLET NOSE
+```
+
+E mesmo com apenas uma palavra, os resultados são melhores. A busca por "cat" traz principalmente emojis com gatos, e não mais caracteres com as letras "CAT" em qualquer parte do nome.
+
+```bash
+$ ./runas cat
+U+A2B6	ꊶ	YI SYLLABLE CAT
+U+101EC	𐇬	PHAISTOS DISC SIGN CAT
+U+1F408	🐈	CAT
+U+1F431	🐱	CAT FACE
+U+1F638	😸	GRINNING CAT FACE WITH SMILING EYES
+U+1F639	😹	CAT FACE WITH TEARS OF JOY
+U+1F63A	😺	SMILING CAT FACE WITH OPEN MOUTH
+U+1F63B	😻	SMILING CAT FACE WITH HEART-SHAPED EYES
+U+1F63C	😼	CAT FACE WITH WRY SMILE
+U+1F63D	😽	KISSING CAT FACE WITH CLOSED EYES
+U+1F63E	😾	POUTING CAT FACE
+U+1F63F	😿	CRYING CAT FACE
+U+1F640	🙀	WEARY CAT FACE
+```
+
+Agora é um bom momento para um exercício. Siga para o _branch_ `passo-06`, instruções em `passo-06.md`.

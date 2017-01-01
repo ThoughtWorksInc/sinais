@@ -18,13 +18,13 @@ func AnalisarLinha(linha string) (rune, string, []string) { // ➊
 	return rune(código), campos[1], palavras // ➌
 }
 
-func contém(fatia []string, s string) bool { // ➊
+func contém(fatia []string, procurado string) bool { // ➊
 	for _, item := range fatia {
-		if s == item {
-			return true
+		if item == procurado {
+			return true // ➋
 		}
 	}
-	return false
+	return false // ➌
 }
 
 func contémTodos(fatia []string, procurados []string) bool {
@@ -37,7 +37,7 @@ func contémTodos(fatia []string, procurados []string) bool {
 }
 
 // Listar exibe na saída padrão o código, a runa e o nome dos caracteres Unicode
-// cujo nome contem o texto da consulta.
+// cujo nome contem as palavras da consulta.
 func Listar(texto io.Reader, consulta string) {
 	termos := strings.Fields(consulta)
 	varredor := bufio.NewScanner(texto)
@@ -46,8 +46,8 @@ func Listar(texto io.Reader, consulta string) {
 		if strings.TrimSpace(linha) == "" {
 			continue
 		}
-		runa, nome, palavrasNome := AnalisarLinha(linha)
-		if contémTodos(palavrasNome, termos) {
+		runa, nome, palavrasNome := AnalisarLinha(linha) // ➊
+		if contémTodos(palavrasNome, termos) {           // ➋
 			fmt.Printf("U+%04X\t%[1]c\t%s\n", runa, nome)
 		}
 	}

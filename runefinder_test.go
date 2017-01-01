@@ -35,7 +35,7 @@ func TestAnalisarLinha(t *testing.T) {
 }
 
 func TestContém(t *testing.T) {
-	var casos = []struct { // ➊
+	casos := []struct { // ➊
 		fatia     []string
 		procurado string
 		esperado  bool
@@ -54,23 +54,24 @@ func TestContém(t *testing.T) {
 }
 
 func TestContémTodos(t *testing.T) {
-	var casos = []struct { // ➊
-		fatia    []string
-		itens    []string
-		esperado bool
+	casos := []struct { // ➊
+		fatia      []string
+		procurados []string
+		esperado   bool
 	}{ // ➋
 		{[]string{"A", "B"}, []string{"B"}, true},
 		{[]string{}, []string{"A"}, false},
+		{[]string{"A"}, []string{}, true}, // ➌
 		{[]string{"A", "B"}, []string{"Z"}, false},
-		{[]string{"A", "B", "C"}, []string{"A", "B"}, true},
+		{[]string{"A", "B", "C"}, []string{"A", "C"}, true},
 		{[]string{"A", "B", "C"}, []string{"A", "Z"}, false},
 		{[]string{"A", "B"}, []string{"A", "B", "C"}, false},
 	}
 	for _, caso := range casos {
-		obtido := contémTodos(caso.fatia, caso.itens) // ➎
+		obtido := contémTodos(caso.fatia, caso.procurados) // ➍
 		if obtido != caso.esperado {
-			t.Errorf("contémTodas(%#v, %#v) esperado: %v; recebido: %v",
-				caso.fatia, caso.itens, caso.esperado, obtido) // ➏
+			t.Errorf("contémTodos(%#v, %#v)\nesperado: %v; recebido: %v",
+				caso.fatia, caso.procurados, caso.esperado, obtido) // ➎
 		}
 	}
 }
