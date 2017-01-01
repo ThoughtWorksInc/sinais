@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"reflect"
 	"strings"
 	"testing"
+	"time"
 )
 
 const linhaLetraA = "0041;LATIN CAPITAL LETTER A;Lu;0;L;;;;;N;;;;0061;"
@@ -170,4 +172,48 @@ func Example_consultaComHífenECampo10() {
 	// U+0027	'	APOSTROPHE (APOSTROPHE-QUOTE)
 	// U+2358	⍘	APL FUNCTIONAL SYMBOL QUOTE UNDERBAR
 	// U+235E	⍞	APL FUNCTIONAL SYMBOL QUOTE QUAD
+}
+
+func TestObterCaminhoUCD_setado(t *testing.T) {
+	oldPath := os.Getenv("UCD_PATH")
+	defer func() { os.Setenv("UCD_PATH", oldPath) }()
+	UCDPath := fmt.Sprintf("./TEST%d-UnicodeData.txt", time.Now().UnixNano())
+	os.Setenv("UCD_PATH", UCDPath)
+	obtido := obterCaminhoUCD()
+	if obtido != UCDPath {
+		t.Errorf("obterUCDPath() [setado]\nesperado: %q; recebido: %q", UCDPath, obtido)
+	}
+}
+
+func TestObterCaminhoUCD_default(t *testing.T) {
+	oldPath := os.Getenv("UCD_PATH")
+	defer func() { os.Setenv("UCD_PATH", oldPath) }()
+	os.Setenv("UCD_PATH", "")
+	sufixoUCDPath := "/UnicodeData.txt"
+	obtido := obterCaminhoUCD()
+	if !strings.HasSuffix(obtido, sufixoUCDPath) {
+		t.Errorf("obterUCDPath() [default]\nesperado (sufixo): %q; recebido: %q", sufixoUCDPath, obtido)
+	}
+}
+
+func TestAbrirUCD_remoto(t *testing.T) {
+	if testing.Short() {
+		t.Skip("omitindo teste, opção -test.short informada.")
+	}
+	UCDPath := fmt.Sprintf("./TEST%d-UnicodeData.txt", time.Now().UnixNano())
+	ucd, remoto, err := abrirUCD(UCDPath)
+	if err != nil {
+		t.Errorf("AbrirUCD(%q) [remoto: %v]:\n%v", UCDPath, remoto, err)
+	}
+	ucd.Close()
+	os.Remove(UCDPath)
+}
+
+func TestAbrirUCD_local(t *testing.T) {
+	UCDPath := "./UnicodeData.txt"
+	ucd, remoto, err := abrirUCD(UCDPath)
+	if err != nil {
+		t.Errorf("AbrirUCD(%q) [remoto: %v]:\n%v", UCDPath, remoto, err)
+	}
+	ucd.Close()
 }
