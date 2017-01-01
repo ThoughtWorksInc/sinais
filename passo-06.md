@@ -82,13 +82,19 @@ A metodologia TDD recomenda "baby steps" - passos bem simples. Ao criar um teste
 
 > Tente resolver o exercício com a dica acima, antes de ler a próxima dica!
 
+
 ### Resolva primeiro o tratamento dos hífens
 
-Há várias formas de transformar "SMALL HYPHEN-MINUS" em uma lista de três palavras: `[]string {"SMALL", "HYPHEN", "MINUS"}`. Você pode passar o texto original por [`strings.Replace`](https://golang.org/pkg/strings/#Replace) para substituir `"-"` por `"-"` antes de usar `strings.Fields` para separar as palavras. Ou então você pode usar ([`strings.FieldsFunc`](`https://golang.org/pkg/strings/#FieldsFunc`) para fazer as duas operações de uma vez só.
+Há várias formas de transformar `"SMALL HYPHEN-MINUS"` em uma lista de três palavras: `[]string {"SMALL", "HYPHEN", "MINUS"}`. Você pode passar o texto original por [`strings.Replace`](https://golang.org/pkg/strings/#Replace) para substituir `"-"` por `"-"` antes de usar `strings.Fields` para separar as palavras. Ou então você pode usar ([`strings.FieldsFunc`](`https://golang.org/pkg/strings/#FieldsFunc`) para fazer as duas operações de uma vez só.
 
 Seja como for, recomendo criar uma função auxiliar para fazer essa separação por espaços ou hífens. E não esqueça de fazer TDD: escreva o teste antes de implementar a funcionalidade!
 
 > Tente resolver o exercício com a dica acima, antes de ler a próxima dica!
+
+
+### Lembre-se de `reflect.DeepEqual`
+
+Para testar a função que transforma `"SMALL HYPHEN-MINUS"` em `[]string {"SMALL", "HYPHEN", "MINUS"}`, você vai precisar comparar a fatia produzida com a fatia esperada, mas Go só permite comparar uma fatia com `nil`. Para comparar uma fatia com outra, lembre-se de usar a função `reflect.DeepEqual` como fizemos em `TestAnalisarLinha`.
 
 
 ###  Atenção para palavras duplicadas nos campos 1 e 10
