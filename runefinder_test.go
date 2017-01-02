@@ -196,6 +196,15 @@ func TestObterCaminhoUCD_default(t *testing.T) {
 	}
 }
 
+func TestAbrirUCD_local(t *testing.T) {
+	UCDPath := "./UnicodeData.txt"
+	ucd, err := abrirUCD(UCDPath)
+	if err != nil {
+		t.Errorf("AbrirUCD(%q):\n%v", UCDPath, err)
+	}
+	ucd.Close()
+}
+
 func TestAbrirUCD_remoto(t *testing.T) {
 	if testing.Short() {
 		t.Skip("teste ignorado [opção -test.short]")
@@ -207,13 +216,4 @@ func TestAbrirUCD_remoto(t *testing.T) {
 	}
 	ucd.Close()
 	os.Remove(UCDPath)
-}
-
-func TestAbrirUCD_local(t *testing.T) {
-	UCDPath := "./UnicodeData.txt"
-	ucd, err := abrirUCD(UCDPath)
-	if err != nil {
-		t.Errorf("AbrirUCD(%q):\n%v", UCDPath, err)
-	}
-	ucd.Close()
 }
