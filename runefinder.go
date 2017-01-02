@@ -81,36 +81,6 @@ func check(e error) {
 	}
 }
 
-func progresso(feito <-chan bool) {
-	for {
-		select {
-		case <-feito:
-			fmt.Println("concluído!")
-			return
-		default:
-			fmt.Print(".")
-			time.Sleep(150 * time.Millisecond)
-		}
-	}
-}
-
-func baixarUCD(ucdPath string) {
-	fmt.Printf("%s not found\ndownloading %s\n", ucdPath, URLUCD)
-	feito := make(chan bool)
-	go progresso(feito)
-	defer func() {
-		feito <- true
-	}()
-	response, err := http.Get(URLUCD)
-	check(err)
-	defer response.Body.Close()
-	file, err := os.Create(ucdPath)
-	check(err)
-	defer file.Close()
-	_, err = io.Copy(file, response.Body)
-	check(err)
-}
-
 func obterCaminhoUCD() string {
 	UCDPath := os.Getenv("UCD_PATH")
 	if UCDPath == "" {
@@ -121,10 +91,38 @@ func obterCaminhoUCD() string {
 	return UCDPath
 }
 
+func baixarUCD(caminhoUCD string, feito chan<- bool) {
+	response, err := http.Get(URLUCD)
+	check(err)
+	defer response.Body.Close()
+	file, err := os.Create(caminhoUCD)
+	check(err)
+	defer file.Close()
+	_, err = io.Copy(file, response.Body)
+	check(err)
+	feito <- true
+}
+
+func progresso(feito <-chan bool) {
+	for {
+		select {
+		case <-feito:
+			fmt.Println()
+			return
+		default:
+			fmt.Print(".")
+			time.Sleep(150 * time.Millisecond)
+		}
+	}
+}
+
 func abrirUCD(caminhoUCD string) (*os.File, error) {
 	ucd, err := os.Open(caminhoUCD)
 	if os.IsNotExist(err) {
-		baixarUCD(caminhoUCD)
+		fmt.Printf("%s não encontrado\nbaixando %s\n", caminhoUCD, URLUCD)
+		feito := make(chan bool)
+		go baixarUCD(caminhoUCD, feito)
+		progresso(feito)
 		ucd, err = os.Open(caminhoUCD)
 	}
 	return ucd, err
