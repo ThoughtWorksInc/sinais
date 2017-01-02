@@ -82,13 +82,13 @@ func check(e error) {
 }
 
 func obterCaminhoUCD() string {
-	UCDPath := os.Getenv("UCD_PATH")
-	if UCDPath == "" {
+	caminhoUCD := os.Getenv("UCD_PATH")
+	if caminhoUCD == "" {
 		usuário, err := user.Current()
 		check(err)
-		UCDPath = usuário.HomeDir + "/UnicodeData.txt"
+		caminhoUCD = usuário.HomeDir + "/UnicodeData.txt"
 	}
-	return UCDPath
+	return caminhoUCD
 }
 
 func baixarUCD(caminhoUCD string, feito chan<- bool) {

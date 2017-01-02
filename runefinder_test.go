@@ -144,8 +144,8 @@ func ExampleListar_duasPalavras() {
 }
 
 func Example() {
-	oldArgs := os.Args
-	defer func() { os.Args = oldArgs }()
+	argsAntes := os.Args
+	defer func() { os.Args = argsAntes }()
 	os.Args = []string{"", "cruzeiro"}
 	main()
 	// Output:
@@ -153,8 +153,8 @@ func Example() {
 }
 
 func Example_consultaDuasPalavras() { // ➊
-	oldArgs := os.Args // ➋
-	defer func() { os.Args = oldArgs }()
+	argsAntes := os.Args // ➋
+	defer func() { os.Args = argsAntes }()
 	os.Args = []string{"", "cat", "smiling"}
 	main() // ➌
 	// Output:
@@ -164,8 +164,8 @@ func Example_consultaDuasPalavras() { // ➊
 }
 
 func Example_consultaComHífenECampo10() {
-	oldArgs := os.Args
-	defer func() { os.Args = oldArgs }()
+	argsAntes := os.Args
+	defer func() { os.Args = argsAntes }()
 	os.Args = []string{"", "quote"}
 	main()
 	// Output:
@@ -175,8 +175,8 @@ func Example_consultaComHífenECampo10() {
 }
 
 func TestObterCaminhoUCD_setado(t *testing.T) {
-	oldPath := os.Getenv("UCD_PATH")
-	defer func() { os.Setenv("UCD_PATH", oldPath) }()
+	caminhoAntes := os.Getenv("UCD_PATH")
+	defer func() { os.Setenv("UCD_PATH", caminhoAntes) }()
 	UCDPath := fmt.Sprintf("./TEST%d-UnicodeData.txt", time.Now().UnixNano())
 	os.Setenv("UCD_PATH", UCDPath)
 	obtido := obterCaminhoUCD()
@@ -186,8 +186,8 @@ func TestObterCaminhoUCD_setado(t *testing.T) {
 }
 
 func TestObterCaminhoUCD_default(t *testing.T) {
-	oldPath := os.Getenv("UCD_PATH")
-	defer func() { os.Setenv("UCD_PATH", oldPath) }()
+	caminhoAntes := os.Getenv("UCD_PATH")
+	defer func() { os.Setenv("UCD_PATH", caminhoAntes) }()
 	os.Setenv("UCD_PATH", "")
 	sufixoUCDPath := "/UnicodeData.txt"
 	obtido := obterCaminhoUCD()
@@ -197,10 +197,10 @@ func TestObterCaminhoUCD_default(t *testing.T) {
 }
 
 func TestAbrirUCD_local(t *testing.T) {
-	UCDPath := "./UnicodeData.txt"
-	ucd, err := abrirUCD(UCDPath)
+	caminhoUCD := "./UnicodeData.txt"
+	ucd, err := abrirUCD(caminhoUCD)
 	if err != nil {
-		t.Errorf("AbrirUCD(%q):\n%v", UCDPath, err)
+		t.Errorf("AbrirUCD(%q):\n%v", caminhoUCD, err)
 	}
 	ucd.Close()
 }
@@ -209,11 +209,11 @@ func TestAbrirUCD_remoto(t *testing.T) {
 	if testing.Short() {
 		t.Skip("teste ignorado [opção -test.short]")
 	}
-	UCDPath := fmt.Sprintf("./TEST%d-UnicodeData.txt", time.Now().UnixNano())
-	ucd, err := abrirUCD(UCDPath)
+	caminhoUCD := fmt.Sprintf("./TEST%d-UnicodeData.txt", time.Now().UnixNano())
+	ucd, err := abrirUCD(caminhoUCD)
 	if err != nil {
-		t.Errorf("AbrirUCD(%q):\n%v", UCDPath, err)
+		t.Errorf("AbrirUCD(%q):\n%v", caminhoUCD, err)
 	}
 	ucd.Close()
-	os.Remove(UCDPath)
+	os.Remove(caminhoUCD)
 }
