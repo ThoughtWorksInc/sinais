@@ -4,13 +4,13 @@ Neste repositório você pode ver o desenvolvimento passo a passo do exemplo `ru
 
 ## Conteúdo deste tutorial
 
-. [Inciando com TDD](passo-01)
-. [Primeira função completa](passo-02)
-. [Gerar a lista de caracteres](passo-03)
-. [MVP 1, o mínimo que é útil](passo-04)
-. [Busca por palavras inteiras](passo-05)
-. [Exercício: hífens e nomes antigos](passo-06)
-. [Bônus: download automático da UCD](passo-07)
+1. [Inciando com TDD](passo-01)
+2. [Primeira função completa](passo-02)
+3. [Gerar a lista de caracteres](passo-03)
+4. [MVP 1, o mínimo que é útil](passo-04)
+5. [Busca por palavras inteiras](passo-05)
+6. [Exercício: hífens e nomes antigos](passo-06)
+7. [Bônus: download automático da UCD](passo-07)
 
 
 ## Nosso objetivo
