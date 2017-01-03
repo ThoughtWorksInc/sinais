@@ -2,7 +2,7 @@
 permalink: passo-03
 ---
 
-# Runas, passo 3: gerar a listagem
+# Runas, passo 3: gerar a lista de caracteres
 
 Nosso objetivo agora é produzir a saída do programa, uma listagem com este formato:
 

@@ -2,6 +2,17 @@
 
 Neste repositório você pode ver o desenvolvimento passo a passo do exemplo `runas`: um utilitário em Go para localizar caracteres Unicode pelo nome.
 
+## Conteúdo deste tutorial
+
+. [Inciando com TDD](passo-01)
+. [Primeira função completa](passo-02)
+. [Gerar a lista de caracteres](passo-03)
+. [MVP 1, o mínimo que é útil](passo-04)
+. [Busca por palavras inteiras](passo-05)
+. [Exercício: hífens e nomes antigos](passo-06)
+. [Bônus: download automático da UCD](passo-07)
+
+
 ## Nosso objetivo
 
 Ao final desse tutorial, teremos um utilitário de linha de comando que faz isso:

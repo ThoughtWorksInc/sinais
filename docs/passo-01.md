@@ -2,7 +2,7 @@
 permalink: passo-01
 ---
 
-# Runas, passo 1: primeiro teste
+# Runas, passo 1: inciando com TDD
 
 Vamos usar [TDD](http://tdd.caelum.com.br/) para desenvolver esse projeto. A primeira coisa então é escrever um teste, no arquivo-fonte `runefinder_test.go`:
 
