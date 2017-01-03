@@ -2,7 +2,7 @@
 permalink: passo-06
 ---
 
-# Runas, passo 06: nomes com hífen e nomes antigos
+# Runas, passo 06: hífens e nomes antigos
 
 Veja esta parte da tabela `UnicodeData.txt`:
 
@@ -58,14 +58,14 @@ Independente de usar dicas ou não, depois me conte quanto tempo você levou par
 
 ## Dicas
 
-### Mudanças em `AnalisarLinha`
+### 1. Mudanças em `AnalisarLinha`
 
 Para atender os requisitos do exercício, a função `AnalisarLinha` precisa devolver uma fatia de palavras que inclua as partes de cada termo com hífen, e também as palavras do campo índice 10. Além disso, havendo conteúdo no campo 10, esse texto deverá ser concatenado ao nome, entre parêntesis.
 
 > Tente resolver o exercício com a dica acima, antes de ler a próxima dica!
 
 
-### Casos de teste para `AnalisarLinha`
+### 2. Casos de teste para `AnalisarLinha`
 
 Crie outra função de teste, em vez de apagar ou mudar o `TestAnalisarLinha` que já existe. O comportamento que já verificamos em `TestAnalisarLinha` continua valendo.
 
@@ -80,14 +80,14 @@ Para testar isso sem duplicar muito código de `TestAnalisarLinha`, sugiro fazer
 > Tente resolver o exercício com a dica acima, antes de ler a próxima dica!
 
 
-### Testando com o "baby steps"
+### 3. Testando com o "baby steps"
 
 A metodologia TDD recomenda "baby steps" - passos bem simples. Ao criar um teste em tabela, coloque inicialmente apenas um caso na tabela. Faça este caso passar antes de colocar outro caso. No final, sua tabela pode ter vários casos, mas você só deve incluir e fazer passar um caso de cada vez.
 
 > Tente resolver o exercício com a dica acima, antes de ler a próxima dica!
 
 
-### Resolva primeiro o tratamento dos hífens
+### 4. Resolva primeiro o tratamento dos hífens
 
 Há várias formas de transformar `"SMALL HYPHEN-MINUS"` em uma lista de três palavras: `[]string {"SMALL", "HYPHEN", "MINUS"}`. Você pode passar o texto original por [`strings.Replace`](https://golang.org/pkg/strings/#Replace) para substituir `"-"` por `"-"` antes de usar `strings.Fields` para separar as palavras. Ou então você pode usar ([`strings.FieldsFunc`](`https://golang.org/pkg/strings/#FieldsFunc`) para fazer as duas operações de uma vez só.
 
@@ -96,12 +96,12 @@ Seja como for, recomendo criar uma função auxiliar para fazer essa separação
 > Tente resolver o exercício com a dica acima, antes de ler a próxima dica!
 
 
-### Lembre-se de `reflect.DeepEqual`
+### 5. Lembre-se de `reflect.DeepEqual`
 
 Para testar a função que transforma `"SMALL HYPHEN-MINUS"` em `[]string {"SMALL", "HYPHEN", "MINUS"}`, você vai precisar comparar a fatia produzida com a fatia esperada, mas Go só permite comparar uma fatia com `nil`. Para comparar uma fatia com outra, lembre-se de usar a função `reflect.DeepEqual` como fizemos em `TestAnalisarLinha`.
 
 
-###  Atenção para palavras duplicadas nos campos 1 e 10
+### 6. Atenção para palavras duplicadas nos campos 1 e 10
 
 Observe este caso:
 
