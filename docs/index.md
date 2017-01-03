@@ -1,13 +1,13 @@
 # Runas: passo a passo
 
-Neste repositório você pode ver o desenvolvimento passo a passo do exemplo `runefinder`: um utilitário em Go para localizar caracteres Unicode pelo nome.
+Neste repositório você pode ver o desenvolvimento passo a passo do exemplo `runas`: um utilitário em Go para localizar caracteres Unicode pelo nome.
 
 ## Nosso objetivo
 
 Ao final desse tutorial, teremos um utilitário de linha de comando que faz isso:
 
 ```
-$ runefinder face eyes
+$ runas face eyes
 U+1F601	😁	GRINNING FACE WITH SMILING EYES
 U+1F604	😄	SMILING FACE WITH OPEN MOUTH AND SMILING EYES
 U+1F606	😆	SMILING FACE WITH OPEN MOUTH AND TIGHTLY-CLOSED EYES
@@ -47,4 +47,4 @@ Os campos que nos interessam são o primeiro e o segundo: o código Unicode em h
 
 Nosso programa `runefinder` vai usar o `UnicodeData.txt` para localizar caracteres pelo nome. Então, mãos à obra!
 
-Para continuar, mude para o _branch_ `passo-01` e veja o arquivo `passo-01.md`.
+Para continuar, veja o [passo-01](./passo-01) ou [passo-01](/passo-01) ou [passo-01](passo-01). O código está no _branch_ `passo-01`.
