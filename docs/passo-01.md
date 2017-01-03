@@ -1,5 +1,5 @@
 ---
-permalink: /passo-01
+permalink: passo-01
 ---
 
 # Runas, passo 1: primeiro teste
