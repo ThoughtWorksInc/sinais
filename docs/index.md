@@ -45,6 +45,6 @@ Eis uma pequena amostra do `UnicodeData.txt`:
 
 Os campos que nos interessam são o primeiro e o segundo: o código Unicode em hexadecimal e o nome oficial do caractere.
 
-Nosso programa `runefinder` vai usar o `UnicodeData.txt` para localizar caracteres pelo nome. Então, mãos à obra!
+Nosso programa `runas` vai usar o `UnicodeData.txt` para localizar caracteres pelo nome. Então, mãos à obra!
 
-Para continuar, veja o [passo-01](./passo-01) ou [passo-01](/passo-01) ou [passo-01](passo-01). O código está no _branch_ `passo-01`.
+Para iniciar o desenvolvimento, vá para o [passo-01](passo-01). O código está no _branch_ `passo-01`.

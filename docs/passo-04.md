@@ -1,3 +1,7 @@
+---
+permalink: passo-04
+---
+
 # Runas, passo 4: MVP 1, o mínimo que é útil
 
 Estamos prontos para fazer a interface de linha de comando e ter um produto mínimo viável (MVP) que permite encontrar caracteres pelo nome.
@@ -163,4 +167,4 @@ $ ./runas | wc
    30593  182344 1181756
 ```
 
-Vamos deixar a questão do download do UCD para o final deste tutorial, porque não é simples de fazer com TDD. Primeiro vamos melhorar a busca no branch `passo-05`, texto em `passo-05.md`.
+Vamos deixar a questão do download do UCD para o final deste tutorial. Primeiro vamos melhorar a busca no [Passo 5](passo-05), código no _branch_ `passo-05`.

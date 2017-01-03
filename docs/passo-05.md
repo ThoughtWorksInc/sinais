@@ -1,3 +1,7 @@
+---
+permalink: passo-05
+---
+
 # Runas, passo 5: busca por palavras inteiras
 
 A versão MVP1 do programa `runas` busca caracteres comparando uma substring do nome. Isso gera dois problemas:
@@ -326,4 +330,4 @@ U+1F63F	😿	CRYING CAT FACE
 U+1F640	🙀	WEARY CAT FACE
 ```
 
-Agora é um bom momento para um exercício. Siga para o _branch_ `passo-06`, instruções em `passo-06.md`.
+Agora é um bom momento para um exercício. Veja instruções no [Passo 6](passo-06), _branch_ `passo-06`.

@@ -1,3 +1,7 @@
+---
+permalink: passo-03
+---
+
 # Runas, passo 3: gerar a listagem
 
 Nosso objetivo agora é produzir a saída do programa, uma listagem com este formato:
@@ -243,4 +247,4 @@ func Listar(texto io.Reader, consulta string)
 
 ```
 
-Com isso terminamos o passo 3. Estamos próximos do MVP: o produto mínimo viável é implementado no _branch_ `passo-04`, com explicações em `passo-04.md`.
+Com isso terminamos o passo 3. Estamos próximos do MVP: o produto mínimo viável é explicado no [Passo 4](passo-04) e implementado no _branch_ `passo-04`.

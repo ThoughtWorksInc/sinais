@@ -1,3 +1,7 @@
+---
+permalink: passo-02
+---
+
 # Runas, passo 2: primeira função completa
 
 Agora vamos terminar de implementar a função `AnalisarLinha`, guiados por testes.
@@ -79,4 +83,4 @@ PASS
 ok  	github.com/labgo/runas-passo-a-passo	0.012s
 ```
 
-Assim completamos o passo 2. Hora de mudar para o _branch_ `passo-03` e ler o arquivo `passo-03.md`.
+Assim completamos o passo 2. Hora e ler o [Passo 3](passo-03) mudar para o _branch_ `passo-03`.
