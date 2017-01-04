@@ -174,9 +174,17 @@ func Example_consultaComHífenECampo10() {
 	// U+235E	⍞	APL FUNCTIONAL SYMBOL QUOTE QUAD
 }
 
+func restaurar(nomeVar, valor string, existia bool) {
+	if existia {
+		os.Setenv(nomeVar, valor)
+	} else {
+		os.Unsetenv(nomeVar)
+	}
+}
+
 func TestObterCaminhoUCD_setado(t *testing.T) {
-	caminhoAntes := os.Getenv("UCD_PATH")
-	defer func() { os.Setenv("UCD_PATH", caminhoAntes) }()
+	caminhoAntes, existia := os.LookupEnv("UCD_PATH")
+	defer restaurar("UCD_PATH", caminhoAntes, existia)
 	UCDPath := fmt.Sprintf("./TEST%d-UnicodeData.txt", time.Now().UnixNano())
 	os.Setenv("UCD_PATH", UCDPath)
 	obtido := obterCaminhoUCD()
@@ -186,8 +194,8 @@ func TestObterCaminhoUCD_setado(t *testing.T) {
 }
 
 func TestObterCaminhoUCD_default(t *testing.T) {
-	caminhoAntes := os.Getenv("UCD_PATH")
-	defer func() { os.Setenv("UCD_PATH", caminhoAntes) }()
+	caminhoAntes, existia := os.LookupEnv("UCD_PATH")
+	defer restaurar("UCD_PATH", caminhoAntes, existia)
 	os.Unsetenv("UCD_PATH")
 	sufixoUCDPath := "/UnicodeData.txt"
 	obtido := obterCaminhoUCD()

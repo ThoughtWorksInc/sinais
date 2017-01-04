@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-// URLUCD is the canonical URL of the current UnicodeData.txt file
+// URLUCD é a URL canônica do arquivo UnicodeData.txt mais atual
 const URLUCD = "http://www.unicode.org/Public/UNIDATA/UnicodeData.txt"
 
 // AnalisarLinha devolve a runa, o nome e uma fatia de palavras que
@@ -91,18 +91,6 @@ func obterCaminhoUCD() string {
 	return caminhoUCD
 }
 
-func baixarUCD(caminhoUCD string, feito chan<- bool) {
-	response, err := http.Get(URLUCD)
-	check(err)
-	defer response.Body.Close()
-	file, err := os.Create(caminhoUCD)
-	check(err)
-	defer file.Close()
-	_, err = io.Copy(file, response.Body)
-	check(err)
-	feito <- true
-}
-
 func progresso(feito <-chan bool) {
 	for {
 		select {
@@ -114,6 +102,18 @@ func progresso(feito <-chan bool) {
 			time.Sleep(150 * time.Millisecond)
 		}
 	}
+}
+
+func baixarUCD(caminhoUCD string, feito chan<- bool) {
+	response, err := http.Get(URLUCD)
+	check(err)
+	defer response.Body.Close()
+	file, err := os.Create(caminhoUCD)
+	check(err)
+	defer file.Close()
+	_, err = io.Copy(file, response.Body)
+	check(err)
+	feito <- true
 }
 
 func abrirUCD(caminhoUCD string) (*os.File, error) {
