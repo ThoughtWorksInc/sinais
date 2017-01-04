@@ -58,4 +58,4 @@ Os campos que nos interessam são o primeiro e o segundo: o código Unicode em h
 
 Nosso programa `runas` vai usar o `UnicodeData.txt` para localizar caracteres pelo nome. Então, mãos à obra!
 
-Para iniciar o desenvolvimento, vá para o [passo-01](passo-01). O código está no _branch_ `passo-01` do repositório [https://github.com/labgo/runas](https://github.com/labgo/runas).
+Para iniciar o desenvolvimento, vá para o [Passo 1](passo-01). O código está no _branch_ `passo-01` do repositório [https://github.com/labgo/runas](https://github.com/labgo/runas).
