@@ -4,7 +4,7 @@ permalink: passo-01
 
 # Runas, passo 1: inciando com TDD
 
-Vamos usar [TDD](http://tdd.caelum.com.br/) para desenvolver esse projeto. A primeira coisa então é escrever um teste, no arquivo-fonte `runefinder_test.go`:
+Vamos usar [TDD](http://tdd.caelum.com.br/) para desenvolver esse projeto. A primeira coisa então é escrever um teste, no arquivo-fonte `runefinder_test.go`. Nosso primeiro teste verifica a função `AnalisarLinha`, que deve extrair um caractere e um nome de uma linha do `UnicodeData.txt`:
 
 ```go
 package main // ➊
@@ -23,23 +23,23 @@ func TestAnalisarLinha(t *testing.T) { // ➍
 
 Vejamos o que temos aqui:
 
-➊ Todo arquivo-fonte em Go precisa declarar o pacote ao qual ele pertence. Para programas executáveis, o pacote dever ser `main`. Bibliotecas devem usar um nome igual à última parte do caminho até seu código-fonte, ex. `runefinder`.
+➊ Todo arquivo-fonte em Go precisa declarar o pacote ao qual ele pertence. Para programas executáveis, o pacote deve ser `main`. Bibliotecas devem usar um nome igual à última parte do caminho até seu código-fonte, ex. `runas`.
 
 ➋ Importamos o pacote `testing` da biblioteca padrão.
 
-➌ Definimos uma constante do tipo `string` (não é preciso declarar o tipo, porque o compilador identifica que o que tem à direita do `=` é uma `string`).
+➌ Definimos uma constante do tipo `string` (não é preciso declarar o tipo, porque o compilador identifica que o valor à direita do `=` é uma `string`).
 
-➍ Todas as funções de teste precisam começar com o prefixo `Test`, e recebem como argumento um ponteiro para o objeto `testing.T`, através do qual acessamos os métodos, como por exemplo `t.Errorf`. As declarações em Go tem a forma `x tipo`, onde `x` é o identificador sendo declarado, seguido de seu `tipo` (como em Pascal!)
+➍ Todas as funções de teste precisam começar com o prefixo `Test`, e recebem como argumento um ponteiro para um objeto `testing.T`, através do qual acessamos métodos como `t.Errorf` neste exemplo. As declarações em Go tem a forma `x tipo`, onde `x` é o identificador sendo declarado, seguido de seu `tipo` (como em Pascal!)
 
-➎ Nossa primeira função devolverá dois valores: um caractere e uma string - que por enquanto vamos ignorar (mais detalhes sobre essa linha a seguir).
+➎ Nossa primeira função devolverá dois valores: um caractere e uma string — que por enquanto vamos ignorar (mais detalhes sobre essa linha a seguir).
 
-➏ Note a ausência de parentesis ao redor da condição, e o uso de aspas simples para indicar que `'A'` é um caractere e não uma `string`.
+➏ Note a ausência de parênteses ao redor da condição, e o uso de aspas simples para indicar que `'A'` é um caractere e não uma `string`.
 
-➐ Um dos métodos para reportar erros em testes é `t.Errorf`.
+➐ Um dos métodos para reportar erros em testes é `t.Errorf`. Em Go, funções que terminam com a letra `f` normalmente aceitam strings com códigos de formatação, semelhante à função `printf` em C.
 
-A linha ➎ traz algumas novidades peculiares da linguagem Go:
+A linha ➎ traz algumas peculiaridades da linguagem Go:
 
-* Os caracteres Unicode em Go são chamados de "runas", e o tipo de dado usado para representar um caractere é `rune`. Assim como em C, um caractere é na verdade um número, que pode ser exibido como um caractere na saída se usarmos o código de formatação `"%c"`, como fizemos na linha ➐. Em Go, o tipo `rune` é o mesmo que `int32`, mas deixa claro quando estamos lidando com o código de um caractere, e não um número qualquer.
+* Os caracteres Unicode em Go são chamados de "runas", e o tipo de dado usado para representar um caractere é `rune`. Assim como em C, um caractere é na verdade um número, que pode ser exibido como um caractere na saída se usarmos o código de formatação `"%c"`, como fizemos na linha ➐. Em Go, o tipo `rune` é o mesmo que `int32`, mas usamos `rune` para deixar claro quando estamos lidando com o código de um caractere, e não um número qualquer.
 
 * Go permite que uma função devolva mais de um valor, e esses valores são atribuídos de uma vez só a suas respectivas variáveis. O compilador recusa variáveis que não serão usadas, então se você precisa ignorar um valor devolvido por uma função, use o nome especial `_`, o chamado _identificador vazio_ ([blank identifier](https://golang.org/doc/effective_go.html#blank)).
 
