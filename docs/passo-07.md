@@ -42,4 +42,78 @@ Vamos trocar a chamada `os.Open` por uma função nossa, `abrirUCD`, que vai ten
 
 A configuração do caminho local será feita com uma variável de ambiente, `UCD_PATH`. Se esta variável não estiver presente, o programa usará o caminho do diretório "home" do usuário, por exemplo, `/home/luciano` em um GNU/Linux.
 
-Para começar, vamos criar a função que determina o caminho para salvar o `UnicodeData.txt`, começando pelo teste:
+Para começar, vamos criar a função que determina o caminho para salvar o `UnicodeData.txt`, começando pelo teste simulando o caso de existir a variável de ambiente `UCD_PATH`:
+
+```go
+func TestObterCaminhoUCD_setado(t *testing.T) {
+	caminhoAntes := os.Getenv("UCD_PATH") // ➊
+	defer func() { os.Setenv("UCD_PATH", caminhoAntes) }() // ➋
+	UCDPath := fmt.Sprintf("./TEST%d-UnicodeData.txt", time.Now().UnixNano()) // ➌
+	os.Setenv("UCD_PATH", UCDPath) // ➍
+	obtido := obterCaminhoUCD() // ➎
+	if obtido != UCDPath {
+		t.Errorf("obterUCDPath() [setado]\nesperado: %q; recebido: %q", UCDPath, obtido)
+	}
+}
+```
+
+➊ Obtemos o valor da variável de ambiente `UCD_PATH` e guardamos para restaurar depois.
+
+➋ Usamos `defer` para restaurar no final do teste o valor inicial de `UCD_PATH`.
+
+➌ Geramos um caminho contendo o momento atual em nanossegundos, assim a cada excetução do teste o caminho será diferente.
+
+➍ Colocamos o caminho gerado na variável de ambiente.
+
+➎ Invocamos a função que queremos testar: `obterCaminhoUCD` deve obter o caminho que acabamos de colocar na variável de ambiente.
+
+Essa é a implementação mínima de `obterCaminhoUCD` que faria o teste acima passar:
+
+```go
+func obterCaminhoUCD() string {
+	return os.Getenv("UCD_PATH")
+}
+```
+
+Não tem muita graça esta função, e nem faria sentido o teste anterior: afinal estamos testando a função `os.Getenv`, e ao escrever testes automatizados devemos acreditar que as bibliotecas que são nossas dependências funcionam. Mas este teste faz sentido com o próximo, que verifica o caso contrário: quando não existe a variável de ambiente `UCD_PATH`, ou ela está vazia.
+
+```go
+func TestObterCaminhoUCD_default(t *testing.T) {
+	caminhoAntes := os.Getenv("UCD_PATH")
+	defer func() { os.Setenv("UCD_PATH", caminhoAntes) }()
+	os.Unsetenv("UCD_PATH") // ➊
+	sufixoUCDPath := "/UnicodeData.txt"  // ➋
+	obtido := obterCaminhoUCD()
+	if !strings.HasSuffix(obtido, sufixoUCDPath) { // ➌
+		t.Errorf("obterUCDPath() [default]\nesperado (sufixo): %q; recebido: %q", sufixoUCDPath, obtido)
+	}
+}
+```
+
+➊ Depois de preservar seu valor, removemos a variável de ambiente `UCD_PATH`.
+
+➋ Para não complicar demais o teste, vamos apenas checar que o caminho termina com o nome do arquivo que esperamos.
+
+➌ `strings.HasSuffix` serve para testar se uma string termina com um dado sufixo.
+
+Para fazer esse teste passar, precisamos de mais algumas linhas em `obterCaminhoUCD`:
+
+```go
+func obterCaminhoUCD() string {
+	caminhoUCD := os.Getenv("UCD_PATH")
+	if caminhoUCD == "" { // ➊
+		usuário, err := user.Current() // ➋
+		check(err) // ➌
+		caminhoUCD = usuário.HomeDir + "/UnicodeData.txt" // ➍
+	}
+	return caminhoUCD
+}
+```
+
+➊ Se a variável de ambiente `UCD_PATH` está vazia ou não existe...
+
+➋ ...invocamos `user.Current` para obter informações sobre o usuário logado.
+
+➌ A função `check` é uma forma rápida e preguiçosa de lidar com erros. Em seguida falaremos sobre ela.
+
+➍ Construímos o `caminnhoUCD` concatenando o nome do arquivo ao caminho do diretório _home_ do usuário, ex. `/home/luciano/UnicodeData.txt` no meu caso.
