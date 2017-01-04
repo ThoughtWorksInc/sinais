@@ -8,7 +8,7 @@ Nosso programa `runas` depende da presença do arquivo `UnicodeData.txt` no dire
 
 Antes de mais nada, vamos verificar que temos uma versão funcional de `runas`, após o exercício do `passo-06`.
 
- ```bash
+```bash
 $ go test
 PASS
 ok  	github.com/labgo/runas	0.109s
@@ -75,7 +75,7 @@ func obterCaminhoUCD() string {
 }
 ```
 
-Não tem muita graça esta função, e nem faria sentido o teste anterior: afinal estamos testando a função `os.Getenv`, e ao escrever testes automatizados devemos acreditar que as bibliotecas que são nossas dependências funcionam. Mas este teste faz sentido com o próximo, que verifica o caso contrário: quando não existe a variável de ambiente `UCD_PATH`, ou ela está vazia.
+Não tem muita graça esta função, e nem faria sentido o teste anterior: na prática estamos testando só função `os.Getenv`, e ao escrever testes automatizados devemos acreditar que as bibliotecas que são nossas dependências funcionam. Mas este teste faz sentido com o próximo, que verifica o caso contrário: quando não existe a variável de ambiente `UCD_PATH`, ou ela está vazia.
 
 ```go
 func TestObterCaminhoUCD_default(t *testing.T) {
@@ -110,7 +110,7 @@ func obterCaminhoUCD() string {
 }
 ```
 
-➊ Se a variável de ambiente `UCD_PATH` está vazia ou não existe...
+➊ Se a variável de ambiente `UCD_PATH` está vazia ou não existe (nos dois casos, `os.Getenv` devolve `""`)...
 
 ➋ ...invocamos `user.Current` para obter informações sobre o usuário logado.
 
