@@ -21,6 +21,13 @@ U+FF0D	－	FULLWIDTH HYPHEN-MINUS
 U+E002D		TAG HYPHEN-MINUS
 ```
 
+Neste passo final do tutorial faremos o seguinte:
+
+* Configuração do caminho local de `Unicode.txt`.
+* Função que abre o `Unicode.txt`, depois de baixá-lo da Web se não for encontrado.
+* Download concorrente com indicador de progresso.
+
+
 ## Configuração do caminho local de `Unicode.txt`
 
 A função `main` que fizemos no `passo-04` ficou assim:
@@ -40,7 +47,7 @@ func main() {
 
 Vamos trocar a chamada `os.Open` por uma função nossa, `abrirUCD`, que vai tentar abrir o arquivo em um caminho local configurado e, caso não encontre, vai baixar o arquivo do site `unicode.org`.
 
-A configuração do caminho local será feita com uma variável de ambiente, `UCD_PATH`. Se esta variável não estiver presente, o programa usará o caminho do diretório "home" do usuário, por exemplo, `/home/luciano` em um GNU/Linux.
+A configuração do caminho local será feita com uma variável de ambiente, `UCD_PATH`. Se esta variável não estiver presente, o programa usará o caminho do diretório "home" do usuário, por exemplo, `/home/luciano/UnicodeData.txt` em uma máquina GNU/Linux.
 
 Para começar, vamos criar a função que determina o caminho para salvar o `UnicodeData.txt`, começando pelo teste simulando o caso de existir a variável de ambiente `UCD_PATH`:
 
@@ -61,7 +68,7 @@ func TestObterCaminhoUCD_setado(t *testing.T) {
 
 ➋ Usamos `defer` para restaurar no final do teste o estado inicial de `UCD_PATH`. Veremos a seguir o código de `restaurar`.
 
-➌ Geramos um caminho contendo o momento atual em nanossegundos, assim a cada excetução do teste o caminho será diferente.
+➌ Geramos um caminho contendo o momento atual em nanossegundos, assim a cada execução do teste o caminho será diferente.
 
 ➍ Colocamos o caminho gerado na variável de ambiente.
 
@@ -79,7 +86,7 @@ func restaurar(nomeVar, valor string, existia bool) {
 }
 ```
 
-Essa é a implementação mínima de `obterCaminhoUCD` que faria o teste acima passar:
+Essa é a implementação mínima de `obterCaminhoUCD` que faz o teste acima passar:
 
 ```go
 func obterCaminhoUCD() string {
@@ -87,7 +94,7 @@ func obterCaminhoUCD() string {
 }
 ```
 
-Não tem nenhuma graça esta função. Nem faria sentido o teste anterior: na prática estamos testando só a função `os.Getenv`, e ao escrever testes automatizados devemos acreditar que as bibliotecas que são nossas dependências funcionam. Mas este teste faz sentido com o próximo, que verifica o caso contrário: quando não existe a variável de ambiente `UCD_PATH`, ou ela está vazia.
+Não tem nenhuma graça esta função. Nem faria sentido o teste anterior: na prática estamos testando só a função `os.Getenv`, e ao escrever testes automatizados devemos acreditar que as bibliotecas que são nossas dependências funcionam. Mas este teste faz sentido junto com o próximo teste, que verifica o caso contrário: quando não existe a variável de ambiente `UCD_PATH`, ou ela está vazia.
 
 ```go
 func TestObterCaminhoUCD_default(t *testing.T) {
@@ -128,7 +135,7 @@ func obterCaminhoUCD() string {
 
 ➌ A função `check` é uma forma rápida e preguiçosa de lidar com erros. Em seguida falaremos sobre ela.
 
-➍ Construímos o `caminnhoUCD` concatenando o nome do arquivo ao caminho do diretório _home_ do usuário, ex. `/home/luciano/UnicodeData.txt` no meu caso.
+➍ Construímos o `caminhoUCD` concatenando o nome do arquivo ao caminho do diretório _home_ do usuário, ex. `/home/luciano/UnicodeData.txt` no meu caso.
 
 Nesta etapa faremos várias operações com o SO que podem gerar erros. Em vez de colocar testes `if err != nil` por toda parte, num exemplo simples como este vamos usar essa função `check` para verificar se houve erro e terminar o programa com `panic`:
 
@@ -207,9 +214,9 @@ func TestAbrirUCD_remoto(t *testing.T) {
 
 ➊ Como este teste envolve um download que pode levar alguns segundos, este `if` utiliza a função `testing.Short` para ver se o teste foi acionado com a opção `-test.short`, assim: `go test -test.short`.
 
-➋ Se `-test.short` foi informado, então o método `t.Skip` reporta o teste que foi pulado, mas somente se for usada a opção `-v`; do contrário, o teste é pulado silenciosamente.
+➋ Se `-test.short` foi informado, então o método `t.Skip` reporta que esse teste foi pulado, mas somente se for usada a opção `-v`; do contrário, o teste é pulado silenciosamente.
 
-➌ Novamente usamos a técnica de gerar um caminho com a hora atual em nanossegundos, garantindo que cada execução desse teste vai gerar um novo caminho, obrigando `abrirUCD` a detectar a falta do arquivo `UnicodeData.txt` e baixá-lo.
+➌ Novamente usamos a técnica de gerar um caminho com o momento atual em nanossegundos, garantindo que cada execução desse teste vai gerar um novo caminho, obrigando `abrirUCD` a detectar a falta do arquivo `UnicodeData.txt` e baixá-lo.
 
 Segue a implementação de `abrirUCD`. Note a chamada para `baixarUCD`, que implementaremos em seguida.
 
@@ -225,7 +232,7 @@ func abrirUCD(caminhoUCD string) (*os.File, error) {
 }
 ```
 
-➊ Verificamos especificamente se `os.Open` devolveu um erro de arquivo não existente. Neste caso...
+➊ Verificamos se `os.Open` devolveu especificamente um erro de arquivo não existente. Neste caso...
 
 ➋ ...depois de informar o usuário, invocamos `baixarUCD`, passando o caminho onde será salvo o arquivo.
 
@@ -261,17 +268,18 @@ func baixarUCD(caminhoUCD string) {
 
 ➎ Se o arquivo foi criado com sucesso, usamos `defer` para fechá-lo no final dessa função.
 
-➏ Invocamos `io.Copy` para copiar os bytes do corpo da resposta HTTP para o arquivo local (estranhamente, a ordem dos parâmetros é destino, origiem). `io.Copy` devolve o número de bytes copiados (que vamos ignorar) e um possível erro, que vamos verificar com `check`.
+➏ Invocamos `io.Copy` para copiar os bytes do corpo da resposta HTTP para o arquivo local (estranhamente, a ordem dos parâmetros é destino, origem). `io.Copy` devolve o número de bytes copiados (que ignoramos atribuindo a `_`) e um possível erro, que verificaremos com `check`.
 
-Aqui deixamos de lado o TDD. Não é fácil estar adequadamente esta função, e talvez nem valha o esforço, porque ela não tem nenhum `if` ou `for`: é simplesmente uma sequência de passos realizados um depois do outro.
+Aqui deixamos de lado o TDD. Não é fácil estar adequadamente esta função, e talvez nem valha o esforço, porque ela não tem nenhum lógica elaborada: é simplesmente uma sequência de passos realizados um depois do outro.
 
-Neste ponto temos um programa bastante funcional: `runas` sabe procurar o arquivo `UnicodeData.txt` no local configurado, e sabe baixá-lo se necessário.
+Neste ponto temos um programa bastante funcional: `runas` sabe procurar o arquivo `UnicodeData.txt` no local configurado, e sabe baixá-lo da Web se necessário.
 
-O único incômdo é que, durante o download, nada acontece durante alguns segundos após o programa informar que está baixando o arquivo. Na seção final vamos resolver esse problema usando o recurso mais empolgante de Go: gorrotinas.
+O único incômdo é que, durante o download, nada acontece durante alguns segundos após o programa informar que está baixando o arquivo. Na seção final vamos resolver esse problema usando os recursoss mais empolgantes de Go: gorrotinas e canais.
+
 
 ## Download concorrente com indicador de progresso
 
-Para evitar que o usuário suspeite que o programa travou, vamos gerar uma sequência de pontos `.....` durante o download. Para fazê-lo, usaremos alguns recursos especiais da linguagem Go.
+Vamos gerar continuamente uma sequência de pontos `.....` durante o download, evitando que o usuário suspeite que o programa travou. Para fazê-lo, usaremos alguns recursos especiais da linguagem Go.
 
 Veja como fica a função `abrirUCD`:
 
@@ -310,7 +318,7 @@ func baixarUCD(caminhoUCD string, feito chan<- bool) { // ➊
 	feito <- true // ➋
 }
 ```
-➊ O segundo parâmetro é `feito chan<- bool`, onde a notação `chan<-` indica que, dentro dessa função, o canal `feito` apenas consome e não produz valores.
+➊ O segundo parâmetro é `feito chan<- bool`. A notação `chan<-` indica que, dentro dessa função, o canal `feito` apenas consome e não produz valores.
 
 ➋ Uma vez terminado o download, enviamos para o canal `feito` o sinal `true`. Isso terminará a função `progresso`, como veremos a seguir.
 
@@ -333,18 +341,18 @@ func progresso(feito <-chan bool) { // ➊
 
 ➋ Inciamos um laço infinito com `for`.
 
-➌ `select` uma construção de controle de fluxo especial para lidar com sistemas concorrentes. Funciona como um `switch` com vários blocos `case`, mas a seleção é baseada no estado dos canais em cada case. O `select` executa o bloco do primeiro canal que estiver pronto para consumir ou produzir um valor.
+➌ `select` é uma comando de controle de fluxo especial para suportar com sistemas concorrentes. Funciona como um `switch` com vários blocos `case`, mas a seleção é baseada no estado do canal em cada caso. O `select` executa o bloco `case` do primeiro canal que estiver pronto para consumir ou produzir um valor.
 
-➍ O bloco `case <-feito` será executado quando o canal `feito` estiver pronto para produzir o valor; isso só vai acontecer quando `feito` receber o valor `true` na última linha de `baixarUCD`. Dessa maneira a gorrotina auxiliar informa a gorrotina principal que terminou seu processamento. Neste caso, este bloco vai exibir uma quebra de linha com `fmt.Println` e encerrar a função `progresso` com `return`.
+➍ O bloco `case <-feito` será executado quando o canal `feito` estiver pronto para produzir um valor; isso só vai acontecer quando `feito` receber o valor `true` na última linha de `baixarUCD`. Dessa maneira a gorrotina auxiliar informa a gorrotina principal que terminou seu processamento. Neste caso, este bloco vai exibir uma quebra de linha com `fmt.Println` e encerrar a função `progresso` com `return`.
 
-➎ Em um `select`, o bloco `default` é acionado quando nenum `case` está pronto para executar. Neste caso, se o canal `feito` não produziu uma mensagem, então geramos um `"."` na saída, e congelamos esta gorrotina por 150 milissegundos (do contrário milhares de `.....` por segundo apareceriam na saída).
+➎ Em um `select`, o bloco `default` é acionado quando nenhum `case` está pronto para executar. Neste caso, se o canal `feito` não produziu uma mensagem, então geramos um `"."` na saída, e congelamos esta gorrotina por 150 milissegundos (do contrário milhares de `.....` por segundo apareceriam na saída).
 
-Como temos o laço `for`, após cada execução do `default`, o `select` vai novamente verificar se o `case <-feito`, até que o canal produza um valor.
+Como temos o laço `for`, após cada execução do `default`, o `select` vai novamente verificar se o `case <-feito` está pronto para produzir um valor.
 
-Vale notar que se um `select` não tem um `default`, ele bloqueia até que algum `case` esteja pronto para produzir ou consumir um valor. Mas com um `default`, o `select` é uma estrutura de controle não bloqueante.
+Vale notar que, quando um `select` não tem um `default`, ele bloqueia até que algum `case` esteja pronto para produzir ou consumir um valor. Mas com um `default`, o `select` é uma estrutura de controle não bloqueante.
 
-Isso conclui a nossa degustação da linguagem Go através de um exemplo (uma deGostação?).
+Isso conclui a nossa degustação da linguagem Go (uma deGostação?).
 
-Agradeço se você me mandar feedback com sugestões para melhorias, especialmente sobre como melhorar a cobertura de testes que ia bem até o passo 6 mas no neste passo final deixou a desejar.
+Agradecemos se você mandar feedback com sugestões para melhorias, especialmente sobre como melhorar a cobertura de testes que ia bem até o passo 6 mas no neste passo final deixou a desejar.
 
-Espero que tenha sido útil para conhecer o um pouco dessa linguagem radicalmente pragmática.
+Nosso objetivo era mostrar elementos da linguagem através de um exemplo simples porém útil, e ao mesmo tempo ilustrar algumas técnicas básicas de testes automatizados em Go.
