@@ -75,7 +75,7 @@ func obterCaminhoUCD() string {
 }
 ```
 
-Não tem muita graça esta função, e nem faria sentido o teste anterior: na prática estamos testando só função `os.Getenv`, e ao escrever testes automatizados devemos acreditar que as bibliotecas que são nossas dependências funcionam. Mas este teste faz sentido com o próximo, que verifica o caso contrário: quando não existe a variável de ambiente `UCD_PATH`, ou ela está vazia.
+Não tem muita graça esta função, e nem faria sentido o teste anterior: na prática estamos testando só a função `os.Getenv`, e ao escrever testes automatizados devemos acreditar que as bibliotecas que são nossas dependências funcionam. Mas este teste faz sentido com o próximo, que verifica o caso contrário: quando não existe a variável de ambiente `UCD_PATH`, ou ela está vazia.
 
 ```go
 func TestObterCaminhoUCD_default(t *testing.T) {
