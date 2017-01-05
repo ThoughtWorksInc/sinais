@@ -351,9 +351,9 @@ Como temos o laço `for`, após cada execução do `default`, o `select` vai nov
 
 Vale notar que, quando um `select` não tem um `default`, ele bloqueia até que algum `case` esteja pronto para produzir ou consumir um valor. Mas com um `default`, o `select` é uma estrutura de controle não bloqueante.
 
-## `os.Exit(0)`
+## os.Exit(0)
 
-Isso conclui a nossa degustação da linguagem Go (uma deGostação?).
+Isso conclui a nossa degustação da linguagem Go. Uma deGostação!
 
 Nosso objetivo era mostrar elementos da linguagem através de um exemplo simples porém útil, e ao mesmo tempo ilustrar algumas técnicas básicas de testes automatizados em Go.
 

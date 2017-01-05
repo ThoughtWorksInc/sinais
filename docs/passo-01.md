@@ -2,7 +2,7 @@
 permalink: passo-01
 ---
 
-# Runas, passo 1: inciando com TDD
+# Runas, passo 1: iniciando o TDD
 
 Vamos usar [TDD](http://tdd.caelum.com.br/) para desenvolver esse projeto. A primeira coisa então é escrever um teste, no arquivo-fonte `runefinder_test.go`. Nosso primeiro teste verifica a função `AnalisarLinha`, que deve extrair um caractere e um nome de uma linha do `UnicodeData.txt`:
 

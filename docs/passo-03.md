@@ -26,7 +26,7 @@ func ExampleListar() { // ➊
 
 Observe:
 
-➊ O nome da função tem que começar com `Example`; em seguida obrigatoriamente vem o nome da função a ser testada, no caso `Listar`.
+➊ O nome da função tem que começar com `Example`. Em seguida obrigatoriamente vem o nome da função a ser testada, por isso: `ExampleListar`.
 
 ➋ Nossa função `Listar` receberá um argumento `io.Reader` (ao final, será o arquivo `UnicodeData.txt`). Para testar, construímos um buffer de leitura `strings.Reader` a partir da constante `linhas3Da43`, cujo conteúdo veremos abaixo.
 

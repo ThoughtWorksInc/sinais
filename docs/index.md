@@ -1,10 +1,12 @@
-# Runas: passo a passo
+# Runas: passo a passo com TDD
 
 Neste repositório você pode ver o desenvolvimento passo a passo do exemplo `runas`: um utilitário em Go para localizar caracteres Unicode pelo nome.
 
+Seguiremos o princípio do [TDD](http://tdd.caelum.com.br/) (_Test-Driven Development_): primeiro escrevemos um teste, depois o código mais simples que faz o teste passar.
+
 ## Conteúdo deste tutorial
 
-1. [Inciando com TDD](passo-01)
+1. [Iniciando o TDD](passo-01)
 2. [Primeira função completa](passo-02)
 3. [Gerar a lista de caracteres](passo-03)
 4. [MVP 1, o mínimo que é útil](passo-04)
@@ -40,7 +42,7 @@ Você passa uma um mais palavras como argumento, e o programa devolve uma lista 
 
 O projeto [Unicode](http://unicode.org) mantém um banco de dados chamado Unicode Character Database (UCD), com nomes descritivos e outros metadados sobre os mais de 128.000 caracteres que fazem parte da versão atual do padrão. A tabela mais interessante UCD é um arquivo ASCII de 1.6MB cuja versão mais atual pode ser obtida neste URL: [`http://www.unicode.org/Public/UNIDATA/UnicodeData.txt`](http://www.unicode.org/Public/UNIDATA/UnicodeData.txt).
 
-O `UnicodeData.txt` traz informações sobre os caracteres de praticamente todos os idiomas, incluindo também símbolos, ícones e emojis, somando 30.592 linhas na versão 9.0 do padrão Unicode. Isso corresponde a cerca de 24% do total de caracteres do UCD (a maior parte dos ideogramas CJK — Chinês/Japonês/Coreano — é documentada em outras tabelas).
+O `UnicodeData.txt` traz informações sobre os caracteres de praticamente todos os idiomas, incluindo também símbolos, ícones e emojis. São 30.592 linhas na versão 9.0 do padrão Unicode. Isso corresponde a cerca de 24% do total de caracteres do UCD (a maior parte dos ideogramas CJK — Chinês/Japonês/Coreano — é documentada em outras tabelas).
 
 Eis uma pequena amostra do `UnicodeData.txt`:
 
