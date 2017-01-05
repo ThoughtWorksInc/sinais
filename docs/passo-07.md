@@ -359,4 +359,4 @@ Nosso objetivo era mostrar elementos da linguagem através de um exemplo simples
 
 Agradecemos se você [mandar feedback](https://github.com/labgo/runas/issues) com sugestões para melhorias. Por exemplo: como melhorar a cobertura de testes neste passo final? Não deixe também de postar suas dúvidas. Cada dúvida é um possível _bug_ deste tutorial, pois sempre é possível explicar melhor.
 
-Happy hacking!
+_Happy hacking!_
