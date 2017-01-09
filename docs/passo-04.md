@@ -79,7 +79,7 @@ $ go test -v
 === RUN   Example
 --- PASS: Example (0.02s)
 PASS
-ok  	github.com/labgo/runas-passo-a-passo	0.033s
+ok  	github.com/ThoughtWorksInc/runas-passo-a-passo	0.033s
 ```
 
 ## Experimentando o `runefinder`

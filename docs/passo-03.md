@@ -54,9 +54,9 @@ Seguindo a filosofia do TDD, vamos rodar os testes:
 
 ```bash
 $ go test
-# github.com/labgo/runas-passo-a-passo
+# github.com/ThoughtWorksInc/runas-passo-a-passo
 ./runefinder_test.go:33: undefined: Listar
-FAIL	github.com/labgo/runas-passo-a-passo [build failed]
+FAIL	github.com/ThoughtWorksInc/runas-passo-a-passo [build failed]
 ```
 
 Claro que falhou porque ainda não escrevemos a função `Listar`. Vamos começar implementando essa função da forma mais simples possível, apenas para fazer o teste passar:
@@ -104,7 +104,7 @@ $ go test -v
 === RUN   ExampleListar
 --- PASS: ExampleListar (0.00s)
 PASS
-ok  	github.com/labgo/runas-passo-a-passo	0.001s
+ok  	github.com/ThoughtWorksInc/runas-passo-a-passo	0.001s
 ```
 
 Agora vamos codar a lógica da função `Listar`.
@@ -142,7 +142,7 @@ U+003D	=	EQUALS SIGN
 U+003E	>	GREATER-THAN SIGN
 FAIL
 exit status 1
-FAIL	github.com/labgo/runas-passo-a-passo	0.001s
+FAIL	github.com/ThoughtWorksInc/runas-passo-a-passo	0.001s
 ```
 
 A palavra `got:` (recebido) indica a saída que foi produzida, e `want:` (desejado), a saída que era esperada. Naturalmente o teste não passou porque nossa função `Listar` mostra sempre o mesmo resultado. Vamos consertar isso, com este código que traz várias novidades:
@@ -212,7 +212,7 @@ $ go test -v
 === RUN   ExampleListar_doisResultados
 --- PASS: ExampleListar_doisResultados (0.00s)
 PASS
-ok  	github.com/labgo/runas-passo-a-passo	0.001s
+ok  	github.com/ThoughtWorksInc/runas-passo-a-passo	0.001s
 ```
 
 ## Documentando funções
@@ -231,7 +231,7 @@ O comando `go doc` exibe as assinaturas das funções de um pacote:
 
 ```bash
 $ go doc
-package runefinder // import "github.com/labgo/runas-passo-a-passo"
+package runefinder // import "github.com/ThoughtWorksInc/runas-passo-a-passo"
 
 func AnalisarLinha(linha string) (rune, string)
 func Listar(texto io.Reader, consulta string)

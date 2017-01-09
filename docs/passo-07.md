@@ -11,7 +11,7 @@ Antes de mais nada, vamos verificar que temos uma versão funcional de `runas`, 
 ```bash
 $ go test
 PASS
-ok  	github.com/labgo/runas	0.109s
+ok  	github.com/ThoughtWorksInc/runas	0.109s
 $ go run runefinder.go minus hyphen
 U+002D	-	HYPHEN-MINUS
 U+207B	⁻	SUPERSCRIPT MINUS (SUPERSCRIPT HYPHEN-MINUS)
@@ -357,6 +357,6 @@ Isso conclui a nossa degustação da linguagem Go. Uma deGostação!
 
 Nosso objetivo era mostrar elementos da linguagem através de um exemplo simples porém útil, e ao mesmo tempo ilustrar algumas técnicas básicas de testes automatizados em Go.
 
-Agradecemos se você [mandar feedback](https://github.com/labgo/runas/issues) com sugestões para melhorias. Por exemplo: como melhorar a cobertura de testes neste passo final? Não deixe também de postar suas dúvidas. Cada dúvida é um possível _bug_ deste tutorial, pois sempre é possível explicar melhor.
+Agradecemos se você [mandar feedback](https://github.com/ThoughtWorksInc/runas/issues) com sugestões para melhorias. Por exemplo: como melhorar a cobertura de testes neste passo final? Não deixe também de postar suas dúvidas. Cada dúvida é um possível _bug_ deste tutorial, pois sempre é possível explicar melhor.
 
 _Happy hacking!_

@@ -41,7 +41,7 @@ $ go test
 	runefinder_test.go:14: Esperava "LATIN CAPITAL LETTER A", veio "LETRA A"
 FAIL
 exit status 1
-FAIL	github.com/labgo/runas-passo-a-passo	0.011s
+FAIL	github.com/ThoughtWorksInc/runas-passo-a-passo	0.011s
 ```
 
 Note a mensagem indicando que na linha 14 um teste falhou. O texto da mensagem é o que passamos para o métido `t.Errorf`.
@@ -80,7 +80,7 @@ $ go test -v
 === RUN TestAnalisarLinha
 --- PASS: TestAnalisarLinha (0.00s)
 PASS
-ok  	github.com/labgo/runas-passo-a-passo	0.012s
+ok  	github.com/ThoughtWorksInc/runas-passo-a-passo	0.012s
 ```
 
 Assim completamos o passo 2. Hora e ler o [Passo 3](passo-03) mudar para o _branch_ `passo-03`.
