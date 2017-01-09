@@ -51,9 +51,9 @@ Após criar o arquivo `runefinder_test.go`, você pode usar o comando `go test` 
 
 ```bash
 $ go test
-# github.com/ThoughtWorksInc/runas-passo-a-passo
+# github.com/ThoughtWorksInc/runas
 ./runefinder_test.go:8: undefined: AnalisarLinha
-FAIL	github.com/ThoughtWorksInc/runas-passo-a-passo [build failed]
+FAIL	github.com/ThoughtWorksInc/runas [build failed]
 ```
 
 Obviamente, falta definir a função `AnalisarLinha` em algum lugar. Vamos lá.
@@ -84,7 +84,7 @@ Feito isso, rodamos o teste:
 ```bash
 $ go test
 PASS
-ok  	github.com/ThoughtWorksInc/runas-passo-a-passo	0.013s
+ok  	github.com/ThoughtWorksInc/runas	0.013s
 ```
 
 Sucesso!
