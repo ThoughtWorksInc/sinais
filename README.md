@@ -1,6 +1,6 @@
 # Runas: passo a passo
 
-Neste repositório você pode ver o desenvolvimento passo a passo do exemplo `runefinder`: um utilitário em Go para localizar caracteres Unicode pelo nome.
+Neste repositório você pode ver o desenvolvimento passo a passo do exemplo `runas`: um utilitário em Go para localizar caracteres Unicode pelo nome.
 
 Cada etapa do desenvolvimento é documentada explicando os recursos da linguagem Go usados no código do exemplo.
 
