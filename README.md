@@ -30,3 +30,8 @@ U+1F644	🙄	FACE WITH ROLLING EYES
 Você passa uma um mais palavras como argumento, e o programa devolve uma lista ordenada de caracteres Unicode cujas descrições contém todas as palavras que você passou.
 
 Leia mais nas [páginas do projeto](https://ThoughtWorksInc.github.io/runas/).
+
+
+## Créditos
+
+Este tutorial é baseado no exemplo `charfinder` do capítulo 18 de [Python Fluente](http://novatec.com.br/livros/pythonfluente/), de Luciano Ramalho. A versão Go, chamada `runefinder`, foi iniciada no grupo de estudos [Garoa Gophers](https://garoa.net.br/wiki/Garoa_Gophers), com a participação de Afonso Coutinho (@afonso), Alexandre Souza (@alexandre), Andrews Medina (@andrewsmedina), João "JC" Martins (@jcmartins), Luciano Ramalho (@ramalho), Marcio Ribeiro (@mmr) e Michael Howard.
