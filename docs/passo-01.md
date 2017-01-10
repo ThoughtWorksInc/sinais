@@ -73,7 +73,7 @@ func AnalisarLinha(ucdLine string) (rune, string) { // ➋
 
 Vejamos o que temos em `runefinder.go`:
 
-➊ Novamente declaramos o mesmo pacote, assim os identificadores públicos deste arquivo ficam acessíveis para outros arquivos do mesmo pacote.
+➊ Novamente declaramos o mesmo pacote, assim os identificadores deste arquivo ficam acessíveis para outros arquivos do mesmo pacote.
 
 ➋ Esta função é pública porque seu nome começa com uma letra maiúscula. Isso não é apenas uma convenção, é algo que o compilador verifica. Esta linha também declara que a função recebe um argumento do tipo `string` e devolve um par de resultados, respectivamente `rune` e `string`.
 

@@ -46,7 +46,7 @@ FAIL	github.com/ThoughtWorksInc/runas	0.011s
 
 Note a mensagem indicando que na linha 14 um teste falhou. O texto da mensagem é o que passamos para o métido `t.Errorf`.
 
-Agora vamos codar a função `AnalisarLinha` de verdade no arquivoo `runefinder.go`, assim:
+Agora vamos codar a função `AnalisarLinha` de verdade no arquivo `runefinder.go`, assim:
 
 ```go
 package main
