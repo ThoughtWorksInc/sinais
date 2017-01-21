@@ -170,22 +170,20 @@ func main() {
 
 Não temos um teste unitário para `main`; ela é verificada pelos testes funcionais `Example`,  `Example_consultaDuasPalavras` e `Example_consultaComHífenECampo10` que fizemos nos passos 5 e 6.
 
-Vamos escrever os testes para `abrirUCD`, primeiro um teste que assume a existência do arquivo `UnicodeData.txt` no diretório corrente:
+Vamos escrever os testes para `abrirUCD`, primeiro um teste que assume a existência do arquivo `UnicodeData.txt` no diretório local configurado:
 
 ```go
 func TestAbrirUCD_local(t *testing.T) {
-	caminhoUCD := "./UnicodeData.txt"
+	caminhoUCD := obterCaminhoUCD()
 	ucd, err := abrirUCD(caminhoUCD)
-	if err != nil { // ➊
+	if err != nil {
 		t.Errorf("AbrirUCD(%q):\n%v", caminhoUCD, err)
 	}
 	ucd.Close()
 }
 ```
 
-➌ Se `abrirUCD` não reportar erro, o teste falhou.
-
-Supondo que existe o arquivo `UnicodeData.txt` no diretório corrente, esta versão super simples de `abrirUCD` satisfaz o teste anterior:
+Supondo que existe o arquivo `UnicodeData.txt` no diretório configurado, esta versão super simples de `abrirUCD` satisfaz o teste anterior:
 
 ```go
 func abrirUCD(caminhoUCD string) (*os.File, error) {

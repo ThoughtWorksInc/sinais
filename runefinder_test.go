@@ -205,7 +205,7 @@ func TestObterCaminhoUCD_default(t *testing.T) {
 }
 
 func TestAbrirUCD_local(t *testing.T) {
-	caminhoUCD := "./UnicodeData.txt"
+	caminhoUCD := obterCaminhoUCD()
 	ucd, err := abrirUCD(caminhoUCD)
 	if err != nil {
 		t.Errorf("AbrirUCD(%q):\n%v", caminhoUCD, err)
