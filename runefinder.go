@@ -104,11 +104,11 @@ func progresso(feito <-chan bool) {
 	}
 }
 
-func baixarUCD(caminhoUCD string, feito chan<- bool) {
-	response, err := http.Get(URLUCD)
+func baixarUCD(url, caminho string, feito chan<- bool) {
+	response, err := http.Get(url)
 	check(err)
 	defer response.Body.Close()
-	file, err := os.Create(caminhoUCD)
+	file, err := os.Create(caminho)
 	check(err)
 	defer file.Close()
 	_, err = io.Copy(file, response.Body)
@@ -116,14 +116,14 @@ func baixarUCD(caminhoUCD string, feito chan<- bool) {
 	feito <- true
 }
 
-func abrirUCD(caminhoUCD string) (*os.File, error) {
-	ucd, err := os.Open(caminhoUCD)
+func abrirUCD(caminho string) (*os.File, error) {
+	ucd, err := os.Open(caminho)
 	if os.IsNotExist(err) {
-		fmt.Printf("%s não encontrado\nbaixando %s\n", caminhoUCD, URLUCD)
+		fmt.Printf("%s não encontrado\nbaixando %s\n", caminho, URLUCD)
 		feito := make(chan bool)
-		go baixarUCD(caminhoUCD, feito)
+		go baixarUCD(URLUCD, caminho, feito)
 		progresso(feito)
-		ucd, err = os.Open(caminhoUCD)
+		ucd, err = os.Open(caminho)
 	}
 	return ucd, err
 }

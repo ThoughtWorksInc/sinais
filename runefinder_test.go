@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"reflect"
 	"strings"
@@ -202,6 +204,26 @@ func TestObterCaminhoUCD_default(t *testing.T) {
 	if !strings.HasSuffix(obtido, sufixoUCDPath) {
 		t.Errorf("obterUCDPath() [default]\nesperado (sufixo): %q; recebido: %q", sufixoUCDPath, obtido)
 	}
+}
+
+func TestBaixarUCD(t *testing.T) {
+	responder := func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(linhas3Da43))
+	}
+
+	srv := httptest.NewServer(http.HandlerFunc(responder))
+	defer srv.Close()
+
+	caminhoUCD := fmt.Sprintf("./TEST%d-UnicodeData.txt", time.Now().UnixNano())
+	feito := make(chan bool)
+	go baixarUCD(srv.URL, caminhoUCD, feito)
+	_ = <-feito
+	ucd, err := os.Open(caminhoUCD)
+	if os.IsNotExist(err) {
+		t.Errorf("baixarUCD não gerou:%v\n%v", caminhoUCD, err)
+	}
+	ucd.Close()
+	os.Remove(caminhoUCD)
 }
 
 func TestAbrirUCD_local(t *testing.T) {
