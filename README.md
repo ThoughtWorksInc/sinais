@@ -1,4 +1,4 @@
-# Runas: passo a passo
+# Runas: passo a passo com TDD
 
 Neste repositório você pode ver o desenvolvimento passo a passo do exemplo `runas`: um utilitário em Go para localizar caracteres Unicode pelo nome.
 
