@@ -5,16 +5,10 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"net/http"
 	"os"
-	"os/user"
 	"strconv"
 	"strings"
-	"time"
 )
-
-// URLUCD é a URL canônica do arquivo UnicodeData.txt mais atual
-const URLUCD = "http://www.unicode.org/Public/UNIDATA/UnicodeData.txt"
 
 // AnalisarLinha devolve a runa, o nome e uma fatia de palavras que
 // ocorrem no campo nome de uma linha do UnicodeData.txt
@@ -76,61 +70,8 @@ func Listar(texto io.Reader, consulta string) {
 	}
 }
 
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
-
-func obterCaminhoUCD() string {
-	caminhoUCD := os.Getenv("UCD_PATH")
-	if caminhoUCD == "" {
-		usuário, err := user.Current()
-		check(err)
-		caminhoUCD = usuário.HomeDir + "/UnicodeData.txt"
-	}
-	return caminhoUCD
-}
-
-func progresso(feito <-chan bool) {
-	for {
-		select {
-		case <-feito:
-			fmt.Println()
-			return
-		default:
-			fmt.Print(".")
-			time.Sleep(150 * time.Millisecond)
-		}
-	}
-}
-
-func baixarUCD(url, caminho string, feito chan<- bool) {
-	response, err := http.Get(url)
-	check(err)
-	defer response.Body.Close()
-	file, err := os.Create(caminho)
-	check(err)
-	defer file.Close()
-	_, err = io.Copy(file, response.Body)
-	check(err)
-	feito <- true
-}
-
-func abrirUCD(caminho string) (*os.File, error) {
-	ucd, err := os.Open(caminho)
-	if os.IsNotExist(err) {
-		fmt.Printf("%s não encontrado\nbaixando %s\n", caminho, URLUCD)
-		feito := make(chan bool)
-		go baixarUCD(URLUCD, caminho, feito)
-		progresso(feito)
-		ucd, err = os.Open(caminho)
-	}
-	return ucd, err
-}
-
 func main() {
-	ucd, err := abrirUCD(obterCaminhoUCD())
+	ucd, err := os.Open("UnicodeData.txt")
 	if err != nil {
 		log.Fatal(err.Error())
 	}

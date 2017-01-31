@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-// URLUCD é a URL canônica do arquivo UnicodeData.txt mais atual
+// URLUCD is the canonical URL of the current UnicodeData.txt file
 const URLUCD = "http://www.unicode.org/Public/UNIDATA/UnicodeData.txt"
 
 // AnalisarLinha devolve a runa, o nome e uma fatia de palavras que
@@ -92,6 +92,18 @@ func obterCaminhoUCD() string {
 	return caminhoUCD
 }
 
+func baixarUCD(caminhoUCD string, feito chan<- bool) {
+	response, err := http.Get(URLUCD)
+	check(err)
+	defer response.Body.Close()
+	file, err := os.Create(caminhoUCD)
+	check(err)
+	defer file.Close()
+	_, err = io.Copy(file, response.Body)
+	check(err)
+	feito <- true
+}
+
 func progresso(feito <-chan bool) {
 	for {
 		select {
@@ -105,26 +117,14 @@ func progresso(feito <-chan bool) {
 	}
 }
 
-func baixarUCD(url, caminho string, feito chan<- bool) {
-	response, err := http.Get(url)
-	check(err)
-	defer response.Body.Close()
-	file, err := os.Create(caminho)
-	check(err)
-	defer file.Close()
-	_, err = io.Copy(file, response.Body)
-	check(err)
-	feito <- true
-}
-
-func abrirUCD(caminho string) (*os.File, error) {
-	ucd, err := os.Open(caminho)
+func abrirUCD(caminhoUCD string) (*os.File, error) {
+	ucd, err := os.Open(caminhoUCD)
 	if os.IsNotExist(err) {
-		fmt.Printf("%s não encontrado\nbaixando %s\n", caminho, URLUCD)
+		fmt.Printf("%s não encontrado\nbaixando %s\n", caminhoUCD, URLUCD)
 		feito := make(chan bool)
-		go baixarUCD(URLUCD, caminho, feito)
+		go baixarUCD(caminhoUCD, feito)
 		progresso(feito)
-		ucd, err = os.Open(caminho)
+		ucd, err = os.Open(caminhoUCD)
 	}
 	return ucd, err
 }
