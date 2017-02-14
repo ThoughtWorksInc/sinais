@@ -297,7 +297,7 @@ func abrirUCD(caminhoUCD string) (*os.File, error) {
 
 ➊ Construímos um _channel_ ou canal, do tipo `chan bool`, ou seja, um canal por onde vão trafegar valores booleanos. Um canal permite a comunicação e a sincronização entre gorrotinas, que são como threads leves gerenciadas pelo ambiente de execução da linguagem Go.
 
-➋ O comando `go` dispara uma função em uma nova gorrotina, permitindo que ela execute de forma concorrente. A partir desse ponto, nosso programa opera com duas gorrotinas: a gorrotina principal e a gorrotina que executa `baixarUCD`. Note que, além do `caminhoUCD`, estamos passando o canal `feito`.
+➋ A instrução `go` dispara uma função em uma nova gorrotina, permitindo que ela execute de forma concorrente. A partir desse ponto, nosso programa opera com duas gorrotinas: a gorrotina principal e a gorrotina que executa `baixarUCD`. Note que, além do `caminhoUCD`, estamos passando o canal `feito`.
 
 ➌ Invocamos a função `progresso`. Ela vai ficar em _loop_ gerando `....` na saída, até que receba pelo canal `feito` um sinal de que `baixarUCD` terminou o download.
 
@@ -339,15 +339,15 @@ func progresso(feito <-chan bool) { // ➊
 
 ➋ Inciamos um laço infinito com `for`.
 
-➌ `select` é uma comando de controle de fluxo especial para suportar com sistemas concorrentes. Funciona como um `switch` com vários blocos `case`, mas a seleção é baseada no estado do canal em cada caso. O `select` executa o bloco `case` do primeiro canal que estiver pronto para consumir ou produzir um valor.
+➌ `select` é uma instrução de controle de fluxo especial para programar sistemas concorrentes. Funciona como uma `switch` com vários blocos `case`, mas a seleção é baseada no estado do canal em cada caso. O bloco `case` do primeiro canal que estiver pronto para consumir ou produzir um valor será executado. Se mais de um `case` estiver pronto, Go seleciona um deles aleatoriamente.
 
 ➍ O bloco `case <-feito` será executado quando o canal `feito` estiver pronto para produzir um valor; isso só vai acontecer quando `feito` receber o valor `true` na última linha de `baixarUCD`. Dessa maneira a gorrotina auxiliar informa a gorrotina principal que terminou seu processamento. Neste caso, este bloco vai exibir uma quebra de linha com `fmt.Println` e encerrar a função `progresso` com `return`.
 
-➎ Em um `select`, o bloco `default` é acionado quando nenhum `case` está pronto para executar. Neste caso, se o canal `feito` não produziu uma mensagem, então geramos um `"."` na saída, e congelamos esta gorrotina por 150 milissegundos (do contrário milhares de `.....` por segundo apareceriam na saída).
+➎ Na construção `select`, o bloco `default` é acionado quando nenhum `case` está pronto para executar. Neste caso, se o canal `feito` não produziu uma mensagem, então geramos um `"."` na saída, e congelamos esta gorrotina por 150 milissegundos (do contrário milhares de `.....` por segundo apareceriam na saída).
 
 Como temos o laço `for`, após cada execução do `default`, o `select` vai novamente verificar se o `case <-feito` está pronto para produzir um valor.
 
-Vale notar que, quando um `select` não tem um `default`, ele bloqueia até que algum `case` esteja pronto para produzir ou consumir um valor. Mas com um `default`, o `select` é uma estrutura de controle não bloqueante.
+Vale notar que, quando uma instrução `select` não tem um `default`, ela bloqueia até que algum `case` esteja pronto para produzir ou consumir um valor. Mas com um `default`, `select` é uma estrutura de controle não bloqueante.
 
 ## os.Exit(0)
 
