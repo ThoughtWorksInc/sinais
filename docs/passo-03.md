@@ -183,7 +183,7 @@ O que temos de novo:
 
 Duas observações sobre a linha ➌:
 
-*  Não existe `while` na linguagem Go; o comando `for` pode ser usado como um `while` dessa forma: `for «condição» {...}`.
+*  Não existe `while` na linguagem Go; a instrução `for` pode ser usada como `while` dessa forma: `for «condição» {...}`.
 * Um `Scanner` pode ser configurado para iterar pelo `Reader` de outras formas, além de linha-a-linha. Veja a documentação do [método](https://golang.org/pkg/bufio/#Scanner.Split) `Scanner.Split` e das [funções](https://golang.org/pkg/bufio/#ScanLines) `ScanLines`, `ScanRunes`, `ScanWords` e `ScanBytes`.
 
 
