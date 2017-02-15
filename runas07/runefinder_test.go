@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"reflect"
 	"strings"
@@ -174,30 +176,57 @@ func Example_consultaComHífenECampo10() {
 	// U+235E	⍞	APL FUNCTIONAL SYMBOL QUOTE QUAD
 }
 
+func restaurar(nomeVar, valor string, existia bool) {
+	if existia {
+		os.Setenv(nomeVar, valor)
+	} else {
+		os.Unsetenv(nomeVar)
+	}
+}
+
 func TestObterCaminhoUCD_setado(t *testing.T) {
-	caminhoAntes := os.Getenv("UCD_PATH")
-	defer func() { os.Setenv("UCD_PATH", caminhoAntes) }()
-	UCDPath := fmt.Sprintf("./TEST%d-UnicodeData.txt", time.Now().UnixNano())
-	os.Setenv("UCD_PATH", UCDPath)
+	caminhoAntes, existia := os.LookupEnv("UCD_PATH")
+	defer restaurar("UCD_PATH", caminhoAntes, existia)
+	caminhoUCD := fmt.Sprintf("./TEST%d-UnicodeData.txt", time.Now().UnixNano())
+	os.Setenv("UCD_PATH", caminhoUCD)
 	obtido := obterCaminhoUCD()
-	if obtido != UCDPath {
-		t.Errorf("obterUCDPath() [setado]\nesperado: %q; recebido: %q", UCDPath, obtido)
+	if obtido != caminhoUCD {
+		t.Errorf("obterCaminhoUCD() [setado]\nesperado: %q; recebido: %q", caminhoUCD, obtido)
 	}
 }
 
 func TestObterCaminhoUCD_default(t *testing.T) {
-	caminhoAntes := os.Getenv("UCD_PATH")
-	defer func() { os.Setenv("UCD_PATH", caminhoAntes) }()
-	os.Setenv("UCD_PATH", "")
-	sufixoUCDPath := "/UnicodeData.txt"
+	caminhoAntes, existia := os.LookupEnv("UCD_PATH")
+	defer restaurar("UCD_PATH", caminhoAntes, existia)
+	os.Unsetenv("UCD_PATH")
+	sufixoCaminhoUCD := "/UnicodeData.txt"
 	obtido := obterCaminhoUCD()
-	if !strings.HasSuffix(obtido, sufixoUCDPath) {
-		t.Errorf("obterUCDPath() [default]\nesperado (sufixo): %q; recebido: %q", sufixoUCDPath, obtido)
+	if !strings.HasSuffix(obtido, sufixoCaminhoUCD) {
+		t.Errorf("obterCaminhoUCD() [default]\nesperado (sufixo): %q; recebido: %q", sufixoCaminhoUCD, obtido)
 	}
 }
 
+func TestBaixarUCD(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			w.Write([]byte(linhas3Da43))
+		}))
+	defer srv.Close()
+
+	caminhoUCD := fmt.Sprintf("./TEST%d-UnicodeData.txt", time.Now().UnixNano())
+	feito := make(chan bool)
+	go baixarUCD(srv.URL, caminhoUCD, feito)
+	_ = <-feito
+	ucd, err := os.Open(caminhoUCD)
+	if os.IsNotExist(err) {
+		t.Errorf("baixarUCD não gerou:%v\n%v", caminhoUCD, err)
+	}
+	ucd.Close()
+	os.Remove(caminhoUCD)
+}
+
 func TestAbrirUCD_local(t *testing.T) {
-	caminhoUCD := "./UnicodeData.txt"
+	caminhoUCD := obterCaminhoUCD()
 	ucd, err := abrirUCD(caminhoUCD)
 	if err != nil {
 		t.Errorf("AbrirUCD(%q):\n%v", caminhoUCD, err)
