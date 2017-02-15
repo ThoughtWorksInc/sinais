@@ -4,7 +4,7 @@ Neste repositório você pode ver o desenvolvimento passo a passo do exemplo `ru
 
 Cada etapa do desenvolvimento é documentada explicando os recursos da linguagem Go usados no código do exemplo.
 
-Você não precisa saber nada de Go para acompanhar. Os requisitos são conhecer alguma linguagem de programação moderna, e saber o básico de `git` se quiser acessar os _branches_ contendo o código em cada passo da implementação.
+Você não precisa saber nada de Go para acompanhar. Os requisitos são conhecer alguma linguagem de programação moderna.
 
 
 ## Nosso objetivo

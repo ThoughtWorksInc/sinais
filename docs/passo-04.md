@@ -169,4 +169,4 @@ $ ./runas | wc
    30593  182344 1181756
 ```
 
-Vamos deixar a questão do download do UCD para o final deste tutorial. Primeiro vamos melhorar a busca no [Passo 5](passo-05), código no _branch_ `passo-05`.
+Vamos deixar a questão do download do UCD para o final deste tutorial. Primeiro vamos melhorar a busca no [Passo 5](passo-05), código no diretório `runas05`.

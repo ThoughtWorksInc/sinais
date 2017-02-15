@@ -398,7 +398,7 @@ Como temos o laço `for`, após cada execução do `default`, o `select` vai nov
 Vale notar que, quando uma instrução `select` não tem um `default`, ela bloqueia até que algum `case` esteja pronto para produzir ou consumir um valor. Mas com um `default`, `select` é uma estrutura de controle não bloqueante.
 
 
-## os.Exit(0)
+## os.Exit(0) // Fim!
 
 Isso conclui a nossa degustação da linguagem Go. Uma deGostação!
 
