@@ -247,4 +247,4 @@ func Listar(texto io.Reader, consulta string)
 
 ```
 
-Com isso terminamos o passo 3. Estamos próximos do MVP: o produto mínimo viável é explicado no [Passo 4](passo-04) e implementado no diretório `runas04`.
+Com isso terminamos o passo 3. Estamos próximos do MVP: o produto mínimo viável é explicado no [Passo 4](passo-04).

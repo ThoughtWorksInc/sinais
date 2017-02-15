@@ -265,7 +265,7 @@ func baixarUCD(url, caminho string) {
 Agora que já temos como baixar um arquivo UCD, podemos melhorar a função `abrirUCD`.
 
 
-# Abrindo o UCD remoto
+## Abrindo o UCD remoto
 
 Novamente, usamos um teste que gera um caminho novo a cada vez, forçando `abrirUCD` a baixar o arquivo `UnicodeData.txt` sempre:
 
@@ -397,12 +397,12 @@ Como temos o laço `for`, após cada execução do `default`, o `select` vai nov
 
 Vale notar que, quando uma instrução `select` não tem um `default`, ela bloqueia até que algum `case` esteja pronto para produzir ou consumir um valor. Mas com um `default`, `select` é uma estrutura de controle não bloqueante.
 
-Agora você pode compilar o programa com o comando `go build` e obter um executável `runas` (porque este é o nome do direório onde está o código-fonte do passo 7, na raiz do repositório).
+Agora você pode compilar o programa com o comando `go build` e obter um executável `runas` (porque este é o nome do diretório onde está o código-fonte do passo 7, na raiz do repositório).
 
 
 ## os.Exit(0) // Fim!
 
-Isso conclui a nossa degustação da linguagem Go. Uma deGostação!
+Isso conclui a nossa degustação da linguagem Go. Uma deGostação 😬!
 
 Você pode rodar o comando `go test -cover` para executar os testes com uma medida de cobertura. Aqui estou obtendo 97.1% de cobertura, um bom número. Se testar com `go test -cover -test.short`, a cobertura cai para 80.9%, porque pulamos `TestAbrirUCD_remoto`.
 

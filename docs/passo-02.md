@@ -83,4 +83,4 @@ PASS
 ok  	github.com/ThoughtWorksInc/runas	0.012s
 ```
 
-Assim completamos o passo 2. Hora e ler o [Passo 3](passo-03) mudar para o diretório `runas03`.
+Assim completamos o passo 2. Hora e ler o [Passo 3](passo-03).
