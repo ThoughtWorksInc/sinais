@@ -397,6 +397,8 @@ Como temos o laço `for`, após cada execução do `default`, o `select` vai nov
 
 Vale notar que, quando uma instrução `select` não tem um `default`, ela bloqueia até que algum `case` esteja pronto para produzir ou consumir um valor. Mas com um `default`, `select` é uma estrutura de controle não bloqueante.
 
+Agora você pode compilar o programa com o comando `go build` e obter um executável `runas` (porque este é o nome do direório onde está o código-fonte do passo 7, na raiz do repositório).
+
 
 ## os.Exit(0) // Fim!
 

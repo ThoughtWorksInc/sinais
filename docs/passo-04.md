@@ -123,19 +123,19 @@ Outra forma de usar o programa é gerar um executável, com o comando `go build`
 ```bash
 $ go build
 $ ls -lah runas
--rwxr-xr-x  1 lramalho  staff   1.9M Dec 28 20:10 runas
+-rwxr-xr-x  1 lramalho  staff   1.9M Dec 28 20:10 runas04
 ```
 
-Se der tudo certo, o comando `go build` não exibe nenhuma mensagem. Mas ele produz um binário executável com o nome do projeto, no caso `runas` (que é o nome do diretório onde está o projeto, e por convenção também o nome do repositório). Note o executável de 1.9MB no `ls` acima.
+Se der tudo certo, o comando `go build` não exibe nenhuma mensagem. Mas ele produz um binário executável com o nome do projeto, no caso `runas04` (que é o nome do diretório onde está o projeto). Por convenção, o nome do projeto é o nome do repositório, mas neste tutorial temos na verdade vários projetos, um em cada diretório `runasNN`. Note o executável de 1.9MB no `ls` acima.
 
 Para rodar o binário, é só rodar!
 
 ```bash
-$ ./runas flag
+$ ./runas04 flag
 U+2690	⚐	WHITE FLAG
 U+2691	⚑	BLACK FLAG
 U+26F3	⛳	FLAG IN HOLE
-U+26FF	⛿	WHITE FLAG WITH HORIZONTAL MIDDLE BLACK STRIPE
+U+26FF	⛿	WHITE FLAG WITH HORIZONbTAL MIDDLE BLACK STRIPE
 U+1D16E	𝅮	MUSICAL SYMBOL COMBINING FLAG-1
 U+1D16F	𝅯	MUSICAL SYMBOL COMBINING FLAG-2
 U+1D170	𝅰	MUSICAL SYMBOL COMBINING FLAG-3
