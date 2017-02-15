@@ -33,9 +33,9 @@ Esse teste traz várias novidades:
 
 A instrução `defer` é uma inovação simples porém genial da linguagem Go. Ela serve para invocar uma função no final da função atual (`Example`). `defer` é útil para fechar arquivos, encerrar conexões, liberar travas, etc. É como se o corpo da função `Example` estivesse dentro de um `try/finally` de Java ou Python, e as funções chamadas em `defer` seriam executadas no bloco `finally`, ou seja, após o `return` e mesmo que ocorram exceções. No exemplo, o uso de `defer` garante que o valor de `os.Args` será restaurado ao valor original, independente do sucesso ou fracasso do teste.
 
-> __Nota__: Alterar uma variável global como `os.Args` pode ser perigoso em um
-> sistema concorrente, mas Go só executa testes em paralelo se usamos o método
-> [`T.Parallel`](https://golang.org/pkg/testing/#T.Parallel).
+> __Nota__: Alterar uma variável global como `os.Args` pode produzir resultados
+> inesperados em um sistema concorrente, mas Go só executa testes em paralelo se
+> usamos o método [`T.Parallel`](https://golang.org/pkg/testing/#T.Parallel).
 
 ## A função `main`
 

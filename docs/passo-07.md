@@ -387,7 +387,7 @@ func progresso(feito <-chan bool) { // ➊
 
 ➋ Inciamos um laço infinito com `for`.
 
-➌ `select` é uma instrução de controle de fluxo especial para programar sistemas concorrentes. Funciona como um `switch` com vários blocos `case`, mas a seleção é baseada no estado do canal em cada caso. A instrução `select` executa o bloco `case` do primeiro canal que estiver pronto para consumir ou produzir um valor (se mais de um `case` estiver pronto, um deles será escolhido aleatoriamente).
+➌ `select` é uma instrução de controle de fluxo especial para programar sistemas concorrentes. Funciona como uma `switch` com vários blocos `case`, mas a seleção é baseada no estado do canal em cada caso. O bloco `case` do primeiro canal que estiver pronto para consumir ou produzir um valor será executado. Se mais de um `case` estiver pronto, Go seleciona um deles aleatoriamente.
 
 ➍ O bloco `case <-feito` será executado quando o canal `feito` estiver pronto para produzir um valor; isso só vai acontecer quando `feito` receber o valor `true` na última linha de `baixarUCD`. Dessa maneira a gorrotina auxiliar informa a gorrotina principal que terminou seu processamento. Neste caso, este bloco vai exibir uma quebra de linha com `fmt.Println` e encerrar a função `progresso` com `return`.
 
@@ -395,7 +395,7 @@ func progresso(feito <-chan bool) { // ➊
 
 Como temos o laço `for`, após cada execução do `default`, o `select` vai novamente verificar se o `case <-feito` está pronto para produzir um valor.
 
-Vale notar que, quando um `select` não tem um `default`, ele bloqueia até que algum `case` esteja pronto para produzir ou consumir um valor. Mas com um `default`, o `select` é uma estrutura de controle não bloqueante.
+Vale notar que, quando uma instrução `select` não tem um `default`, ela bloqueia até que algum `case` esteja pronto para produzir ou consumir um valor. Mas com um `default`, `select` é uma estrutura de controle não bloqueante.
 
 
 ## os.Exit(0)
