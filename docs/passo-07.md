@@ -225,7 +225,7 @@ func TestBaixarUCD(t *testing.T) {
 
 ➎ Invocamos a função que queremos testar, `baixarUCD`, passando a URL do servidor fajuto e um caminho que inclui momento atual em nanossegundos, como já fizemos antes.
 
-➏ Tentamos abrir o arquivo baixado tal caminho.
+➏ Tentamos abrir o arquivo baixado no tal caminho.
 
 ➐ Se o arquivo não existe, reportamos erro no teste.
 
@@ -389,7 +389,7 @@ func progresso(feito <-chan bool) { // ➊
 
 ➌ `select` é uma instrução de controle de fluxo especial para programar sistemas concorrentes. Funciona como uma `switch` com vários blocos `case`, mas a seleção é baseada no estado do canal em cada caso. O bloco `case` do primeiro canal que estiver pronto para consumir ou produzir um valor será executado. Se mais de um `case` estiver pronto, Go seleciona um deles aleatoriamente.
 
-➍ O bloco `case <-feito` será executado quando o canal `feito` estiver pronto para produzir um valor; isso só vai acontecer quando `feito` receber o valor `true` na última linha de `baixarUCD`. Dessa maneira a gorrotina auxiliar informa a gorrotina principal que terminou seu processamento. Neste caso, este bloco vai exibir uma quebra de linha com `fmt.Println` e encerrar a função `progresso` com `return`.
+➍ O bloco `case <-feito` será executado quando o canal `feito` estiver pronto para produzir um valor. A expressão `<-feito` lê e descarta o primeiro valor no canal (se quiséssemos usar o valor, poderíamos atribuí-lo a uma variável). Nesse caso não interessa o valor, pois estamos usando o canal somente para sincronização. A gorrotina de `baixarUCD` informa a gorrotina principal que terminou seu processamento enviando `true` pelo canal `feito`. Quando isso acontecer, este bloco vai exibir uma quebra de linha com `fmt.Println` e encerrar a função `progresso` com `return`.
 
 ➎ Em um `select`, o bloco `default` é acionado quando nenhum `case` está pronto para executar. Neste caso, se o canal `feito` não produziu uma mensagem, então geramos um `"."` na saída, e congelamos esta gorrotina por 150 milissegundos (do contrário apareceriam milhares de `.....` por segundo na saída).
 
