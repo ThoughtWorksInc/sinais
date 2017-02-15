@@ -402,7 +402,7 @@ Agora você pode compilar o programa com o comando `go build` e obter um execut�
 
 ## os.Exit(0) // Fim!
 
-Isso conclui a nossa degustação da linguagem Go. Uma deGostação 😬!
+Isso conclui a nossa degustação da linguagem Go. Uma deGostação! 😬
 
 Você pode rodar o comando `go test -cover` para executar os testes com uma medida de cobertura. Aqui estou obtendo 97.1% de cobertura, um bom número. Se testar com `go test -cover -test.short`, a cobertura cai para 80.9%, porque pulamos `TestAbrirUCD_remoto`.
 
