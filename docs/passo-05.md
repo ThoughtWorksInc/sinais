@@ -121,7 +121,7 @@ func TestContém(t *testing.T) {
 	} // ➍
 	for _, caso := range casos { // ➎
 		recebido := contém(caso.fatia, caso.procurado) // ➏
-		if obtido != caso.esperado {                 // ➐
+		if recebido != caso.esperado {                 // ➐
 			t.Errorf("contém(%#v, %#v) esperado: %v; recebido: %v",
 				caso.fatia, caso.procurado, caso.esperado, recebido) // ➑
 		}
