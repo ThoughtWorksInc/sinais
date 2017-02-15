@@ -91,4 +91,4 @@ Sucesso!
 
 OK, completamos nosso primeiro _baby step_: fizemos a função mais simples possível que faz o teste passar. A função `AnalisarLinha` ignora totalmente o argumento passado, e o teste confere a runa mas ignora a string devolvida. Mas um teste passando é um bom começo!
 
-Hora de ler o [Passo 2](passo-02) e mudar para o diretório `runas02`.
+Hora de ler o [Passo 2](passo-02), código no diretório `runas02`.
