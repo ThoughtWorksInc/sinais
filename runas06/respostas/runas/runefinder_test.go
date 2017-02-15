@@ -1,14 +1,10 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
-	"net/http/httptest"
 	"os"
 	"reflect"
 	"strings"
 	"testing"
-	"time"
 )
 
 const linhaLetraA = "0041;LATIN CAPITAL LETTER A;Lu;0;L;;;;;N;;;;0061;"
@@ -146,8 +142,8 @@ func ExampleListar_duasPalavras() {
 }
 
 func Example() {
-	argsAntes := os.Args
-	defer func() { os.Args = argsAntes }()
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
 	os.Args = []string{"", "cruzeiro"}
 	main()
 	// Output:
@@ -155,8 +151,8 @@ func Example() {
 }
 
 func Example_consultaDuasPalavras() { // ➊
-	argsAntes := os.Args // ➋
-	defer func() { os.Args = argsAntes }()
+	oldArgs := os.Args // ➋
+	defer func() { os.Args = oldArgs }()
 	os.Args = []string{"", "cat", "smiling"}
 	main() // ➌
 	// Output:
@@ -166,84 +162,12 @@ func Example_consultaDuasPalavras() { // ➊
 }
 
 func Example_consultaComHífenECampo10() {
-	argsAntes := os.Args
-	defer func() { os.Args = argsAntes }()
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
 	os.Args = []string{"", "quote"}
 	main()
 	// Output:
 	// U+0027	'	APOSTROPHE (APOSTROPHE-QUOTE)
 	// U+2358	⍘	APL FUNCTIONAL SYMBOL QUOTE UNDERBAR
 	// U+235E	⍞	APL FUNCTIONAL SYMBOL QUOTE QUAD
-}
-
-func restaurar(nomeVar, valor string, existia bool) {
-	if existia {
-		os.Setenv(nomeVar, valor)
-	} else {
-		os.Unsetenv(nomeVar)
-	}
-}
-
-func TestObterCaminhoUCD_setado(t *testing.T) {
-	caminhoAntes, existia := os.LookupEnv("UCD_PATH")
-	defer restaurar("UCD_PATH", caminhoAntes, existia)
-	UCDPath := fmt.Sprintf("./TEST%d-UnicodeData.txt", time.Now().UnixNano())
-	os.Setenv("UCD_PATH", UCDPath)
-	obtido := obterCaminhoUCD()
-	if obtido != UCDPath {
-		t.Errorf("obterUCDPath() [setado]\nesperado: %q; recebido: %q", UCDPath, obtido)
-	}
-}
-
-func TestObterCaminhoUCD_default(t *testing.T) {
-	caminhoAntes, existia := os.LookupEnv("UCD_PATH")
-	defer restaurar("UCD_PATH", caminhoAntes, existia)
-	os.Unsetenv("UCD_PATH")
-	sufixoUCDPath := "/UnicodeData.txt"
-	obtido := obterCaminhoUCD()
-	if !strings.HasSuffix(obtido, sufixoUCDPath) {
-		t.Errorf("obterUCDPath() [default]\nesperado (sufixo): %q; recebido: %q", sufixoUCDPath, obtido)
-	}
-}
-
-func TestBaixarUCD(t *testing.T) {
-	responder := func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(linhas3Da43))
-	}
-
-	srv := httptest.NewServer(http.HandlerFunc(responder))
-	defer srv.Close()
-
-	caminhoUCD := fmt.Sprintf("./TEST%d-UnicodeData.txt", time.Now().UnixNano())
-	feito := make(chan bool)
-	go baixarUCD(srv.URL, caminhoUCD, feito)
-	_ = <-feito
-	ucd, err := os.Open(caminhoUCD)
-	if os.IsNotExist(err) {
-		t.Errorf("baixarUCD não gerou:%v\n%v", caminhoUCD, err)
-	}
-	ucd.Close()
-	os.Remove(caminhoUCD)
-}
-
-func TestAbrirUCD_local(t *testing.T) {
-	caminhoUCD := obterCaminhoUCD()
-	ucd, err := abrirUCD(caminhoUCD)
-	if err != nil {
-		t.Errorf("AbrirUCD(%q):\n%v", caminhoUCD, err)
-	}
-	ucd.Close()
-}
-
-func TestAbrirUCD_remoto(t *testing.T) {
-	if testing.Short() {
-		t.Skip("teste ignorado [opção -test.short]")
-	}
-	caminhoUCD := fmt.Sprintf("./TEST%d-UnicodeData.txt", time.Now().UnixNano())
-	ucd, err := abrirUCD(caminhoUCD)
-	if err != nil {
-		t.Errorf("AbrirUCD(%q):\n%v", caminhoUCD, err)
-	}
-	ucd.Close()
-	os.Remove(caminhoUCD)
 }

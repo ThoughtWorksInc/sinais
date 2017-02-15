@@ -33,9 +33,10 @@ Esse teste traz várias novidades:
 
 A instrução `defer` é uma inovação simples porém genial da linguagem Go. Ela serve para invocar uma função no final da execução da função atual (`Example`). `defer` é útil para fechar arquivos, encerrar conexões, liberar mutexes, etc. É como se o corpo da função `Example` estivesse dentro de um `try/finally` de Java ou Python, e as funções chamadas em `defer` seriam executadas no bloco `finally`, ou seja, após o `return` e mesmo que ocorram exceções. No exemplo, o uso de `defer` garante que o valor de `os.Args` será restaurado ao valor original, independente do sucesso ou fracasso do teste.
 
-> __Nota__: Alterar uma variável global como `os.Args` pode pruduzir resultados
+> __Nota__: Alterar uma variável global como `os.Args` pode produzir resultados
 > inesperados em um sistema concorrente, mas Go só executa testes em paralelo se
 > usamos o método [`T.Parallel`](https://golang.org/pkg/testing/#T.Parallel).
+
 
 ## A função `main`
 
@@ -45,12 +46,11 @@ Afinal vamos implementar a função `main`, que permite executar o `runefinder` 
 func main() { // ➊
 	ucd, err := os.Open("UnicodeData.txt") // ➋
 	if err != nil {                        // ➌
-		fmt.Println(err.Error())
-		os.Exit(1)
+		log.Fatal(err.Error()) // ➍
 	}
-	defer func() { ucd.Close() }()             // ➍
-	consulta := strings.Join(os.Args[1:], " ") // ➎
-	Listar(ucd, strings.ToUpper(consulta))     // ➏
+	defer func() { ucd.Close() }()             // ➎
+	consulta := strings.Join(os.Args[1:], " ") // ➏
+	Listar(ucd, strings.ToUpper(consulta))     // ➐
 }
 ```
 
@@ -58,15 +58,17 @@ func main() { // ➊
 
 ➋ Abrimos o arquivo "UnicodeData.txt", assumindo que ele está no diretório atual. A maioria das funções de E/S em Go devolve dois resultados, e o segundo é do tipo `error`, uma interface usada para reportar erros. No caso de `os.Open`, o primeiro resultado é um `*File`, ponteiro para um objeto arquivo.
 
-➌ Se `err` é diferente `nil`, houve erro em `os.Open`. Nesse caso vamos exibir a mensagem de erro e terminar o programa. Chamando `os.Exit`, as funções em `defer` não são executadas.
+➌ Se `err` é diferente `nil`, houve erro em `os.Open`. Nesse caso vamos exibir a mensagem de erro e terminar o programa.
 
-➍ Usamos `defer` para fechar o arquivo que abrimos em ➋.
+➍ A função `log.Fatal` faz duas coisas: exibe a mensagem passada como argumento e invoca `os.Exit(1)`, encerrando o programa. O tipo `error` tem o método `Error()` que devolve uma string com a mensagem de erro. Chamando `log.Fatal` (ou `os.Exit`), as funções em `defer` não são executadas.
 
-➎ Montamos a string de consulta concatenando os argumentos. A notação `os.Args[1:]` lembra Python ou Ruby: ela devolve uma nova fatia formada pelos itens de índice 1 em diante. Assim omitimos o nome do programa invocado, que fica em `os.Args[0]`. A função `strings.Join` monta uma string intercalando os itens da fatia com o segundo argumento, `" "` neste caso.
+➎ Usamos `defer` para fechar o arquivo que abrimos em ➋.
 
-➏ Invocamos a função `Listar` com o arquivo `ucd` e a `consulta` convertida em caixa alta (porque na UCD os nomes aparecem em maiúsculas).
+➏ Montamos a string de consulta concatenando os argumentos. A notação `os.Args[1:]` lembra Python ou Ruby: ela devolve uma nova fatia formada pelos itens de índice 1 em diante. Assim omitimos o nome do programa invocado, que fica em `os.Args[0]`. A função `strings.Join` monta uma string intercalando os itens da fatia com o segundo argumento, `" "` neste caso.
 
-Agora precisamos do arquivo `UnicodeData.txt` ([URL oficial](http://www.unicode.org/Public/UNIDATA/UnicodeData.txt)). Depois faremos o `runefinder` baixar este arquivo, se necessário, mas agora você precisa buscar e colocá-lo no diretório atual (onde está o `runefinder.go`). Feito isso, você pode rodar os testes:
+➐ Invocamos a função `Listar` com o arquivo `ucd` e a `consulta` convertida em caixa alta (porque na UCD os nomes aparecem em maiúsculas).
+
+Agora você precisa baixar o arquivo `UnicodeData.txt` ([URL oficial](http://www.unicode.org/Public/UNIDATA/UnicodeData.txt)). Depois faremos o `runefinder` baixar este arquivo, se necessário, mas agora você precisa buscar e colocá-lo no diretório atual (onde está o `runefinder.go`). Feito isso, você pode rodar os testes:
 
 ```bash
 $ go test -v
