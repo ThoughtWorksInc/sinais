@@ -94,7 +94,7 @@ func obterCaminhoUCD() string {
 }
 ```
 
-Não tem nenhuma graça esta função. Nem faria sentido o teste anterior: na prática estamos testando só a função `os.LookupEnv`, e ao escrever testes automatizados devemos acreditar que as bibliotecas que são nossas dependências funcionam, e não testá-las. Mas este teste faz sentido junto com o próximo teste, que verifica o caso contrário: quando não existe a variável de ambiente `UCD_PATH`, ou ela está vazia.
+Não tem nenhuma graça esta função. Nem faria sentido o teste anterior: na prática estamos testando só a função `os.GetEnv`, e ao escrever testes automatizados devemos acreditar que as bibliotecas que são nossas dependências funcionam, e não testá-las. Mas este teste faz sentido junto com o próximo teste, que verifica o caso contrário: quando não existe a variável de ambiente `UCD_PATH`, ou ela está vazia. Para satisfazer esses dois testes, `obterCaminhoUCD` vai ter que ficar mais esperta.
 
 ```go
 func TestObterCaminhoUCD_default(t *testing.T) {
@@ -233,7 +233,7 @@ func TestBaixarUCD(t *testing.T) {
 
 ➒ ...e o removemos, para não deixar sujeira no diretório de trabalho.
 
-Esse teste exige um certo esforço para codar, mas o que ele faz é bem legal: "mocar" um servidor HTTP (se podemos "codar", então podemos "mocar": uma gíria derivada de "to mock", que significa "imitar")
+Esse teste exige um certo esforço para codar, mas o que ele faz é bem legal: "mocar" um servidor HTTP (se podemos "codar", então podemos "mocar": uma gíria derivada de "to mock", que significa "imitar").
 
 Agora vejamos o código de `baixarUCD` que satisfaz aquele teste:
 
