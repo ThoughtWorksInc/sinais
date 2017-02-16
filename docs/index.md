@@ -1,6 +1,6 @@
 # Runas: passo a passo com TDD
 
-[Neste repositório](https://github.com/ThoughtWorksInc/runas) você pode ver o desenvolvimento passo a passo do exemplo `runas`: um utilitário em linguagem Go para localizar caracteres Unicode pelo nome.
+Aqui você pode acompanhar o desenvolvimento passo a passo do exemplo `runas`: um utilitário em linguagem Go para localizar caracteres Unicode pelo nome.
 
 Você não precisa Go para acompanhar, basta [instalar](https://golang.org/doc/install). Assumimos que você sabe programar em alguma linguagem. Os recursos específicos de Go são explicados linha a linha, à medida que aparecem no código.
 
