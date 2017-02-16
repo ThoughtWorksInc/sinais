@@ -48,7 +48,7 @@ func TestAnalisarLinha(t *testing.T) {
 
 ➌ Em Go, fatias não são comparáveis diretamente, ou seja, os operadores `==` e `!=` não funcionam com elas. Porém o pacote `reflect` oferece a função `DeepEqual`, que compara estruturas de dados em profundidade. `reflect.DeepEqual` é particularmente útil em testes, mas em geral deve ser evitada no código do programa em si, por razões apresentadas logo abaixo.
 
-➍ Usamos `"\n\t"` para exibir este erro em linhas separadas e indentadas no mesmo nível, para facilitar a comparação visual do esperado com o recebido. Coloque `"X"` no lugar de `"A"` na variável `palavrasA` para forçar o erro e ver o formato da mensagem. Também algeramos as outras mensagens de erro para usar as palavras "esperado/recebido", por consistência.
+➍ Usamos `"\n\t"` para exibir este erro em linhas separadas e indentadas no mesmo nível, para facilitar a comparação visual do esperado com o recebido. Coloque `"X"` no lugar de `"A"` na variável `palavrasA` para forçar o erro e ver o formato da mensagem. Também geramos as outras mensagens de erro para usar as palavras "esperado/recebido", por consistência.
 
 > __NOTA__: O pacote `reflect` traz para a Go recursos poderosos e convenientes de linguagens dinâmicas, como por exemplo comparar ou copiar facilmente estruturas de dados complexas. Para quem tem experiência com linguagens de nível mais alto como Python, Ruby, JavaScript e PHP, é tentador sair usando `reflect` em seus programas Go. No entanto, a comunidade Go recomenda evitar abusar de `reflect`, por dois motivos principais: desempenho e salvaguardas de tipo (_type safety_).
 
@@ -120,10 +120,10 @@ func TestContém(t *testing.T) {
 		{[]string{"A", "B"}, "Z", false}, // ➌
 	} // ➍
 	for _, caso := range casos { // ➎
-		recebido := contém(caso.fatia, caso.procurado) // ➏
+		obtido := contém(caso.fatia, caso.procurado) // ➏
 		if obtido != caso.esperado {                 // ➐
 			t.Errorf("contém(%#v, %#v) esperado: %v; recebido: %v",
-				caso.fatia, caso.procurado, caso.esperado, recebido) // ➑
+				caso.fatia, caso.procurado, caso.esperado, obtido) // ➑
 		}
 	}
 }
