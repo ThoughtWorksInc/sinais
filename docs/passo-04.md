@@ -60,7 +60,7 @@ func main() { // ➊
 
 ➌ Se `err` é diferente `nil`, houve erro em `os.Open`. Nesse caso vamos exibir a mensagem de erro e terminar o programa.
 
-➍ A função `log.Fatal` faz duas coisas: exibe a mensagem passada como argumento e invoca `os.Exit(1)`, encerrando o programa. O tipo `error` tem o método `Error()` que devolve uma string com a mensagem de erro. Chamando `log.Fatal` (ou `os.Exit`), as funções em `defer` não são executadas.
+➍ A função `log.Fatal` faz duas coisas: exibe a mensagem passada como argumento e invoca `os.Exit(1)`, encerrando o programa. O tipo `error` tem o método `Error()` que devolve uma string com a mensagem de erro. Chamando `log.Fatal` (ou `os.Exit`), as funções em `defer` não são executadas. É necessário importar o pacote `log`.
 
 ➎ Usamos `defer` para fechar o arquivo que abrimos em ➋.
 
