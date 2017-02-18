@@ -22,7 +22,7 @@ Duas coisas me chamaram atenção aqui:
 * Alguns nomes têm palavras hifenadas, como "HYPHEN-MINUS" (por coincidência). É desejável que o usuário encontre esses caracteres digitando apenas uma das palavras, "HYPHEN" ou "MINUS".
 * Algumas linhas tem no campo índice 10 um nome diferente, que era o nome adotado no Unicode 1.0 (veja documentação do [UCD 9.0](http://www.unicode.org/reports/tr44/tr44-18.html#UnicodeData.txt)). Por exemplo o caractere U+002E, "FULL STOP", era "PERIOD". Incluir esses nomes também pode facilitar a vida dos usuários.
 
-Nesta parte do tutorial a proposta é que você implemente as mudadanças para exercitar os conceitos vistos até agora.
+Nesta parte do tutorial a proposta é que você implemente as mudanças para exercitar os conceitos vistos até agora.
 
 No final do exercício, o programa deverá se comportar assim:
 
