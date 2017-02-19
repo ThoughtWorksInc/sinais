@@ -26,9 +26,9 @@ func ExampleListar() { // ➊
 
 Observe:
 
-➊ O nome da função tem que começar com `Example`. Em seguida obrigatoriamente vem o nome da função a ser testada, por isso: `ExampleListar`.
+➊ O nome da função precisa começar com `Example`. Em seguida obrigatoriamente vem o nome da função a ser testada, por isso: `ExampleListar`.
 
-➋ Nossa função `Listar` receberá um argumento `io.Reader` (ao final, será o arquivo `UnicodeData.txt`). Para testar, construímos um buffer de leitura `strings.Reader` a partir da constante `linhas3Da43`, cujo conteúdo veremos abaixo.
+➋ Nossa função `Listar` receberá um argumento `io.Reader` (ao final, será o arquivo `UnicodeData.txt`). Para testar, construímos um buffer de leitura `strings.Reader` a partir da constante `linhas3Da43`, cujo conteúdo veremos abaixo. Não esqueça de importar o pacote `strings`.
 
 ➌ Aqui invocamos a função a testar, passando o buffer e a consulta, `"MARK"`. O comentário na linha final da função `ExampleListar` define o resultado esperado. O sistema de testes vai comparar o texto gerado pela função `Listar` na saída padrão com o que vier após a string `"Output: "` no comentário.
 
@@ -149,7 +149,7 @@ A palavra `got:` (recebido) indica a saída que foi produzida, e `want:` (deseja
 
 ```go
 // Listar exibe na saída padrão o código, a runa e o nome dos caracteres Unicode
-// cujo nome contem o texto da consulta // ➊
+// cujo nome contém o texto da consulta // ➊
 func Listar(texto io.Reader, consulta string) {
 	varredor := bufio.NewScanner(texto) // ➋
 	for varredor.Scan() {               // ➌
@@ -221,7 +221,7 @@ Por convenção, funções exportadas (públicas) dever ser precedidas de um com
 
 ```go
 // Listar exibe na saída padrão o código, a runa e o nome dos caracteres Unicode
-// cujo nome contem o texto da consulta // <1>
+// cujo nome contém o texto da consulta // <1>
 func Listar(texto io.Reader, consulta string) {
 ```
 
@@ -243,7 +243,7 @@ E se você informar o nome de uma função, `go doc` mostra sua assinatura e doc
 $ go doc listar
 func Listar(texto io.Reader, consulta string)
     Listar exibe na saída padrão o código, a runa e o nome dos caracteres
-    Unicode cujo nome contem o texto da consulta
+    Unicode cujo nome contém o texto da consulta
 
 ```
 

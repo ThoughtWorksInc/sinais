@@ -2,7 +2,7 @@
 
 Aqui você pode acompanhar o desenvolvimento passo a passo do exemplo `runas`: um utilitário em linguagem Go para localizar caracteres Unicode pelo nome.
 
-Você não precisa Go para acompanhar, basta [instalar](https://golang.org/doc/install). Assumimos que você sabe programar. Os recursos específicos de Go são explicados linha a linha, à medida que aparecem no código.
+Você não precisa saber nada de Go para acompanhar, basta [instalar](https://golang.org/doc/install). Assumimos que você sabe programar. Os recursos específicos de Go são explicados linha a linha, à medida que aparecem no código.
 
 Seguiremos o princípio do [TDD](http://tdd.caelum.com.br/) _(Test-Driven Development)_: primeiro escrevemos um teste, depois o código mais simples que faz o teste passar.
 
@@ -37,7 +37,7 @@ U+1F63D	😽	KISSING CAT FACE WITH CLOSED EYES
 U+1F644	🙄	FACE WITH ROLLING EYES
 ```
 
-Você passa uma um mais palavras como argumento, e o programa devolve uma lista ordenada de caracteres Unicode cujas descrições contém todas as palavras que você passou.
+Você passa uma ou mais palavras como argumento, e o programa devolve uma lista ordenada de caracteres Unicode cujas descrições contém todas as palavras que você passou.
 
 
 ## Sobre o banco de dados Unicode
