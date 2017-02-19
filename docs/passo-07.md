@@ -327,7 +327,7 @@ O único incômdo é que, durante o download, nada acontece durante alguns segun
 
 Vamos gerar continuamente uma sequência de pontos `.....` durante o download, evitando que o usuário suspeite que o programa travou. Para fazê-lo, usaremos alguns recursos especiais da linguagem Go: um canal (_channel_) e uma gorrotina (_goroutine_).
 
-Na `abrirUCD`, acrescentamos três linhas:
+Na função `abrirUCD`, acrescentamos três linhas:
 
 ```go
 func abrirUCD(caminho string) (*os.File, error) {
@@ -349,6 +349,36 @@ func abrirUCD(caminho string) (*os.File, error) {
 
 ➌ Invocamos a função `progresso`. Ela vai ficar em _loop_ gerando `....` na saída, até que receba pelo canal `feito` um sinal de que `baixarUCD` terminou o download.
 
+Agora precisamos mudar `TestBaixarUCD` para passar o channel que `baixarUCD` está esperando, alterando três linhas também:
+
+```go
+func TestBaixarUCD(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			w.Write([]byte(linhas3Da43))
+		}))
+	defer srv.Close()
+
+	caminhoUCD := fmt.Sprintf("./TEST%d-UnicodeData.txt", time.Now().UnixNano())
+	feito := make(chan bool) // ➊
+	go baixarUCD(srv.URL, caminhoUCD, feito) // ➋
+	_ = <-feito // ➌
+	ucd, err := os.Open(caminhoUCD)
+	if os.IsNotExist(err) {
+		t.Errorf("baixarUCD não gerou:%v\n%v", caminhoUCD, err)
+	}
+	ucd.Close()
+	os.Remove(caminhoUCD)
+}
+```
+➊ Criamos um canal `feito` do tipo `chan bool` para passar para `baixarUCD`.
+
+➋ Mudamos a chamada para incluir o argumento com o canal `feito`.
+
+➌ Lemos e descartamos o valor que `baixarUCD` colocou no canal. Veja a seguir porque essa instrução é necessária.
+
+> __NOTA__: Não precisamos do valor que `baixarUCD` colocou no canal, mas precisamos fazer a leitura para sincronizar as gorrotinas. O restante do teste verifica se `baixarUCD` baixou o arquivo, mas agora estamos acionando aquela função em uma outra gorrotina, o que significa que ela vai executar de modo concorrente, possivelmente em paralelo com a gorrotina principal que roda o teste. Então, antes de verificar se o arquivo foi baixado, o teste precisa esperar que `baixarUCD` sinalize que terminou seu trabalho, e é para isso que serve a linha ➌. A expressão `<-feito` recebe um valor, e ficará bloqueada esperando até que `baixarUCD` envie algo pelo canal. Quando o valor for recebido, o teste pode prosseguir com a verificação do arquivo.
+
 Temos apenas duas mudanças em `baixarUCD`:
 
 ```go
@@ -368,6 +398,9 @@ func baixarUCD(url, caminho string, feito chan<- bool) { // ➊
 
 ➋ Uma vez terminado o download, enviamos para o canal `feito` o sinal `true`. Isso terminará a função `progresso`, como veremos a seguir.
 
+> __NOTA__: Não fiz um teste para a função `progresso`. O que ela faz é simples, mas chato de testar: ela produz uma série de `.....` na saída padrão enquanto não receber um valor qualquer pelo canal.
+
+
 ```go
 func progresso(feito <-chan bool) { // ➊
 	for { // ➋
@@ -383,13 +416,13 @@ func progresso(feito <-chan bool) { // ➊
 }
 ```
 
-➊ Aqui a notação `<-chan` indica que, dentro de `progresso`, o canal `feito` apenas produz valores, mas não consome. Portanto `progresso` só pode receber valores do canal `feito`.
+➊ Aqui a notação `<-chan` indica que, dentro de `progresso`, o canal `feito` apenas produz valores, mas não consome. Portanto `progresso` só pode receber valores do canal `feito`, como veremos na intrução `case` em ➍.
 
 ➋ Inciamos um laço infinito com `for`.
 
 ➌ `select` é uma instrução de controle de fluxo especial para programar sistemas concorrentes. Funciona como uma `switch` com vários blocos `case`, mas a seleção é baseada no estado do canal em cada caso. O bloco `case` do primeiro canal que estiver pronto para consumir ou produzir um valor será executado. Se mais de um `case` estiver pronto, Go seleciona um deles aleatoriamente.
 
-➍ O bloco `case <-feito` será executado quando o canal `feito` estiver pronto para produzir um valor. A expressão `<-feito` lê e descarta o primeiro valor no canal (se quiséssemos usar o valor, poderíamos atribuí-lo a uma variável). Nesse caso não interessa o valor, pois estamos usando o canal somente para sincronização. A gorrotina de `baixarUCD` informa a gorrotina principal que terminou seu processamento enviando `true` pelo canal `feito`. Quando isso acontecer, este bloco vai exibir uma quebra de linha com `fmt.Println` e encerrar a função `progresso` com `return`.
+➍ O bloco `case <-feito` será executado quando o canal `feito` estiver pronto para produzir um valor. A expressão `<-feito` lê e descarta o primeiro valor no canal (se quiséssemos usar o valor, poderíamos atribuí-lo a uma variável). Nesse caso não interessa o valor, pois estamos usando o canal somente para sincronização. A gorrotina de `baixarUCD` informa que terminou seu processamento enviando `true` pelo canal `feito`. Quando isso acontecer, este bloco vai exibir uma quebra de linha com `fmt.Println` e encerrar a função `progresso` com `return`.
 
 ➎ Em um `select`, o bloco `default` é acionado quando nenhum `case` está pronto para executar. Neste caso, se o canal `feito` não produziu uma mensagem, então geramos um `"."` na saída, e congelamos esta gorrotina por 150 milissegundos (do contrário apareceriam milhares de `.....` por segundo na saída).
 
