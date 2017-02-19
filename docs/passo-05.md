@@ -35,8 +35,8 @@ func TestAnalisarLinha(t *testing.T) {
 	if nome != nomeA {
 		t.Errorf("Esperado: %q; recebido: %q", nomeA, nome)
 	}
-  palavrasA := []string{"LATIN", "CAPITAL", "LETTER", "A"} // ➋
-	if ! reflect.DeepEqual(palavras, palavrasA) { // ➌
+	palavrasA := []string{"LATIN", "CAPITAL", "LETTER", "A"} // ➋
+	if !reflect.DeepEqual(palavras, palavrasA) { // ➌
 		t.Errorf("\n\tEsperado: %q\n\trecebido: %q", palavrasA, palavras) // ➍
 	}
 }

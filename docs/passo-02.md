@@ -67,7 +67,7 @@ Explicando:
 
 ➊ Para importar dois ou mais pacotes, essa é a sintaxe utilizada.
 
-➋ Todo identificaor importado de outro pacote é usado assim: `pacote.Identificador` (na verdade, é possível importar pacotes de outra forma, mas essa é a forma mais comum e mais recomendada). A função `strings.Split` recebe uma `string` para quebrar e outra `string` com o separador, e devolve uma fatia (_slice_) de strings, que é como um `array` de tamanho variável.
+➋ Todo identificador importado de outro pacote é usado assim: `pacote.Identificador` (na verdade, é possível importar pacotes de outra forma, mas essa é a forma mais comum e mais recomendada). A função `strings.Split` recebe uma `string` para quebrar e outra `string` com o separador, e devolve uma fatia (_slice_) de strings, que é como um `array` de tamanho variável.
 
 ➌ A função `strconv.ParseInt` converte de `string` para `int64`. Ela recebe uma `string` (no caso, o item 0 da fatia `campos`), uma base (16) e o número de bits que se espera encontrar no inteiro resultante (32). O resultado é um `int64` e um objeto do tipo `error`, que nós vamos ignorar neste caso porque vamos assumir que as pessoas do Unicode sabem escrever números hexadecimais.
 

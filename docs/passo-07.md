@@ -223,7 +223,7 @@ func TestBaixarUCD(t *testing.T) {
 
 ➍ Agendamos o fechamento do servidor para o final do teste.
 
-➎ Invocamos a função que queremos testar, `baixarUCD`, passando a URL do servidor fajuto e um caminho que inclui momento atual em nanossegundos, como já fizemos antes.
+➎ Invocamos a função que queremos testar, `baixarUCD`, passando a URL do servidor fajuto e um caminho que inclui o momento atual em nanossegundos, como já fizemos antes.
 
 ➏ Tentamos abrir o arquivo baixado no tal caminho.
 
@@ -320,7 +320,7 @@ func abrirUCD(caminho string) (*os.File, error) {
 
 Neste ponto temos um programa bastante funcional: `runas` sabe procurar o arquivo `UnicodeData.txt` no local configurado, e sabe baixá-lo da Web se necessário.
 
-O único incômdo é que, durante o download, nada acontece durante alguns segundos após o programa informar que está baixando o arquivo. Na seção final vamos resolver esse problema usando os recursoss mais empolgantes de Go: gorrotinas e canais.
+O único incômodo é que, durante o download, nada acontece durante alguns segundos após o programa informar que está baixando o arquivo. Na seção final vamos resolver esse problema usando os recursos mais empolgantes de Go: gorrotinas e canais.
 
 
 ## Download concorrente com indicador de progresso
@@ -418,7 +418,7 @@ func progresso(feito <-chan bool) { // ➊
 
 ➊ Aqui a notação `<-chan` indica que, dentro de `progresso`, o canal `feito` apenas produz valores, mas não consome. Portanto `progresso` só pode receber valores do canal `feito`, como veremos na intrução `case` em ➍.
 
-➋ Inciamos um laço infinito com `for`.
+➋ Iniciamos um laço infinito com `for`.
 
 ➌ `select` é uma instrução de controle de fluxo especial para programar sistemas concorrentes. Funciona como uma `switch` com vários blocos `case`, mas a seleção é baseada no estado do canal em cada caso. O bloco `case` do primeiro canal que estiver pronto para consumir ou produzir um valor será executado. Se mais de um `case` estiver pronto, Go seleciona um deles aleatoriamente.
 
