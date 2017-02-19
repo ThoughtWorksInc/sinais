@@ -373,7 +373,7 @@ func TestBaixarUCD(t *testing.T) {
 ```
 ➊ Criamos um canal `feito` do tipo `chan bool` para passar para `baixarUCD`.
 
-➋ Mudamos a chamada para incluir o argumento com o canal `feito`.
+➋ Usamos a instrução `go` para executar `baixarUCD` em outra gorrotina, e acrescentamos o argumento com o canal `feito`.
 
 ➌ Lemos e descartamos o valor que `baixarUCD` colocou no canal. Veja a seguir porque essa instrução é necessária.
 
