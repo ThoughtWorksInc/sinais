@@ -46,7 +46,7 @@ class TestListagem(unittest.TestCase):
     def setUp(self):
         self.linhas_3D_a_43 = io.StringIO(LINHAS_3D_A_43)
         if not hasattr(sys.stdout, 'getvalue'):
-            self.fail('need to run in buffered mode (use -b flag in command line)')
+            self.fail('run tests in buffered mode (use -b flag in command line)')
 
     def test_listar(self):
         runas.listar(self.linhas_3D_a_43, 'MARK')

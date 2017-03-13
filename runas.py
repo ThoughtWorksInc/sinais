@@ -2,7 +2,7 @@
 
 import os, sys
 import urllib.request
-from threading import Thread
+import threading
 
 # URL_UCD é a URL canônica do arquivo UnicodeData.txt mais atual
 URL_UCD = 'http://www.unicode.org/Public/UNIDATA/UnicodeData.txt'
@@ -43,7 +43,7 @@ def abrir_UCD(caminho):
     except FileNotFoundError:
         print('%s não encontrado\nbaixando %s' % (caminho, URL_UCD))
         feito = threading.Event()
-        Thread(target=baixar_UCD, args=(URL_UCD, caminho, feito)).start()
+        threading.Thread(target=baixar_UCD, args=(URL_UCD, caminho, feito)).start()
         progresso(feito)
         ucd = open(caminho)
     return ucd
