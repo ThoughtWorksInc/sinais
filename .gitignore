@@ -1,5 +1,5 @@
-UnicodeData.txt
 __pycache__/
+.DS_Store
 
 # Compiled Object files, Static and Dynamic libs (Shared Objects)
 *.o
