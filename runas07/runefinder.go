@@ -104,8 +104,8 @@ func baixarUCD(url, caminho string) error {
 
 // URLUCD fica em http://www.unicode.org/Public/UNIDATA/UnicodeData.txt
 // mas unicode.org não é confiável, então esta URL alternativa pode ser usada:
-// https://raw.githubusercontent.com/ThoughtWorksInc/runas/master/UnicodeData.txt
-const URLUCD = "https://raw.githubusercontent.com/ThoughtWorksInc/runas/master/UnicodeData.txt"
+// http://turing.com.br/etc/UnicodeData.txt
+const URLUCD = "http://turing.com.br/etc/UnicodeData.txt"
 
 func abrirUCD(caminho string) (*os.File, error) {
 	ucd, err := os.Open(caminho)
