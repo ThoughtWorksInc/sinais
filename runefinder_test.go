@@ -11,9 +11,9 @@ import (
 	"time"
 )
 
-const linhaLetraA = "0041;LATIN CAPITAL LETTER A;Lu;0;L;;;;;N;;;;0061;"
+const lineLetterA = "0041;LATIN CAPITAL LETTER A;Lu;0;L;;;;;N;;;;0061;"
 
-const linhas3Da43 = `
+const lines3Dto43 = `
 003D;EQUALS SIGN;Sm;0;ON;;;;;N;;;;;
 003E;GREATER-THAN SIGN;Sm;0;ON;;;;;Y;;;;;
 003F;QUESTION MARK;Po;0;ON;;;;;N;;;;;
@@ -23,27 +23,27 @@ const linhas3Da43 = `
 0043;LATIN CAPITAL LETTER C;Lu;0;L;;;;;N;;;;0063;
 `
 
-func TestAnalisarLinha(t *testing.T) {
-	runa, nome, palavras := AnalisarLinha(linhaLetraA) // ➊
-	if runa != 'A' {
-		t.Errorf("Esperado: 'A'; recebido: %q", runa)
+func TestParseLine(t *testing.T) {
+	rune, name, words := ParseLine(lineLetterA) // ➊
+	if rune != 'A' {
+		t.Errorf("Esperado: 'A'; got: %q", rune)
 	}
-	const nomeA = "LATIN CAPITAL LETTER A"
-	if nome != nomeA {
-		t.Errorf("Esperado: %q; recebido: %q", nomeA, nome)
+	const nameA = "LATIN CAPITAL LETTER A"
+	if name != nameA {
+		t.Errorf("Esperado: %q; got: %q", nameA, name)
 	}
-	palavrasA := []string{"LATIN", "CAPITAL", "LETTER", "A"} // ➋
-	if !reflect.DeepEqual(palavras, palavrasA) {             // ➌
-		t.Errorf("\n\tEsperado: %q\n\trecebido: %q", palavrasA, palavras) // ➍
+	wordsA := []string{"LATIN", "CAPITAL", "LETTER", "A"} // ➋
+	if !reflect.DeepEqual(words, wordsA) {             // ➌
+		t.Errorf("\n\tEsperado: %q\n\tgot: %q", wordsA, words) // ➍
 	}
 }
 
-func TestAnalisarLinhaComHífenECampo10(t *testing.T) {
-	var casos = []struct { // ➊
-		linha    string
-		runa     rune
-		nome     string
-		palavras []string
+func TestParseLineWithHyphenAndField10(t *testing.T) {
+	var tests = []struct { // ➊
+		line    string
+		rune     rune
+		name     string
+		words []string
 	}{ // ➋
 		{"0021;EXCLAMATION MARK;Po;0;ON;;;;;N;;;;;",
 			'!', "EXCLAMATION MARK", []string{"EXCLAMATION", "MARK"}},
@@ -52,40 +52,40 @@ func TestAnalisarLinhaComHífenECampo10(t *testing.T) {
 		{"0027;APOSTROPHE;Po;0;ON;;;;;N;APOSTROPHE-QUOTE;;;",
 			'\'', "APOSTROPHE (APOSTROPHE-QUOTE)", []string{"APOSTROPHE", "QUOTE"}},
 	}
-	for _, caso := range casos { // ➌
-		runa, nome, palavras := AnalisarLinha(caso.linha) // ➍
-		if runa != caso.runa || nome != caso.nome ||
-			!reflect.DeepEqual(palavras, caso.palavras) {
-			t.Errorf("\nAnalisarLinha(%q)\n-> (%q, %q, %q)", // ➎
-				caso.linha, runa, nome, palavras)
+	for _, tt := range tests { // ➌
+		rune, name, words := ParseLine(tt.line) // ➍
+		if rune != tt.rune || name != tt.name ||
+			!reflect.DeepEqual(words, tt.words) {
+			t.Errorf("\nParseLine(%q)\n-> (%q, %q, %q)", // ➎
+				tt.line, rune, name, words)
 		}
 	}
 }
 
-func TestContém(t *testing.T) {
-	casos := []struct { // ➊
-		fatia     []string
-		procurado string
-		esperado  bool
+func TestContains(t *testing.T) {
+	tests := []struct { // ➊
+		haystack []string
+		needle string
+		want  bool
 	}{ // ➋
 		{[]string{"A", "B"}, "B", true},
 		{[]string{}, "A", false},
 		{[]string{"A", "B"}, "Z", false}, // ➌
 	} // ➍
-	for _, caso := range casos { // ➎
-		recebido := contém(caso.fatia, caso.procurado) // ➏
-		if recebido != caso.esperado {                 // ➐
-			t.Errorf("contém(%#v, %#v) esperado: %v; recebido: %v",
-				caso.fatia, caso.procurado, caso.esperado, recebido) // ➑
+	for _, tt := range tests { // ➎
+		got := contains(tt.haystack, tt.needle) // ➏
+		if got != tt.want {                 // ➐
+			t.Errorf("contains(%#v, %#v) want: %v; got: %v",
+				tt.haystack, tt.needle, tt.want, got) // ➑
 		}
 	}
 }
 
-func TestContémTodos(t *testing.T) {
-	casos := []struct { // ➊
-		fatia      []string
-		procurados []string
-		esperado   bool
+func TestContainsAll(t *testing.T) {
+	tests := []struct { // ➊
+		slice      []string
+		needles []string
+		want   bool
 	}{ // ➋
 		{[]string{"A", "B"}, []string{"B"}, true},
 		{[]string{}, []string{"A"}, false},
@@ -95,50 +95,50 @@ func TestContémTodos(t *testing.T) {
 		{[]string{"A", "B", "C"}, []string{"A", "Z"}, false},
 		{[]string{"A", "B"}, []string{"A", "B", "C"}, false},
 	}
-	for _, caso := range casos {
-		obtido := contémTodos(caso.fatia, caso.procurados) // ➍
-		if obtido != caso.esperado {
-			t.Errorf("contémTodos(%#v, %#v)\nesperado: %v; recebido: %v",
-				caso.fatia, caso.procurados, caso.esperado, obtido) // ➎
+	for _, tt := range tests {
+		got := containsAll(tt.slice, tt.needles) // ➍
+		if got != tt.want {
+			t.Errorf("containsAll(%#v, %#v)\nwant: %v; got: %v",
+				tt.slice, tt.needles, tt.want, got) // ➎
 		}
 	}
 }
 
-func TestSeparar(t *testing.T) {
-	casos := []struct {
-		texto    string
-		esperado []string
+func TestSplit(t *testing.T) {
+	tests := []struct {
+		text    string
+		want []string
 	}{
 		{"A", []string{"A"}},
 		{"A B", []string{"A", "B"}},
 		{"A B-C", []string{"A", "B", "C"}},
 	}
-	for _, caso := range casos {
-		obtido := separar(caso.texto)
-		if !reflect.DeepEqual(obtido, caso.esperado) {
-			t.Errorf("separar(%q)\nesperado: %#v; recebido: %#v",
-				caso.texto, caso.esperado, obtido)
+	for _, tt := range tests {
+		got := split(tt.text)
+		if !reflect.DeepEqual(got, tt.want) {
+			t.Errorf("split(%q)\nwant: %#v; got: %#v",
+				tt.text, tt.want, got)
 		}
 	}
 }
 
-func ExampleListar() {
-	texto := strings.NewReader(linhas3Da43)
-	Listar(texto, "MARK")
+func ExampleList() {
+	text := strings.NewReader(lines3Dto43)
+	List(text, "MARK")
 	// Output: U+003F	?	QUESTION MARK
 }
 
-func ExampleListar_doisResultados() {
-	texto := strings.NewReader(linhas3Da43)
-	Listar(texto, "SIGN")
+func ExampleList_2Results() {
+	text := strings.NewReader(lines3Dto43)
+	List(text, "SIGN")
 	// Output:
 	// U+003D	=	EQUALS SIGN
 	// U+003E	>	GREATER-THAN SIGN
 }
 
-func ExampleListar_duasPalavras() {
-	texto := strings.NewReader(linhas3Da43)
-	Listar(texto, "CAPITAL LATIN")
+func ExampleList_2Words() {
+	text := strings.NewReader(lines3Dto43)
+	List(text, "CAPITAL LATIN")
 	// Output:
 	// U+0041	A	LATIN CAPITAL LETTER A
 	// U+0042	B	LATIN CAPITAL LETTER B
@@ -146,17 +146,17 @@ func ExampleListar_duasPalavras() {
 }
 
 func Example() {
-	argsAntes := os.Args
-	defer func() { os.Args = argsAntes }()
+	argsBefore := os.Args
+	defer func() { os.Args = argsBefore }()
 	os.Args = []string{"", "cruzeiro"}
 	main()
 	// Output:
 	// U+20A2	₢	CRUZEIRO SIGN
 }
 
-func Example_consultaDuasPalavras() { // ➊
-	argsAntes := os.Args // ➋
-	defer func() { os.Args = argsAntes }()
+func Example_2WordQuery() { // ➊
+	argsBefore := os.Args // ➋
+	defer func() { os.Args = argsBefore }()
 	os.Args = []string{"", "cat", "smiling"}
 	main() // ➌
 	// Output:
@@ -165,9 +165,9 @@ func Example_consultaDuasPalavras() { // ➊
 	// U+1F63B	😻	SMILING CAT FACE WITH HEART-SHAPED EYES
 }
 
-func Example_consultaComHífenECampo10() {
-	argsAntes := os.Args
-	defer func() { os.Args = argsAntes }()
+func Example_queryWithHiphenAndField10() {
+	argsBefore := os.Args
+	defer func() { os.Args = argsBefore }()
 	os.Args = []string{"", "quote"}
 	main()
 	// Output:
@@ -176,73 +176,73 @@ func Example_consultaComHífenECampo10() {
 	// U+235E	⍞	APL FUNCTIONAL SYMBOL QUOTE QUAD
 }
 
-func restaurar(nomeVar, valor string, existia bool) {
-	if existia {
-		os.Setenv(nomeVar, valor)
+func restore(nameVar, value string, existed bool) {
+	if existed {
+		os.Setenv(nameVar, value)
 	} else {
-		os.Unsetenv(nomeVar)
+		os.Unsetenv(nameVar)
 	}
 }
 
-func TestObterCaminhoUCD_setado(t *testing.T) {
-	caminhoAntes, existia := os.LookupEnv("UCD_PATH")
-	defer restaurar("UCD_PATH", caminhoAntes, existia)
-	caminhoUCD := fmt.Sprintf("./TEST%d-UnicodeData.txt", time.Now().UnixNano())
-	os.Setenv("UCD_PATH", caminhoUCD)
-	obtido := obterCaminhoUCD()
-	if obtido != caminhoUCD {
-		t.Errorf("obterCaminhoUCD() [setado]\nesperado: %q; recebido: %q", caminhoUCD, obtido)
+func TestGetUCDPath_isSet(t *testing.T) {
+	pathBefore, existed := os.LookupEnv("UCD_PATH")
+	defer restore("UCD_PATH", pathBefore, existed)
+	ucdPath := fmt.Sprintf("./TEST%d-UnicodeData.txt", time.Now().UnixNano())
+	os.Setenv("UCD_PATH", ucdPath)
+	got := getUCDPath()
+	if got != ucdPath {
+		t.Errorf("getUCDPath() [setado]\nwant: %q; got: %q", ucdPath, got)
 	}
 }
 
-func TestObterCaminhoUCD_default(t *testing.T) {
-	caminhoAntes, existia := os.LookupEnv("UCD_PATH")
-	defer restaurar("UCD_PATH", caminhoAntes, existia)
+func TestGetUCDPath_default(t *testing.T) {
+	pathBefore, existed := os.LookupEnv("UCD_PATH")
+	defer restore("UCD_PATH", pathBefore, existed)
 	os.Unsetenv("UCD_PATH")
-	sufixoCaminhoUCD := "/UnicodeData.txt"
-	obtido := obterCaminhoUCD()
-	if !strings.HasSuffix(obtido, sufixoCaminhoUCD) {
-		t.Errorf("obterCaminhoUCD() [default]\nesperado (sufixo): %q; recebido: %q", sufixoCaminhoUCD, obtido)
+	ucdPathSuffix := "/UnicodeData.txt"
+	got := getUCDPath()
+	if !strings.HasSuffix(got, ucdPathSuffix) {
+		t.Errorf("getUCDPath() [default]\nwant (sufixo): %q; got: %q", ucdPathSuffix, got)
 	}
 }
 
-func TestBaixarUCD(t *testing.T) {
+func TestFetchUCD(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
-			w.Write([]byte(linhas3Da43))
+			w.Write([]byte(lines3Dto43))
 		}))
 	defer srv.Close()
 
-	caminhoUCD := fmt.Sprintf("./TEST%d-UnicodeData.txt", time.Now().UnixNano())
-	feito := make(chan bool)
-	go baixarUCD(srv.URL, caminhoUCD, feito)
-	_ = <-feito
-	ucd, err := os.Open(caminhoUCD)
+	ucdPath := fmt.Sprintf("./TEST%d-UnicodeData.txt", time.Now().UnixNano())
+	done := make(chan bool)
+	go fetchUCD(srv.URL, ucdPath, done)
+	_ = <-done
+	ucd, err := os.Open(ucdPath)
 	if os.IsNotExist(err) {
-		t.Errorf("baixarUCD não gerou:%v\n%v", caminhoUCD, err)
+		t.Errorf("fetchUCD não gerou:%v\n%v", ucdPath, err)
 	}
 	ucd.Close()
-	os.Remove(caminhoUCD)
+	os.Remove(ucdPath)
 }
 
-func TestAbrirUCD_local(t *testing.T) {
-	caminhoUCD := obterCaminhoUCD()
-	ucd, err := abrirUCD(caminhoUCD)
+func TestOpenUCD_local(t *testing.T) {
+	ucdPath := getUCDPath()
+	ucd, err := openUCD(ucdPath)
 	if err != nil {
-		t.Errorf("AbrirUCD(%q):\n%v", caminhoUCD, err)
+		t.Errorf("AbrirUCD(%q):\n%v", ucdPath, err)
 	}
 	ucd.Close()
 }
 
-func TestAbrirUCD_remoto(t *testing.T) {
+func TestOpenUCD_remote(t *testing.T) {
 	if testing.Short() {
 		t.Skip("teste ignorado [opção -test.short]")
 	}
-	caminhoUCD := fmt.Sprintf("./TEST%d-UnicodeData.txt", time.Now().UnixNano())
-	ucd, err := abrirUCD(caminhoUCD)
+	ucdPath := fmt.Sprintf("./TEST%d-UnicodeData.txt", time.Now().UnixNano())
+	ucd, err := openUCD(ucdPath)
 	if err != nil {
-		t.Errorf("AbrirUCD(%q):\n%v", caminhoUCD, err)
+		t.Errorf("AbrirUCD(%q):\n%v", ucdPath, err)
 	}
 	ucd.Close()
-	os.Remove(caminhoUCD)
+	os.Remove(ucdPath)
 }
