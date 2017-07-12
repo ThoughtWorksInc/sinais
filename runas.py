@@ -33,7 +33,7 @@ def listar(texto, consulta):
 def obter_caminho_UCD():
     caminho_UCD = os.environ.get('UCD_PATH')
     if caminho_UCD is None:
-        caminho_UCD = os.path.join(os.environ['HOME'], "UnicodeData.txt")
+        caminho_UCD = os.path.join(os.path.expanduser('~'), 'UnicodeData.txt')
     return caminho_UCD
 
 
