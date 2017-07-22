@@ -2,7 +2,7 @@
 permalink: passo-01
 ---
 
-# Runas, passo 1: iniciando o TDD
+# sinais, passo 1: iniciando o TDD
 
 Vamos usar [TDD](http://tdd.caelum.com.br/) para desenvolver esse projeto. A primeira coisa então é escrever um teste, no arquivo-fonte `runefinder_test.go`. Nosso primeiro teste verifica a função `AnalisarLinha`, que deve extrair um caractere e um nome de uma linha do `UnicodeData.txt`:
 
@@ -23,7 +23,7 @@ func TestAnalisarLinha(t *testing.T) { // ➍
 
 Vejamos o que temos aqui:
 
-➊ Todo arquivo-fonte em Go precisa declarar o pacote ao qual ele pertence. Para programas executáveis, o pacote deve ser `main`. Bibliotecas devem usar um nome igual à última parte do caminho até seu código-fonte, ex. `runas`.
+➊ Todo arquivo-fonte em Go precisa declarar o pacote ao qual ele pertence. Para programas executáveis, o pacote deve ser `main`. Bibliotecas devem usar um nome igual à última parte do caminho até seu código-fonte, ex. `sinais`.
 
 ➋ Importamos o pacote `testing` da biblioteca padrão.
 
@@ -39,7 +39,7 @@ Vejamos o que temos aqui:
 
 A linha ➎ traz algumas peculiaridades da linguagem Go:
 
-* Os caracteres Unicode em Go são chamados de "runas", e o tipo de dado usado para representar um caractere é `rune`. Assim como em C, um caractere é na verdade um número, que pode ser exibido como um caractere na saída se usarmos o código de formatação `"%c"`, como fizemos na linha ➐. Em Go, o tipo `rune` é o mesmo que `int32`, mas usamos `rune` para deixar claro quando estamos lidando com o código de um caractere, e não um número qualquer.
+* Os caracteres Unicode em Go são chamados de "runas", e o tipo de dado usado para representar um caractere é `rune`. Assim como em C, um caractere é na verdade um número, que pode ser exibido como um caractere na saída se usarmos o código de formatação `"%c"`, como fizemos na linha ➐. Em Go, o tipo `rune` é sinônimo de `int32`, mas usamos `rune` para deixar claro quando estamos lidando com o código de um caractere, e não um número qualquer.
 
 * Go permite que uma função devolva mais de um valor, e esses valores são atribuídos de uma vez só a suas respectivas variáveis. O compilador recusa variáveis que não serão usadas, então se você precisa ignorar um valor devolvido por uma função, use o nome especial `_`, o chamado _identificador vazio_ ([blank identifier](https://golang.org/doc/effective_go.html#blank)).
 
@@ -51,9 +51,9 @@ Após criar o arquivo `runefinder_test.go`, você pode usar o comando `go test` 
 
 ```bash
 $ go test
-# github.com/ThoughtWorksInc/runas
+# github.com/ThoughtWorksInc/sinais
 ./runefinder_test.go:8: undefined: AnalisarLinha
-FAIL	github.com/ThoughtWorksInc/runas [build failed]
+FAIL	github.com/ThoughtWorksInc/sinais [build failed]
 ```
 
 Obviamente, falta definir a função `AnalisarLinha` em algum lugar. Vamos lá.
@@ -84,11 +84,11 @@ Feito isso, rodamos o teste:
 ```bash
 $ go test
 PASS
-ok  	github.com/ThoughtWorksInc/runas	0.013s
+ok  	github.com/ThoughtWorksInc/sinais	0.013s
 ```
 
 Sucesso!
 
 OK, completamos nosso primeiro _baby step_: fizemos a função mais simples possível que faz o teste passar. A função `AnalisarLinha` ignora totalmente o argumento passado, e o teste confere a runa mas ignora a string devolvida. Mas um teste passando é um bom começo!
 
-Hora de ler o [Passo 2](passo-02), código no diretório `runas02`.
+Hora de ler o [Passo 2](passo-02), código no diretório `sinais02`.

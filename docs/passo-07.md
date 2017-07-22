@@ -2,16 +2,16 @@
 permalink: passo-07
 ---
 
-# Runas, passo 7 (bônus): download da UCD
+# sinais, passo 7 (bônus): download da UCD
 
-Nosso programa `runas` depende da presença do arquivo `UnicodeData.txt` no diretório atual para funcionar. Neste passo, vamos criar uma função para baixar o arquivo direto do site `unicode.org`, caso ele não esteja presente em um caminho local configurado pelo usuário.
+Nosso programa `sinais` depende da presença do arquivo `UnicodeData.txt` no diretório atual para funcionar. Neste passo, vamos criar uma função para baixar o arquivo direto do site `unicode.org`, caso ele não esteja presente em um caminho local configurado pelo usuário.
 
-Antes de mais nada, vamos verificar que temos uma versão funcional de `runas`, após o exercício do `passo-06`.
+Antes de mais nada, vamos verificar que temos uma versão funcional de `sinais`, após o exercício do `passo-06`.
 
 ```bash
 $ go test
 PASS
-ok  	github.com/ThoughtWorksInc/runas	0.109s
+ok  	github.com/ThoughtWorksInc/sinais	0.109s
 $ go run runefinder.go minus hyphen
 U+002D	-	HYPHEN-MINUS
 U+207B	⁻	SUPERSCRIPT MINUS (SUPERSCRIPT HYPHEN-MINUS)
@@ -147,7 +147,7 @@ func check(e error) {
 }
 ```
 
-Se o programa fosse um serviço que precisa ficar no ar 24x7, `check` seria uma péssima maneira de tratar erros. Mas em uma ferramenta como `runas`, é um atalho razoável.
+Se o programa fosse um serviço que precisa ficar no ar 24x7, `check` seria uma péssima maneira de tratar erros. Mas em uma ferramenta como `sinais`, é um atalho razoável.
 
 
 ## O programa principal e a função que abre aquivo UCD local
@@ -318,7 +318,7 @@ func abrirUCD(caminho string) (*os.File, error) {
 
 ➍ Seja qual for o caminho percorrido em `abrirUCD`, no final devolvemos o arquivo e o erro.
 
-Neste ponto temos um programa bastante funcional: `runas` sabe procurar o arquivo `UnicodeData.txt` no local configurado, e sabe baixá-lo da Web se necessário.
+Neste ponto temos um programa bastante funcional: `sinais` sabe procurar o arquivo `UnicodeData.txt` no local configurado, e sabe baixá-lo da Web se necessário.
 
 O único incômodo é que, durante o download, nada acontece durante alguns segundos após o programa informar que está baixando o arquivo. Na seção final vamos resolver esse problema usando os recursos mais empolgantes de Go: gorrotinas e canais.
 
@@ -430,7 +430,7 @@ Como temos o laço `for`, após cada execução do `default`, o `select` vai nov
 
 Vale notar que, quando uma instrução `select` não tem um `default`, ela bloqueia até que algum `case` esteja pronto para produzir ou consumir um valor. Mas com um `default`, `select` é uma estrutura de controle não bloqueante.
 
-Agora você pode compilar o programa com o comando `go build` e obter um executável `runas` (porque este é o nome do diretório onde está o código-fonte do passo 7, na raiz do repositório).
+Agora você pode compilar o programa com o comando `go build` e obter um executável `sinais` (porque este é o nome do diretório onde está o código-fonte do passo 7, na raiz do repositório).
 
 
 ## os.Exit(0) // Fim!
@@ -441,6 +441,6 @@ Você pode rodar o comando `go test -cover` para executar os testes com uma medi
 
 Nosso objetivo era mostrar elementos da linguagem através de um exemplo simples porém útil, e ao mesmo tempo ilustrar algumas técnicas básicas de testes automatizados para praticar TDD em Go.
 
-Agradecemos se você [mandar feedback](https://github.com/ThoughtWorksInc/runas/issues) com sugestões para melhorias. Por exemplo: como melhorar a cobertura de testes neste passo final? Não deixe também de postar suas dúvidas. Cada dúvida é um possível _bug_ deste tutorial, pois sempre é possível explicar melhor.
+Agradecemos se você [mandar feedback](https://github.com/ThoughtWorksInc/sinais/issues) com sugestões para melhorias. Por exemplo: como melhorar a cobertura de testes neste passo final? Não deixe também de postar suas dúvidas. Cada dúvida é um possível _bug_ deste tutorial, pois sempre é possível explicar melhor.
 
 _Happy hacking!_

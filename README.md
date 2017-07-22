@@ -1,6 +1,6 @@
-# Runas: passo a passo com TDD
+# sinais: passo a passo com TDD
 
-Neste repositório você pode ver o desenvolvimento passo a passo do exemplo `runas`: um utilitário em Go para localizar caracteres Unicode pelo nome.
+Neste repositório você pode ver o desenvolvimento passo a passo do exemplo `sinais`: um utilitário em Go para localizar caracteres Unicode pelo nome.
 
 Cada etapa do desenvolvimento é documentada explicando os recursos da linguagem Go usados no código do exemplo.
 
@@ -12,7 +12,7 @@ Você não precisa saber nada de Go para acompanhar. Os requisitos são conhecer
 Ao final desse tutorial, teremos um utilitário de linha de comando que faz isso:
 
 ```
-$ runas face eyes
+$ sinais face eyes
 U+1F601	😁	GRINNING FACE WITH SMILING EYES
 U+1F604	😄	SMILING FACE WITH OPEN MOUTH AND SMILING EYES
 U+1F606	😆	SMILING FACE WITH OPEN MOUTH AND TIGHTLY-CLOSED EYES
@@ -29,7 +29,7 @@ U+1F644	🙄	FACE WITH ROLLING EYES
 
 Você passa uma um mais palavras como argumento, e o programa devolve uma lista ordenada de caracteres Unicode cujas descrições contém todas as palavras que você passou.
 
-Leia mais nas [páginas do projeto](https://ThoughtWorksInc.github.io/runas/).
+Leia mais nas [páginas do projeto](https://ThoughtWorksInc.github.io/sinais/).
 
 
 ## Créditos

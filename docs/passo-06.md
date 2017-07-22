@@ -2,7 +2,7 @@
 permalink: passo-06
 ---
 
-# Runas, passo 06: hífens e nomes antigos
+# sinais, passo 06: hífens e nomes antigos
 
 Veja esta parte da tabela `UnicodeData.txt`:
 
@@ -27,11 +27,11 @@ Nesta parte do tutorial a proposta é que você implemente as mudanças para exe
 No final do exercício, o programa deverá se comportar assim:
 
 ```
-$ ./runas quote
+$ ./sinais quote
 U+0027	'	APOSTROPHE (APOSTROPHE-QUOTE)
 U+2358	⍘	APL FUNCTIONAL SYMBOL QUOTE UNDERBAR
 U+235E	⍞	APL FUNCTIONAL SYMBOL QUOTE QUAD
-$ ./runas minus hyphen
+$ ./sinais minus hyphen
 U+002D	-	HYPHEN-MINUS
 U+207B	⁻	SUPERSCRIPT MINUS (SUPERSCRIPT HYPHEN-MINUS)
 U+208B	₋	SUBSCRIPT MINUS (SUBSCRIPT HYPHEN-MINUS)
@@ -117,4 +117,4 @@ Queremos que `AnalisarLinha` devolva como lista de palavras apenas isto: `[]stri
 
 Quando tiver terminado, anote o tempo que levou para fazer o exercício e conte para o instrutor. Isso ajuda a melhorar o tutorial.
 
-O [Passo 7](passo-07) é uma seção bônus, onde faremos o download automático do arquivo `UnicodeData.txt`. Siga em frente se tiver feito o exercício. A solução deste exercício e o código que faz download estão no diretório raiz do repositório `runas` (não há um diretório `runas07`).
+O [Passo 7](passo-07) é uma seção bônus, onde faremos o download automático do arquivo `UnicodeData.txt`. Siga em frente se tiver feito o exercício. A solução deste exercício e o código que faz download estão no diretório raiz do repositório `sinais` (não há um diretório `sinais07`).

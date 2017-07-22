@@ -1,6 +1,6 @@
-# Runas: passo a passo com TDD
+# sinais: passo a passo com TDD
 
-Aqui você pode acompanhar o desenvolvimento passo a passo do exemplo `runas`: um utilitário em linguagem Go para localizar caracteres Unicode pelo nome.
+Aqui você pode acompanhar o desenvolvimento passo a passo do exemplo `sinais`: um utilitário em linguagem Go para localizar caracteres Unicode pelo nome.
 
 Você não precisa saber nada de Go para acompanhar, basta [instalar](https://golang.org/doc/install). Assumimos que você sabe programar. Os recursos específicos de Go são explicados linha a linha, à medida que aparecem no código.
 
@@ -22,7 +22,7 @@ Seguiremos o princípio do [TDD](http://tdd.caelum.com.br/) _(Test-Driven Develo
 Ao final desse tutorial, teremos um utilitário de linha de comando que faz isso:
 
 ```
-$ runas face eyes
+$ sinais face eyes
 U+1F601	😁	GRINNING FACE WITH SMILING EYES
 U+1F604	😄	SMILING FACE WITH OPEN MOUTH AND SMILING EYES
 U+1F606	😆	SMILING FACE WITH OPEN MOUTH AND TIGHTLY-CLOSED EYES
@@ -60,6 +60,6 @@ Eis uma pequena amostra do `UnicodeData.txt`:
 
 Os campos que nos interessam são o primeiro e o segundo: o código Unicode em hexadecimal e o nome oficial do caractere.
 
-Nosso programa `runas` vai usar o `UnicodeData.txt` para localizar caracteres pelo nome. Então, mãos à obra!
+Nosso programa `sinais` vai usar o `UnicodeData.txt` para localizar caracteres pelo nome. Então, mãos à obra!
 
-Para iniciar o desenvolvimento, vá para o [Passo 1](passo-01). O código está no diretório `runas01` do repositório [https://github.com/ThoughtWorksInc/runas](https://github.com/ThoughtWorksInc/runas), mas eu recomendo que você copie o código em seu próprio espaço de trabalho, porque os códigos nos diretórios `runasNN` são o estado final de cada passo, porém existem passos intermediários que vale a pena você acompanhar escrevendo os testes, rodando os testes, e fazendo as mudanças necessárias para os testes passarem.
+Para iniciar o desenvolvimento, vá para o [Passo 1](passo-01). O código está no diretório `sinais01` do repositório [https://github.com/ThoughtWorksInc/sinais](https://github.com/ThoughtWorksInc/sinais), mas eu recomendo que você copie o código em seu próprio espaço de trabalho, porque os códigos nos diretórios `sinaisNN` são o estado final de cada passo, porém existem passos intermediários que vale a pena você acompanhar escrevendo os testes, rodando os testes, e fazendo as mudanças necessárias para os testes passarem.

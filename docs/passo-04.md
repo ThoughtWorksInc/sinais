@@ -2,7 +2,7 @@
 permalink: passo-04
 ---
 
-# Runas, passo 4: MVP 1, o mínimo que é útil
+# sinais, passo 4: MVP 1, o mínimo que é útil
 
 Estamos prontos para fazer a interface de linha de comando e ter um produto mínimo viável (MVP) que permite encontrar caracteres pelo nome.
 
@@ -81,7 +81,7 @@ $ go test -v
 === RUN   Example
 --- PASS: Example (0.02s)
 PASS
-ok  	github.com/ThoughtWorksInc/runas	0.033s
+ok  	github.com/ThoughtWorksInc/sinais	0.033s
 ```
 
 ## Experimentando o `runefinder`
@@ -122,16 +122,16 @@ Outra forma de usar o programa é gerar um executável, com o comando `go build`
 
 ```bash
 $ go build
-$ ls -lah runas
--rwxr-xr-x  1 lramalho  staff   1.9M Dec 28 20:10 runas04
+$ ls -lah sinais
+-rwxr-xr-x  1 lramalho  staff   1.9M Dec 28 20:10 sinais04
 ```
 
-Se der tudo certo, o comando `go build` não exibe nenhuma mensagem. Mas ele produz um binário executável com o nome do projeto, no caso `runas04` (que é o nome do diretório onde está o projeto). Por convenção, o nome do projeto é o nome do repositório, mas neste tutorial temos na verdade vários projetos, um em cada diretório `runasNN`. Note o executável de 1.9MB no `ls` acima.
+Se der tudo certo, o comando `go build` não exibe nenhuma mensagem. Mas ele produz um binário executável com o nome do projeto, no caso `sinais04` (que é o nome do diretório onde está o projeto). Por convenção, o nome do projeto é o nome do repositório, mas neste tutorial temos na verdade vários projetos, um em cada diretório `sinaisNN`. Note o executável de 1.9MB no `ls` acima.
 
 Para rodar o binário, é só rodar!
 
 ```bash
-$ ./runas04 flag
+$ ./sinais04 flag
 U+2690	⚐	WHITE FLAG
 U+2691	⚑	BLACK FLAG
 U+26F3	⛳	FLAG IN HOLE
@@ -165,7 +165,7 @@ Ele tem algumas limitações que resolveremos nos próximos passos:
 * Se você não passar nenhum argumento, todos os caracteres do UCD serão exibidos, veja só:
 
 ```bash
-$ ./runas | wc
+$ ./sinais | wc
    30593  182344 1181756
 ```
 

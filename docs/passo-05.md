@@ -2,9 +2,9 @@
 permalink: passo-05
 ---
 
-# Runas, passo 5: busca por palavras inteiras
+# sinais, passo 5: busca por palavras inteiras
 
-A versão MVP1 do programa `runas` busca caracteres comparando uma substring do nome. Isso gera dois problemas:
+A versão MVP1 do programa `sinais` busca caracteres comparando uma substring do nome. Isso gera dois problemas:
 
 * Resultados demais: pesquisando "cat" vêm 82 caracteres, sendo que a maioria não tem nada a ver com gatos, por exemplo "MULTIPLICATION SIGN".
 * Resultados de menos: a ordem das palavras na consulta deveria ser ignorada: "chess black" e "black chess" deveriam devolver os mesmos resultados, e "cat smiling" deveria encontrar todos estes caracteres:
@@ -295,7 +295,7 @@ Agora você pode experimentar o programa com `go run` ou criar outro executável
 
 ```bash
 $ go build
-$ ./runas chess black
+$ ./sinais chess black
 U+265A	♚	BLACK CHESS KING
 U+265B	♛	BLACK CHESS QUEEN
 U+265C	♜	BLACK CHESS ROOK
@@ -307,14 +307,14 @@ U+265F	♟	BLACK CHESS PAWN
 Ou ainda, o trem-bala japonês:
 
 ```bash
-$ ./runas bullet train
+$ ./sinais bullet train
 U+1F685	🚅	HIGH-SPEED TRAIN WITH BULLET NOSE
 ```
 
 E mesmo com apenas uma palavra, os resultados são melhores. A busca por "cat" traz principalmente emojis com gatos, e não mais caracteres com as letras "CAT" em qualquer parte do nome.
 
 ```bash
-$ ./runas cat
+$ ./sinais cat
 U+A2B6	ꊶ	YI SYLLABLE CAT
 U+101EC	𐇬	PHAISTOS DISC SIGN CAT
 U+1F408	🐈	CAT

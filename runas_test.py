@@ -3,7 +3,7 @@ import unittest.mock
 
 import io, sys
 
-import runas
+import sinais
 
 LINHAS_3D_A_43 = '''
 003D;EQUALS SIGN;Sm;0;ON;;;;;N;;;;;
@@ -20,7 +20,7 @@ class TestAnalise(unittest.TestCase):
 
     def test_analisar_linha(self):
         linha_letra_a = '0041;LATIN CAPITAL LETTER A;Lu;0;L;;;;;N;;;;0061;'
-        runa, nome, palavras = runas.analisar_linha(linha_letra_a)
+        runa, nome, palavras = sinais.analisar_linha(linha_letra_a)
         self.assertEqual(runa, 'A')
         self.assertEqual(nome, 'LATIN CAPITAL LETTER A')
         self.assertEqual(palavras, {'LATIN', 'CAPITAL', 'LETTER', 'A'})
@@ -35,7 +35,7 @@ class TestAnalise(unittest.TestCase):
              "'", 'APOSTROPHE (APOSTROPHE-QUOTE)', {'APOSTROPHE', 'QUOTE'}),
         ]
         for linha, runa_ok, nome_ok, palavras_ok in casos:
-            runa, nome, palavras = runas.analisar_linha(linha)
+            runa, nome, palavras = sinais.analisar_linha(linha)
             self.assertEqual(runa, runa_ok)
             self.assertEqual(nome, nome_ok)
             self.assertEqual(palavras, palavras_ok)
@@ -49,18 +49,18 @@ class TestListagem(unittest.TestCase):
             self.fail('run tests in buffered mode (use -b flag in command line)')
 
     def test_listar(self):
-        runas.listar(self.linhas_3D_a_43, 'MARK')
+        sinais.listar(self.linhas_3D_a_43, 'MARK')
         saida = sys.stdout.getvalue()
         self.assertEqual(saida, 'U+003F\t?\tQUESTION MARK\n')
 
     def test_listar_dois_resultados(self):
-        runas.listar(self.linhas_3D_a_43, 'SIGN')
+        sinais.listar(self.linhas_3D_a_43, 'SIGN')
         saida = sys.stdout.getvalue()
         self.assertEqual(saida, 'U+003D\t=\tEQUALS SIGN\n'
                                 'U+003E\t>\tGREATER-THAN SIGN\n')
 
     def test_listar_duas_palavras(self):
-        runas.listar(self.linhas_3D_a_43, 'CAPITAL LATIN')
+        sinais.listar(self.linhas_3D_a_43, 'CAPITAL LATIN')
         saida = sys.stdout.getvalue()
         self.assertEqual(saida, 'U+0041\tA\tLATIN CAPITAL LETTER A\n'
                                 'U+0042\tB\tLATIN CAPITAL LETTER B\n'
@@ -71,14 +71,14 @@ class TestPrograma(unittest.TestCase):
     def test_um_arg(self):
         args =  ['', 'cruzeiro']
         with unittest.mock.patch.object(sys, 'argv', args):
-            runas.main()
+            sinais.main()
             saida = sys.stdout.getvalue()
             self.assertEqual(saida, 'U+20A2\t₢\tCRUZEIRO SIGN\n')
 
     def test_dois_args(self):
         args =  ['', 'cat', 'smiling']
         with unittest.mock.patch.object(sys, 'argv', args):
-            runas.main()
+            sinais.main()
             saida = sys.stdout.getvalue()
             self.assertEqual(saida,
                 'U+1F638\t😸\tGRINNING CAT FACE WITH SMILING EYES\n'
@@ -89,7 +89,7 @@ class TestPrograma(unittest.TestCase):
     def test_hifen_e_campo_10(self):
         args =  ['', 'quote']
         with unittest.mock.patch.object(sys, 'argv', args):
-            runas.main()
+            sinais.main()
             saida = sys.stdout.getvalue()
             self.assertEqual(saida,
                 "U+0027\t'\tAPOSTROPHE (APOSTROPHE-QUOTE)\n"
