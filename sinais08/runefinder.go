@@ -14,6 +14,10 @@ func CarregarPaginaPrincipal(w http.ResponseWriter, r *http.Request) {
   fmt.Fprintf(w, corpoPaginaPrincipal)
 }
 
+func CarregarResultado(w http.ResponseWriter, r *http.Request) {
+  fmt.Fprintf(w, "Palavra não encontrada")
+}
+
 func main() {
   http.HandleFunc("/", CarregarPaginaPrincipal)
   http.ListenAndServe(":8080", nil)

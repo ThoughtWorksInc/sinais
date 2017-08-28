@@ -33,3 +33,16 @@ func TestCarregarPaginaPrincipal(t *testing.T) {
   }
 }
 
+func TestCarregarResultado(t *testing.T) {
+  servidor := httptest.NewServer(http.HandlerFunc(CarregarResultado))
+  defer servidor.Close()
+  resposta, _ := http.Get(servidor.URL)
+
+  buffer := new(bytes.Buffer)
+  buffer.ReadFrom(resposta.Body)
+  resposta.Body.Close()
+
+  if buffer.String() != "Palavra não encontrada"{
+    t.Errorf("Esperado: Palavra não encontrada; recebido: %v", buffer.String())
+  }
+}
