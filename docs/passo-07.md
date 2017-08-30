@@ -432,12 +432,14 @@ Vale notar que, quando uma instrução `select` não tem um `default`, ela bloqu
 
 Agora você pode compilar o programa com o comando `go build` e obter um executável `sinais` (porque este é o nome do diretório onde está o código-fonte do passo 7, na raiz do repositório).
 
+Também pode usar `go install` para compilar e colocar o executável em `go/bin/`. Se esse diretório estiver em seu `PATH`, você poderá rodar `sinais` de qualquer lugar no shell. Uso quase todo dia o `sinais` para buscar emojis ou símbolos como `…` (U+2026, HORIZONTAL ELLIPSIS): reticências em um único caractere, bastante útil no espaço limitado do Twitter.
+
 
 ## os.Exit(0) // Fim!
 
 Isso conclui a nossa degustação da linguagem Go. Uma deGostação! 😬
 
-Você pode rodar o comando `go test -cover` para executar os testes com uma medida de cobertura. Aqui estou obtendo 97.1% de cobertura, um bom número. Se testar com `go test -cover -test.short`, a cobertura cai para 80.9%, porque pulamos `TestAbrirUCD_remoto`.
+Você pode rodar o comando `go test -cover` para executar os testes com uma medida de cobertura. Aqui estou obtendo 97% de cobertura, um bom número. Se testar com `go test -cover -test.short`, a cobertura cai para 80%, porque pulamos `TestAbrirUCD_remoto`.
 
 Nosso objetivo era mostrar elementos da linguagem através de um exemplo simples porém útil, e ao mesmo tempo ilustrar algumas técnicas básicas de testes automatizados para praticar TDD em Go.
 
