@@ -122,7 +122,7 @@ func obterCaminhoUCD() string {
 	caminhoUCD := os.Getenv("UCD_PATH")
 	if caminhoUCD == "" { // ➊
 		usuário, err := user.Current() // ➋
-		check(err) // ➌
+		terminarSe(err) // ➌
 		caminhoUCD = usuário.HomeDir + "/UnicodeData.txt" // ➍
 	}
 	return caminhoUCD
@@ -133,21 +133,21 @@ func obterCaminhoUCD() string {
 
 ➋ ...invocamos `user.Current` para obter informações sobre o usuário logado.
 
-➌ A função `check` é uma forma rápida e preguiçosa de lidar com erros. Em seguida falaremos sobre ela.
+➌ A função `terminarSe` é uma forma rápida e preguiçosa de lidar com erros. Em seguida falaremos sobre ela.
 
 ➍ Construímos o `caminhoUCD` concatenando o nome do arquivo ao caminho do diretório _home_ do usuário, ex. `/home/luciano/UnicodeData.txt` no meu caso.
 
-Nesta etapa faremos várias operações com o SO que podem gerar erros. Em vez de colocar testes `if err != nil` por toda parte, num exemplo didático como este vamos usar essa função `check` para verificar se houve erro e terminar o programa com `panic`:
+Nesta etapa faremos várias operações com o SO que podem gerar erros. Em vez de colocar testes `if err != nil` por toda parte, num exemplo didático como este vamos usar essa função `terminarSe` para terminar o programa se ocorrer um erro, usando `log.Fatal`:
 
 ```go
-func check(e error) {
-	if e != nil {
-		panic(e)
+func terminarSe(err error) {
+	if err != nil {
+		log.Fatal(err.Error())
 	}
 }
 ```
 
-Se o programa fosse um serviço que precisa ficar no ar 24x7, `check` seria uma péssima maneira de tratar erros. Mas em uma ferramenta como `sinais`, é um atalho razoável.
+Se o programa fosse um serviço que precisa ficar no ar 24x7, `terminarSe` seria uma péssima maneira de tratar erros. Mas em uma ferramenta como `sinais`, é um atalho razoável.
 
 
 ## O programa principal e a função que abre aquivo UCD local
@@ -160,7 +160,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	defer func() { ucd.Close() }()
+	defer ucd.Close()
 	consulta := strings.Join(os.Args[1:], " ")
 	Listar(ucd, strings.ToUpper(consulta))
 }
@@ -240,19 +240,19 @@ Agora vejamos o código de `baixarUCD` que satisfaz aquele teste:
 ```go
 func baixarUCD(url, caminho string) {
 	resposta, err := http.Get(url) // ➊
-	check(err) // ➋
+	terminarSe(err) // ➋
 	defer resposta.Body.Close() // ➌
 	arquivo, err := os.Create(caminho) // ➍
-	check(err)
+	terminarSe(err)
 	defer arquivo.Close() // ➎
 	_, err = io.Copy(arquivo, resposta.Body) // ➏
-	check(err)
+	terminarSe(err)
 }
 ```
 
 ➊ Invocamos `http.Get` para baixar a UCD.
 
-➋ Verificamos qualquer erro com `check`, encerrando o programa se for o caso. Vamos invocar `check` mais duas vezes nesta função.
+➋ Verificamos qualquer erro com `terminarSe`, encerrando o programa se for o caso. Vamos invocar `terminarSe` mais duas vezes nesta função.
 
 ➌ Usamos `defer` para fechar o corpo da resposta HTTP no final dessa função.
 
@@ -260,7 +260,7 @@ func baixarUCD(url, caminho string) {
 
 ➎ Se o arquivo foi criado com sucesso, usamos `defer` para fechá-lo no final dessa função.
 
-➏ Invocamos `io.Copy` para copiar os bytes do corpo da resposta HTTP para o arquivo local (estranhamente, a ordem dos parâmetros é destino, origem). `io.Copy` devolve o número de bytes copiados (que ignoramos atribuindo a `_`) e um possível erro, que verificaremos com `check`.
+➏ Invocamos `io.Copy` para copiar os bytes do corpo da resposta HTTP para o arquivo local (estranhamente, a ordem dos parâmetros é destino, origem). `io.Copy` devolve o número de bytes copiados (que ignoramos atribuindo a `_`) e um possível erro, que verificaremos com `terminarSe`.
 
 Agora que já temos como baixar um arquivo UCD, podemos melhorar a função `abrirUCD`.
 
@@ -384,13 +384,13 @@ Temos apenas duas mudanças em `baixarUCD`:
 ```go
 func baixarUCD(url, caminho string, feito chan<- bool) { // ➊
 	resposta, err := http.Get(url)
-	check(err)
+	terminarSe(err)
 	defer resposta.Body.Close()
 	arquivo, err := os.Create(caminho)
-	check(err)
+	terminarSe(err)
 	defer arquivo.Close()
 	_, err = io.Copy(arquivo, resposta.Body)
-	check(err)
+	terminarSe(err)
 	feito <- true // ➋
 }
 ```

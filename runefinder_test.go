@@ -187,7 +187,7 @@ func restaurar(nomeVar, valor string, existia bool) {
 func TestObterCaminhoUCD_setado(t *testing.T) {
 	caminhoAntes, existia := os.LookupEnv("UCD_PATH")                            // ➊
 	defer restaurar("UCD_PATH", caminhoAntes, existia)                           // ➋
-	caminhoUCD := fmt.Sprintf("./TEST%d-UnicodeData.txt", time.Now().UnixNano()) //➌
+	caminhoUCD := fmt.Sprintf("./TEST%d-UnicodeData.txt", time.Now().UnixNano()) // ➌
 	os.Setenv("UCD_PATH", caminhoUCD)                                            // ➍
 	obtido := obterCaminhoUCD()                                                  // ➎
 	if obtido != caminhoUCD {
@@ -216,20 +216,22 @@ func TestAbrirUCD_local(t *testing.T) {
 }
 
 func TestBaixarUCD(t *testing.T) {
-	srv := httptest.NewServer(http.HandlerFunc( // ➊
-		func(w http.ResponseWriter, r *http.Request) { // ➋
-			w.Write([]byte(linhas3Da43)) // ➌
+	srv := httptest.NewServer(http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			w.Write([]byte(linhas3Da43))
 		}))
-	defer srv.Close() // ➍
+	defer srv.Close()
 
 	caminhoUCD := fmt.Sprintf("./TEST%d-UnicodeData.txt", time.Now().UnixNano())
-	baixarUCD(srv.URL, caminhoUCD)  // ➎
-	ucd, err := os.Open(caminhoUCD) // ➏
-	if os.IsNotExist(err) {         // ➐
+	feito := make(chan bool)                 // ➊
+	go baixarUCD(srv.URL, caminhoUCD, feito) // ➋
+	_ = <-feito                              // ➌
+	ucd, err := os.Open(caminhoUCD)
+	if os.IsNotExist(err) {
 		t.Errorf("baixarUCD não gerou:%v\n%v", caminhoUCD, err)
 	}
-	ucd.Close()           // ➑
-	os.Remove(caminhoUCD) // ➒
+	ucd.Close()
+	os.Remove(caminhoUCD)
 }
 
 func TestAbrirUCD_remoto(t *testing.T) {

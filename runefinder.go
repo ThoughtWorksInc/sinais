@@ -10,6 +10,7 @@ import (
 	"os/user"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // AnalisarLinha devolve a runa, o nome e uma fatia de palavras que
@@ -75,31 +76,42 @@ func Listar(texto io.Reader, consulta string) {
 func obterCaminhoUCD() string {
 	caminhoUCD := os.Getenv("UCD_PATH")
 	if caminhoUCD == "" { // ➊
-		usuário, err := user.Current() // ➋
-		if err != nil {                // ➌
-			panic(err) // não sei em que situação user.Current pode dar erro...
-		}
+		usuário, err := user.Current()                    // ➋
+		terminarSe(err)                                   // ➌
 		caminhoUCD = usuário.HomeDir + "/UnicodeData.txt" // ➍
 	}
 	return caminhoUCD
 }
 
-func baixarUCD(url, caminho string) error {
-	resposta, err := http.Get(url) // ➊
-	if err != nil {                // ➋
-		return err
+func terminarSe(err error) {
+	if err != nil {
+		log.Fatal(err.Error())
 	}
-	defer resposta.Body.Close()        // ➌
-	arquivo, err := os.Create(caminho) // ➍
-	if err != nil {                    // ➋
-		return err
+}
+
+func baixarUCD(url, caminho string, feito chan<- bool) { // ➊
+	resposta, err := http.Get(url)
+	terminarSe(err)
+	defer resposta.Body.Close()
+	arquivo, err := os.Create(caminho)
+	terminarSe(err)
+	defer arquivo.Close()
+	_, err = io.Copy(arquivo, resposta.Body)
+	terminarSe(err)
+	feito <- true // ➋
+}
+
+func progresso(feito <-chan bool) { // ➊
+	for { // ➋
+		select { // ➌
+		case <-feito: // ➍
+			fmt.Println()
+			return
+		default: // ➎
+			fmt.Print(".")
+			time.Sleep(150 * time.Millisecond)
+		}
 	}
-	defer arquivo.Close()                    // ➎
-	_, err = io.Copy(arquivo, resposta.Body) // ➏
-	if err != nil {                          // ➋
-		return err
-	}
-	return nil
 }
 
 // URLUCD fica em http://www.unicode.org/Public/UNIDATA/UnicodeData.txt
@@ -111,11 +123,10 @@ func abrirUCD(caminho string) (*os.File, error) {
 	ucd, err := os.Open(caminho)
 	if os.IsNotExist(err) { // ➊
 		fmt.Printf("%s não encontrado\nbaixando %s\n", caminho, URLUCD)
-		err = baixarUCD(URLUCD, caminho) // ➋
-		if err != nil {
-			return nil, err
-		}
-		ucd, err = os.Open(caminho) // ➌
+		feito := make(chan bool)             // ➊
+		go baixarUCD(URLUCD, caminho, feito) // ➋
+		progresso(feito)                     // ➌
+		ucd, err = os.Open(caminho)          // ➌
 	}
 	return ucd, err // ➍
 }
@@ -125,7 +136,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	defer func() { ucd.Close() }()
+	defer ucd.Close()
 	consulta := strings.Join(os.Args[1:], " ")
 	Listar(ucd, strings.ToUpper(consulta))
 }
