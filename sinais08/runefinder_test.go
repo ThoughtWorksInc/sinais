@@ -2,56 +2,83 @@ package main
 
 import (
   "testing"
-  "bytes"
+  "io"
+  "io/ioutil"
   "net/http"
   "net/http/httptest"
 )
 
-func TestCarregarPaginaPrincipal(t *testing.T) {
-  servidor := httptest.NewServer(http.HandlerFunc(CarregarPaginaPrincipal))
+func TestBuscarRuna(t *testing.T) {
+  testes := []struct {
+    descrição     string
+    metodo        string
+    caminho       string
+    corpo         io.Reader
+    corpoEsperado string
+  } {{
+    descrição: "Carrega primeira vez",
+    caminho:   "/",
+    corpoEsperado : `<html><head/>
+                    <body>
+                       <form action="/" method="GET">
+                       Qual unicode está procurando?<br/>
+                       <input type="text" name="palavras">
+                       <input type="submit" value="Buscar">
+                      </form>
+                      <div></div>
+                    </body></html>`,
+  },
+  {
+    descrição: "Busca sem palavra digitada",
+    caminho:   "/?palavras=",
+    corpoEsperado : `<html><head/>
+                    <body>
+                       <form action="/" method="GET">
+                       Qual unicode está procurando?<br/>
+                       <input type="text" name="palavras">
+                       <input type="submit" value="Buscar">
+                      </form>
+                      <div>Palavra não encontrada</div>
+                    </body></html>`,
+  },
+  {
+    descrição: "Primeira Busca de verdade",
+    caminho:   "/?palavras=SIGN",
+    corpoEsperado: `<html><head/>
+                    <body>
+                       <form action="/" method="GET">
+                       Qual unicode está procurando?<br/>
+                       <input type="text" name="palavras">
+                       <input type="submit" value="Buscar">
+                      </form>
+                      <div>U+003D&#09;=&#09;EQUALS SIGN<br/>U+003E&#09;>&#09;GREATER-THAN SIGN<br/></div>
+                    </body></html>`,
+  },
+  {
+    descrição: "Que acontece se busco 2 vezes?",
+    caminho:   "/?palavras=SIGN",
+    corpoEsperado: `<html><head/>
+                    <body>
+                       <form action="/" method="GET">
+                       Qual unicode está procurando?<br/>
+                       <input type="text" name="palavras">
+                       <input type="submit" value="Buscar">
+                      </form>
+                      <div>U+003D&#09;=&#09;EQUALS SIGN<br/>U+003E&#09;>&#09;GREATER-THAN SIGN<br/></div>
+                    </body></html>`,
+  }}
+
+  servidor := httptest.NewServer(&meuManipulador{ucd: linhas3Da43})
   defer servidor.Close()
-  resposta, err := http.Get(servidor.URL)
-  if err != nil {
-    t.Errorf("Esperado: Página principal; Recebido %q", err)
-  }
 
-  corpo_esperado := "<html><head/>"+
-                    "<body>"+
-                    "  <form action=\"/buscar\" method=\"GET\">"+
-                    "   Qual unicode está procurando?<br/>"+
-                    "   <input type=\"text\" name=\"palavras\">"+
-                    "   <input type=\"submit\" value=\"Buscar\">"+
-                    "  </form>"+
-                    "</body></html>"
+  for _, teste := range testes {
+    requisição, _ := http.NewRequest("Get", servidor.URL+teste.caminho, teste.corpo)
 
-  buffer := new(bytes.Buffer)
-  buffer.ReadFrom(resposta.Body)
-  resposta.Body.Close()
-
-  if buffer.String() != corpo_esperado {
-    t.Errorf("Esperado: %v; recebido: %v", corpo_esperado, buffer.String())
-  }
-}
-
-func TestCarregarResultado(t *testing.T) {
-  servidor := httptest.NewServer(http.HandlerFunc(CarregarResultado))
-  defer servidor.Close()
-
-  resposta, _ := http.Get(servidor.URL)
-  buffer := new(bytes.Buffer)
-  buffer.ReadFrom(resposta.Body)
-  resposta.Body.Close()
-
-  if buffer.String() != "Busca precisa de palavra"{
-    t.Errorf("Esperado: Busca precisa de palavra; recebido: %v", buffer.String())
-  }
-
-  resposta, _ = http.Get(servidor.URL+"?palavras=\"alguma_coisa\"")
-  buffer.Reset()
-  buffer.ReadFrom(resposta.Body)
-  resposta.Body.Close()
-
-  if buffer.String() != "Palavra não encontrada"{
-    t.Errorf("Esperado: Palavra não encontrada: %v", buffer.String())
+    resposta, _ := http.DefaultClient.Do(requisição)
+    corpo, _ := ioutil.ReadAll(resposta.Body)
+    if string(corpo) != teste.corpoEsperado {
+      t.Errorf("Teste: %s\n", teste.descrição)
+      t.Errorf("Corpo esperado: %q; Corpo recebido: %q", teste.corpoEsperado, corpo)
+    }
   }
 }
