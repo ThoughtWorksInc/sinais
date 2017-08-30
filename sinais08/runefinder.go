@@ -59,9 +59,7 @@ type meuManipulador struct{
 func (m *meuManipulador) ServeHTTP(w http.ResponseWriter, r *http.Request) {
   saida := ""
 
-  if r.URL.Query().Encode() == "" {
-    saida = ""
-  } else {
+  if r.URL.Query().Encode() != "" {
     palavra := r.URL.Query().Get("palavras")
     if palavra == "" {
       saida = "Palavra não encontrada"
@@ -69,6 +67,7 @@ func (m *meuManipulador) ServeHTTP(w http.ResponseWriter, r *http.Request) {
       saida = Listar(strings.NewReader(m.ucd), palavra)
     }
   }
+
   fmt.Fprintf(w, pagina, saida)
 }
 
