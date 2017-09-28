@@ -38,7 +38,7 @@ func main() { // ➊
 	if err != nil {                        // ➌
 		log.Fatal(err.Error()) // ➍
 	}
-	defer func() { ucd.Close() }()             // ➎
+	defer ucd.Close()                          // ➎
 	consulta := strings.Join(os.Args[1:], " ") // ➏
 	Listar(ucd, strings.ToUpper(consulta))     // ➐
 }

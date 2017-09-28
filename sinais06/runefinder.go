@@ -59,7 +59,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	defer func() { ucd.Close() }()
+	defer ucd.Close()
 	consulta := strings.Join(os.Args[1:], " ")
 	Listar(ucd, strings.ToUpper(consulta))
 }
